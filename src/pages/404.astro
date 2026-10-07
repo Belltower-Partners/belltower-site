@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import site from '../data/site.json';
+---
+<Base title={`Page not found · ${site.title}`}>
+  <div class="col">
+    <header class="head"><h1><a href="/" style="text-decoration: none">{site.firmName}</a></h1></header>
+    <main class="memo">
+      <p>There is no page at this address. The <a href="/">homepage</a> has everything on this site.</p>
+    </main>
+  </div>
+</Base>

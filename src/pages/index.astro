@@ -1,0 +1,136 @@
+---
+// The homepage. Layout only: every word comes from src/content/ and src/data/.
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SentenceMachine from '../components/SentenceMachine.astro';
+import SentenceMachinePhone from '../components/SentenceMachinePhone.astro';
+import site from '../data/site.json';
+
+const memos = (await getCollection('memos')).sort((a, b) => a.data.order - b.data.order);
+const memoBodies = await Promise.all(memos.map(async (m) => (await render(m)).Content));
+
+const quotes = (await getCollection('testimonials')).sort((a, b) => a.data.order - b.data.order);
+const lead = quotes.find((q) => q.data.lead);
+const rest = quotes.filter((q) => q !== lead);
+const quoteBodies = new Map(await Promise.all(quotes.map(async (q) => [q.id, (await render(q)).Content] as const)));
+
+// The footer line is plain text; the email address in it becomes a link.
+const [footBefore, footAfter] = site.footerLine.includes(site.email)
+  ? [site.footerLine.slice(0, site.footerLine.indexOf(site.email)), site.footerLine.slice(site.footerLine.indexOf(site.email) + site.email.length)]
+  : [site.footerLine, null];
+
+const c = site.contact;
+const words = JSON.stringify({ ...c, email: site.email });
+---
+<Base>
+  <div class="col">
+    <header class="head">
+      <h1>{site.firmName}</h1>
+    </header>
+
+    <main>
+      <div class="tabs" role="tablist" aria-label="Memos">
+        {memos.map((m, i) => (
+          <button class="tab" type="button" role="tab" id={`tab-${m.id}`} aria-controls={`memo-${m.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+            <span class="num">{String(i + 1).padStart(2, '0')}</span><span class="lbl">{m.data.tab}</span>
+          </button>
+        ))}
+      </div>
+
+      <div class="stage">
+        <div class="wash" aria-hidden="true"></div>
+
+        <div class="panel">
+          {memos.map((m, i) => {
+            const Body = memoBodies[i];
+            return (
+              <div class="memo" role="tabpanel" id={`memo-${m.id}`} aria-labelledby={`tab-${m.id}`} tabindex="0" hidden={i !== 0}>
+                <Body />
+              </div>
+            );
+          })}
+        </div>
+
+        <section class="contact" aria-labelledby="contact-h">
+          <h2 id="contact-h">{c.heading}</h2>
+          <p class="alt">{c.orEmail} <a href={`mailto:${site.email}`}>{site.email}</a></p>
+
+          <form id="contact-form" action={site.formspreeEndpoint} method="POST" novalidate data-words={words}>
+            <label class="lab" for="e-problem">{c.label}</label>
+            <textarea class="ta" id="e-problem" name="message" rows="4"></textarea>
+            <div class="row">
+              <label class="vh" for="e-email">{c.emailPlaceholder}</label>
+              <input class="em" id="e-email" name="email" type="email" autocomplete="email" placeholder={c.emailPlaceholder} />
+              <button class="send" type="submit">{c.send}</button>
+              <p class="err" id="e-err" role="status" aria-live="polite"></p>
+            </div>
+            <div class="hp" aria-hidden="true">
+              <label>Leave this empty <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+            </div>
+          </form>
+
+          <div id="sent-view" hidden>
+            <div class="lab" id="sent-stamp" tabindex="-1">{c.sent}</div>
+            <div class="sentbox" id="sent-text"></div>
+            <div class="row">
+              <p class="reply" id="sent-reply"></p>
+              <button class="ghost" type="button" id="send-another">{c.sendAnother}</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="machine-sec" aria-label={site.machineLabel}>
+        <div class="fit fit-desk" data-fit data-w="760" data-h="700"><SentenceMachine /></div>
+        <div class="fit fit-phone" data-fit data-w="358" data-h="470"><SentenceMachinePhone /></div>
+      </section>
+    </main>
+
+    <div class="closing">
+      <section aria-labelledby="testimonials-h">
+        <h2 id="testimonials-h">{site.testimonialsHeading}</h2>
+        <div class="quotes">
+          {lead && (() => {
+            const Q = quoteBodies.get(lead.id)!;
+            return (
+              <figure class="quote lead">
+                <span class="mark" aria-hidden="true">“</span>
+                <blockquote><Q /></blockquote>
+                <figcaption>
+                  <span class="dash" aria-hidden="true"></span>
+                  <span class="who"><span class="name">{lead.data.name}</span><span class="role">{lead.data.title}, {lead.data.firm}</span></span>
+                </figcaption>
+              </figure>
+            );
+          })()}
+          {rest.length > 0 && (
+            <div class="pair">
+              {rest.map((q) => {
+                const Q = quoteBodies.get(q.id)!;
+                return (
+                  <figure class="quote">
+                    <blockquote><Q /></blockquote>
+                    <figcaption>
+                      <span class="dash" aria-hidden="true"></span>
+                      <span class="who"><span class="name">{q.data.name}</span><span class="role">{q.data.title}, {q.data.firm}</span></span>
+                    </figcaption>
+                  </figure>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <footer class="foot">
+        <p>{footBefore}{footAfter !== null && <><a href={`mailto:${site.email}`}>{site.email}</a>{footAfter}</>}</p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    import '../scripts/tabs.js';
+    import '../scripts/contact.js';
+    import '../scripts/machine.js';
+  </script>
+</Base>

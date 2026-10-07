@@ -1,0 +1,86 @@
+---
+// The compact sentence machine for narrow screens: 358 x 470 (SentenceMachinePhone.dc.html).
+// Each dial is one button: tap to step, drag to turn, arrow keys when focused.
+import machine from '../data/machine.json';
+import sentences from '../data/sentences.json';
+import site from '../data/site.json';
+
+const ang = (n: number, k: number) => (k - (n - 1) / 2) * (n === 3 ? 45 : 36);
+const total = String(sentences.length).padStart(3, '0');
+const start = [1, 0, 1];
+const first = machine.map[start[0]][start[1]][start[2]];
+const sentenceCase = (v: string) => v.charAt(0) + v.slice(1).toLowerCase();
+---
+<div class="sm sm-phone" data-machine="phone" role="group" aria-label={site.machineLabel}>
+  <div aria-hidden="true" style="position: absolute; left: 18px; top: 430px; width: 322px; height: 34px; border-radius: 50%; background: radial-gradient(closest-side, rgba(60,45,30,0.2), rgba(60,45,30,0.08) 55%, rgba(60,45,30,0))"></div>
+
+  <div class="sm-post" aria-hidden="true" style="left: 21px; top: 26px; width: 9px; height: 214px; border-radius: 4.5px"></div>
+  <div class="sm-post" aria-hidden="true" style="left: 328px; top: 26px; width: 9px; height: 214px; border-radius: 4.5px"></div>
+
+  <div class="sm-roll" aria-hidden="true" style="left: 30px; top: 14px; width: 298px; height: 32px; border-radius: 16px">
+    <div style="position: absolute; left: 8px; top: 4px; width: 282px; height: 24px; background: repeating-linear-gradient(180deg, rgba(120,100,70,0.09) 0px, rgba(120,100,70,0.09) 0.6px, rgba(0,0,0,0) 0.6px, rgba(0,0,0,0) 4.6px)"></div>
+  </div>
+  <div class="sm-bolt" aria-hidden="true" style="left: 19.5px; top: 24px; width: 12px; height: 12px"></div>
+  <div class="sm-bolt" aria-hidden="true" style="left: 326.5px; top: 24px; width: 12px; height: 12px"></div>
+
+  <div aria-hidden="true" style="position: absolute; left: 39px; top: 34px; width: 280px; height: 200px; overflow: hidden; background: linear-gradient(180deg, #ebe4d6 0px, #fdfbf6 24px, #faf7f0 100%); box-shadow: 0 2px 6px rgba(60,45,30,0.16)">
+    <div style="position: absolute; left: 0; top: 0; width: 280px; height: 196px; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0px, rgba(0,0,0,1) 36px); mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0px, rgba(0,0,0,1) 36px)">
+      <div data-feed style="position: absolute; left: 0; bottom: 0; width: 280px"></div>
+    </div>
+    <div style="position: absolute; left: 0; top: 0; width: 280px; height: 20px; background: linear-gradient(180deg, rgba(110,90,60,0.16), rgba(110,90,60,0))"></div>
+  </div>
+
+  <div class="sm-foot" aria-hidden="true" style="left: 44px; top: 430px; width: 36px; height: 16px; border-radius: 3px"></div>
+  <div class="sm-foot" aria-hidden="true" style="left: 278px; top: 430px; width: 36px; height: 16px; border-radius: 3px"></div>
+
+  <div class="sm-body" style="left: 0; top: 230px; width: 358px; height: 210px; border-radius: 26px; box-shadow: 0 12px 22px rgba(60,40,20,0.18), 0 2px 5px rgba(60,40,20,0.08), inset 0 1.5px 0 rgba(255,255,255,0.9), inset 0 -2px 4px rgba(120,100,70,0.12)">
+    <canvas data-speck aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 358px; height: 210px; border-radius: 26px; pointer-events: none"></canvas>
+
+    <div class="sm-slot" aria-hidden="true" style="left: 29px; top: 4px; width: 300px; height: 7px; border-radius: 3.5px">
+      <div data-car class="sm-car" style="top: 2px; width: 9px; height: 3px"></div>
+    </div>
+
+    <div aria-hidden="true" style="position: absolute; left: 18px; top: 19px; font-size: 9px; line-height: 13px; font-weight: 500; letter-spacing: 0.22em; color: #5f594f">BELLTOWER</div>
+
+    <div aria-hidden="true" style="position: absolute; left: 0; top: 13px; width: 358px; display: flex; justify-content: center; align-items: center; gap: 7px">
+      <span style="font-size: 9px; line-height: 13px; letter-spacing: 0.12em; color: #5f594f">No.</span>
+      <div style="display: flex; gap: 2px; padding: 3px; border-radius: 4px; background: #26241f; box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.7)">
+        {[0, 1, 2].map((t) => (
+          <div class="sm-drum" style="width: 16px; height: 20px">
+            <div data-drum class="sm-digits" style={`width: 16px; transition-delay: ${t * 60}ms`}>
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => <div style="height: 20px; font-size: 12px; line-height: 20px">{n}</div>)}
+            </div>
+            <div class="sm-shade"></div>
+          </div>
+        ))}
+      </div>
+      <span style="font-size: 9px; line-height: 13px; letter-spacing: 0.12em; color: #5f594f">OF {total}</span>
+    </div>
+
+    <div aria-hidden="true" style="position: absolute; right: 18px; top: 19px; display: flex; align-items: center; gap: 6px">
+      <span style="font-size: 8.5px; line-height: 13px; letter-spacing: 0.14em; color: #5f594f">ON</span>
+      <span data-lamp class="sm-lamp" style="width: 9px; height: 9px"></span>
+    </div>
+
+    {machine.dials.map((d, i) => (
+      <div data-dial style={`position: absolute; left: ${7 + 116 * i}px; top: 50px; width: 112px; display: flex; flex-direction: column; align-items: center`}>
+        <div aria-hidden="true" style="height: 13px; font-size: 10px; line-height: 13px; font-weight: 500; letter-spacing: 0.14em; color: #5f594f">{d.cap}</div>
+        <button type="button" data-knob class="sm-face sm-pdial" aria-label={`${d.name}: ${sentenceCase(d.opts[start[i]])}`} style="display: block; margin: 8px 0 0; padding: 0; width: 84px; height: 84px; border: 0">
+          {d.opts.map((_, t) => (
+            <span data-tick class:list={['sm-tick', { on: t === start[i] }]} aria-hidden="true" style={`left: 41px; top: 2px; width: 2px; height: 7px; transform: rotate(${ang(d.opts.length, t)}deg); transform-origin: 1px 40px`}></span>
+          ))}
+          <span aria-hidden="true" class="sm-knobshadow" style="left: 11px; top: 11px; width: 62px; height: 62px; box-shadow: 0 5px 10px rgba(0,0,0,0.28), 0 2px 3px rgba(0,0,0,0.35)">
+            <span data-rotor class="sm-rotor" style={`width: 62px; height: 62px; transform: rotate(${ang(d.opts.length, start[i])}deg)`}>
+              <span style="position: absolute; left: 5px; top: 5px; width: 52px; height: 52px; border-radius: 50%; background: #242321; box-shadow: 0 0 0 1px rgba(0,0,0,0.7)"></span>
+              <span style="position: absolute; left: 29.75px; top: 7px; width: 2.5px; height: 18px; border-radius: 1.25px; background: #E0592A"></span>
+            </span>
+            <span class="sm-gloss"></span>
+          </span>
+        </button>
+        <div data-value aria-hidden="true" style="margin-top: 8px; width: 112px; min-height: 26px; font-size: 10px; line-height: 13px; font-weight: 500; letter-spacing: 0.04em; text-align: center; color: #1d1c1a">{d.opts[start[i]]}</div>
+      </div>
+    ))}
+  </div>
+
+  <div data-said role="status" aria-live="polite" class="vh">No. {first + 1}. {sentences[first]}</div>
+</div>

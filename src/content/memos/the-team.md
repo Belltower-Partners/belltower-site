@@ -1,0 +1,10 @@
+---
+order: 2
+tab: The team
+---
+
+**Shawn Liu** was Facebook’s 4th product counsel in 2014, the second lawyer at the Chan Zuckerberg Initiative (helping grow the team from 3 to 20 people), and the Legal Director at Breakthrough Energy, a cleantech funding platform founded by Bill Gates. Before going in-house, he litigated at Gibson Dunn, working on teams that were victorious at the Supreme Court (*Alice Corp. v. CLS Bank*), the Ninth Circuit (*Quijada-Aguilar v. Lynch*), and trial courts (*Realtime Data v. T-Mobile*, in E.D. Texas). He holds an AB from Harvard College with a concentration in Chemistry and Physics, a JD from the University of Chicago, and clerked for Judge Sandra Ikuta on the Ninth Circuit. He enjoys building software for his family, like [Kids Trivia](https://kidsacademictrivia.netlify.app/).
+
+**Mickey Muldoon** is a technologist who has spent the past decade building high-performance software systems for the exacting requirements of global freight logistics (Amazon) and reusable rocket manufacturing (Blue Origin). He holds an AB from Harvard College with a concentration in Psychology and an MA in Computer Science from Brooklyn College. The son of two attorneys, he spent his early career as a teacher, political organizer, policy researcher, and education technology product manager in central Ohio, Washington, DC, and New York City.
+
+**Uday Khedkar** is a business leader with over 25 years of general management experience across large corporate and entrepreneurial mid-size companies. He was part of USG Corp’s New Business Ventures Incubator and led the company’s entry into the consumer paint industry. Afterwards, he served as CFO for a family-backed group of companies in the midwest with combined revenues exceeding $100 million. He later served as the President of one of its newly acquired subsidiaries. Uday holds an undergraduate degree in accounting from the University of Illinois at Chicago and an MBA from the Kellogg School of Management at Northwestern University. He lives with his wife, young daughter, and their two shelter pups.

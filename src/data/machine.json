@@ -1,0 +1,57 @@
+{
+  "_note": "Each dial lists its caption, its name for screen readers, and its settings in order. map[role][topic][stage] is the sentence each setting prints, as a position in sentences.json counting from 0. Every setting should print a different sentence.",
+  "dials": [
+    {
+      "cap": "ROLE",
+      "name": "Role",
+      "opts": [
+        "MANAGING PARTNER",
+        "PARTNER",
+        "ASSOCIATE"
+      ]
+    },
+    {
+      "cap": "TOPIC",
+      "name": "Topic",
+      "opts": [
+        "MONEY",
+        "CLIENTS",
+        "PEOPLE",
+        "THE WORK",
+        "TOOLS"
+      ]
+    },
+    {
+      "cap": "STAGE",
+      "name": "Stage",
+      "opts": [
+        "EXPLORING",
+        "PILOTING",
+        "ROLLED OUT"
+      ]
+    }
+  ],
+  "map": [
+    [
+      [35, 38, 1],
+      [18, 42, 32],
+      [28, 27, 36],
+      [2, 24, 9],
+      [20, 8, 14]
+    ],
+    [
+      [6, 31, 11],
+      [3, 16, 46],
+      [29, 0, 33],
+      [30, 10, 12],
+      [44, 39, 23]
+    ],
+    [
+      [45, 19, 26],
+      [25, 41, 22],
+      [40, 43, 15],
+      [17, 7, 21],
+      [13, 34, 37]
+    ]
+  ]
+}

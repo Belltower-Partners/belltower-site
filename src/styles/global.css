@@ -1,0 +1,171 @@
+/* Belltower letterhead.
+   One 760px column of black-and-white text, with the sentence machine's enamel palette below the form.
+   Light only, like printed stationery: every color is set explicitly.
+   Desktop values come from HomeTestimonials (1440px); below 800px the HomePhone values apply. */
+
+:root {
+  --paper: #FFFFFF;
+  --ink: #111111;
+  --ink-2: #222222;
+  --muted: #767676;
+  --quiet: #6B6B6B;
+  --label: #555555;
+  --rule: #D6D6D6;
+  --mark: #D6D6D6;
+  --wash: rgba(250, 247, 241, 0.2);
+  --serif: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
+  --display: Newsreader, 'IBM Plex Serif', Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  /* machine enamel */
+  --m-ink: #1d1c1a;
+  --m-label: #5f594f;
+  --m-orange: #E0592A;
+  --col: 760px;
+  color-scheme: light;
+}
+
+html { background: var(--paper); }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--serif); }
+a { color: var(--ink); }
+a:hover { color: #444444; }
+button, input, textarea { font-family: inherit; }
+::placeholder { color: #8A8A8A; opacity: 1; }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible,
+[role="tabpanel"]:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+[hidden] { display: none !important; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+/* Everything decorative that reaches past the column is clipped here, so nothing scrolls sideways. */
+.site { overflow-x: clip; }
+.col { max-width: var(--col); margin: 0 auto; padding: 0 16px; }
+
+/* ---- letterhead ------------------------------------------------------------- */
+.head { padding: 88px 0 56px; }
+.head h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 40px; line-height: 1.25; letter-spacing: -0.005em; color: var(--ink); }
+
+/* ---- memo tabs -------------------------------------------------------------- */
+.tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 20px; }
+.tab { min-height: 64px; display: flex; align-items: baseline; gap: 10px; padding: 18px 0; background: none; border: none; border-top: 1px solid var(--rule); text-align: left; cursor: pointer; color: var(--muted); }
+.tab .num { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; }
+.tab .lbl { font-family: var(--display); font-size: 21px; }
+.tab:hover { color: var(--ink); }
+.tab[aria-selected="true"] { color: var(--ink); border-top: 2px solid var(--ink); padding-top: 17px; }
+
+/* ---- memo panel and the warm wash behind the middle column ---------------- */
+.stage { position: relative; }
+.wash {
+  position: absolute; top: 0; bottom: -8px;
+  /* 104px past the column on each side, as designed, or to the window edge when the window is narrower */
+  left: max(-104px, calc((100% - 100vw) / 2)); right: max(-104px, calc((100% - 100vw) / 2));
+  pointer-events: none; background: var(--wash);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%), linear-gradient(to bottom, transparent 0, #000 48px, #000 calc(100% - 64px), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%), linear-gradient(to bottom, transparent 0, #000 48px, #000 calc(100% - 64px), transparent 100%);
+  mask-composite: intersect;
+}
+.panel { position: relative; margin-top: 24px; min-height: 480px; box-sizing: border-box; padding: 36px 0 40px; }
+.memo { display: flex; flex-direction: column; gap: 20px; font-size: 17px; line-height: 1.75; color: var(--ink-2); }
+.memo p { margin: 0; }
+.memo a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---- contact ---------------------------------------------------------------- */
+.contact { position: relative; margin-top: 72px; padding-bottom: 96px; border-top: 2px solid var(--ink); }
+.contact h2 { margin: 62px 0 0; font-family: var(--display); font-weight: 400; font-size: 25px; line-height: 35px; }
+.contact .alt { margin: 11px 0 0; font-size: 16px; line-height: 24px; color: #444444; }
+.contact .alt a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.lab { display: block; margin-top: 28px; font-family: var(--mono); font-size: 11px; line-height: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--label); }
+.ta, .sentbox { display: block; box-sizing: border-box; width: 100%; margin: 10px 0 0; padding: 14px 16px; border: 1px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink); font: 400 18px/28px var(--serif); }
+.ta { --ta-max: 12; height: 142px; resize: none; overflow-y: hidden; transition: height 160ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+.sentbox { white-space: pre-wrap; overflow: hidden; }
+.ta:focus, .em:focus { outline: 2px solid var(--ink); outline-offset: 0; }
+.row { position: relative; display: flex; gap: 16px; margin-top: 20px; }
+.em { box-sizing: border-box; flex: 1 1 auto; min-width: 0; height: 52px; padding: 0 16px; border: 1px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink); font: 400 17px var(--serif); }
+.send, .ghost { box-sizing: border-box; flex: 0 0 184px; height: 52px; font-size: 16px; cursor: pointer; }
+.send { border: 1px solid var(--ink); background: var(--ink); color: var(--paper); }
+.send:hover { background: var(--paper); color: var(--ink); }
+.send[disabled] { cursor: progress; }
+.ghost { padding: 0 18px; background: var(--paper); border: 1px solid #BDBDBD; color: var(--ink); font-size: 14px; }
+.ghost:hover { border-color: var(--ink); }
+.reply { flex: 1 1 auto; min-width: 0; margin: 0; display: flex; align-items: center; font-size: 17px; color: var(--ink); overflow-wrap: anywhere; }
+.err { position: absolute; left: 0; top: 64px; margin: 0; font-family: var(--mono); font-size: 12px; line-height: 18px; color: var(--ink); }
+.err:empty { display: none; }
+.hp { display: none; }
+
+/* ---- the sentence machine's section ----------------------------------------- */
+.machine-sec { padding: 96px 0 64px; }
+/* The machine is a fixed-size object; .fit scales it down only if the column is narrower than it. */
+.fit { position: relative; width: 100%; }
+.fit > .sm { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.fit-desk { max-width: 760px; height: 700px; }
+.fit-phone { display: none; max-width: 358px; height: 470px; margin: 0 auto; }
+
+/* ---- testimonials and footer ---------------------------------------------- */
+.closing { display: flex; flex-direction: column; min-height: 760px; box-sizing: border-box; padding-bottom: 56px; border-top: 2px solid var(--ink); }
+.closing h2 { margin: 62px 0 0; font-family: var(--display); font-weight: 400; font-size: 25px; line-height: 35px; }
+.quotes { margin-top: 49px; display: flex; flex-direction: column; gap: 64px; }
+.quote { position: relative; margin: 0; display: flex; flex-direction: column; gap: 22px; }
+.quote blockquote { margin: 0; font-family: var(--display); font-size: 21px; line-height: 31px; color: var(--ink-2); text-wrap: pretty; }
+.quote blockquote p { margin: 0; }
+.quote.lead { gap: 28px; }
+.quote.lead blockquote { max-width: 700px; font-size: 31px; line-height: 43px; letter-spacing: -0.005em; color: var(--ink); }
+.quote .mark { position: absolute; left: -44px; top: -22px; font-family: var(--display); font-size: 96px; line-height: 96px; color: var(--mark); }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; row-gap: 48px; }
+.pair .quote { padding-top: 28px; border-top: 1px solid var(--rule); }
+.quote figcaption { display: flex; align-items: center; gap: 14px; }
+.quote .dash { width: 24px; border-top: 1px solid var(--ink); }
+.quote .who { display: flex; flex-direction: column; gap: 2px; }
+.quote .name { font-family: var(--serif); font-size: 15px; line-height: 22px; font-weight: 500; color: var(--ink); }
+.quote .role { font-family: var(--mono); font-size: 11px; line-height: 16px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--quiet); }
+.foot { margin-top: auto; padding-top: 48px; }
+.foot p { margin: 0; font-family: var(--mono); font-size: 12px; color: var(--quiet); }
+.foot a { color: var(--quiet); }
+
+/* The hanging quote mark needs room in the margin; without it the mark sits above the quote. */
+@media (max-width: 879.98px) {
+  .quote .mark { position: static; display: block; height: 44px; margin-bottom: -16px; font-size: 72px; line-height: 72px; }
+}
+
+/* ---- phone (HomePhone, 390px) --------------------------------------------- */
+@media (max-width: 799.98px) {
+  .head { padding: 44px 0 32px; }
+  .head h1 { font-size: 32px; line-height: 1.2; }
+  .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
+  .tab { min-height: 56px; gap: 8px; padding: 14px 0; }
+  .tab .lbl { font-size: 19px; line-height: 1.25; }
+  .tab[aria-selected="true"] { padding-top: 13px; }
+  .wash { display: none; }
+  .panel { margin-top: 28px; min-height: 0; padding: 0; }
+  .memo { gap: 18px; font-size: 16px; line-height: 1.7; }
+
+  .contact { margin-top: 56px; padding: 32px 0 0; }
+  .contact h2 { margin: 0; font-size: 23px; line-height: 32px; }
+  .contact .alt { margin: 6px 0 0; font-size: 15px; }
+  .lab { margin-top: 24px; }
+  .ta, .sentbox { margin-top: 8px; padding: 12px 14px; font: 400 16px/26px var(--serif); }
+  .ta { --ta-max: 10; height: 130px; }
+  .row { flex-direction: column; gap: 12px; margin-top: 12px; }
+  .em { flex: 0 0 52px; padding: 0 14px; font-size: 16px; }
+  .send, .ghost { flex: 0 0 52px; width: 100%; }
+  .ghost { font-size: 15px; }
+  .reply { display: block; font-size: 16px; line-height: 1.6; }
+  .err { position: static; }
+
+  .machine-sec { padding: 104px 0 0; }
+  .fit-desk { display: none; }
+  .fit-phone { display: block; }
+
+  .closing { margin-top: 72px; min-height: 0; padding: 32px 0 40px; }
+  .closing h2 { margin: 0; font-size: 23px; line-height: 32px; }
+  .quotes { margin-top: 28px; gap: 40px; }
+  .quote.lead { gap: 22px; }
+  .quote.lead blockquote { font-size: 24px; line-height: 34px; }
+  .quote blockquote { font-size: 19px; line-height: 28px; }
+  .pair { grid-template-columns: minmax(0, 1fr); row-gap: 32px; }
+  .pair .quote { padding-top: 24px; }
+  .foot { padding-top: 40px; }
+  .foot p { font-size: 11px; line-height: 1.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ta { transition: none; }
+}
