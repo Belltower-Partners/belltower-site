@@ -20,5 +20,14 @@
     "failed": "That didn't go through. Please write to us at go@gobelltower.com instead."
   },
   "testimonialsHeading": "Testimonials",
-  "machineLabel": "Sentence machine"
+  "machineLabel": "Sentence machine",
+  "comingSoon": {
+    "enabled": true,
+    "password": "jinut",
+    "eyebrow": "Belltower Partners",
+    "heading": "Coming soon",
+    "passwordLabel": "Password",
+    "enter": "Enter",
+    "wrong": "That isn't it."
+  }
 }

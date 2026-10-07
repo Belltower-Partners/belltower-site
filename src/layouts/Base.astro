@@ -2,9 +2,11 @@
 import site from '../data/site.json';
 import '../styles/global.css';
 import '../styles/machine.css';
+import '../styles/gate.css';
 
 interface Props { title?: string; description?: string }
 const { title = site.title, description = site.description } = Astro.props;
+const gated = site.comingSoon.enabled;
 ---
 <!doctype html>
 <html lang="en">
@@ -14,6 +16,13 @@ const { title = site.title, description = site.description } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="color-scheme" content="light" />
+    {gated && <meta name="robots" content="noindex" />}
+    {gated && (
+      <script is:inline>
+        // Coming-soon gate: a browser that already entered the password goes straight to the site.
+        try { if (localStorage.getItem('belltower-unlocked') === '1') document.documentElement.setAttribute('data-unlocked', ''); } catch (e) {}
+      </script>
+    )}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
