@@ -42,6 +42,13 @@ have, it leaves a bracketed placeholder such as `[Name]` and says so.
 
 `CLAUDE.md` has the full map and the house rules every Claude session follows.
 
+## The "Coming soon" screen
+
+Until launch, visitors to the site see only a "Coming soon" screen. To see the real site, type
+`ring` on your keyboard (or swipe up on your phone) and enter the password, which is
+`comingSoon.password` in `src/data/site.json`. Your browser remembers it after that. To launch, ask
+Claude to turn off the Coming soon screen.
+
 ## Still to fill in
 
 - **Formspree form ID.** The contact form sends messages through [Formspree](https://formspree.io).

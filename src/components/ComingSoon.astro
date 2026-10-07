@@ -1,0 +1,27 @@
+---
+// The "Coming soon" screen shown in front of the site while `comingSoon.enabled` is true in
+// src/data/site.json. Typing "ring" on a keyboard, or swiping up on a phone, opens the password
+// box; the right password reveals the site and is remembered in this browser.
+import site from '../data/site.json';
+
+const cs = site.comingSoon;
+---
+<div class="gate" data-gate data-password={cs.password}>
+  <main class="gate-main">
+    <p class="gate-eyebrow">{cs.eyebrow}</p>
+    <h1 class="gate-heading">{cs.heading}</h1>
+    <p class="gate-line" aria-hidden="true"><span class="gate-typed"></span><span class="gate-caret"></span></p>
+  </main>
+  <footer class="gate-foot"><a href={`mailto:${site.email}`}>{site.email}</a></footer>
+
+  <dialog class="gate-dialog" aria-labelledby="gate-pw-label">
+    <form class="gate-form" method="dialog" novalidate>
+      <label class="gate-label" id="gate-pw-label" for="gate-pw">{cs.passwordLabel}</label>
+      <div class="gate-row">
+        <input class="gate-input" id="gate-pw" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" />
+        <button class="gate-enter" type="submit">{cs.enter}</button>
+      </div>
+      <p class="gate-msg" role="status" aria-live="polite" data-wrong={cs.wrong}></p>
+    </form>
+  </dialog>
+</div>
