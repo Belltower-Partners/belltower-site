@@ -11,9 +11,9 @@ nothing goes live until a partner has looked at a preview and approved it.
 
 1. Go to [claude.ai/code](https://claude.ai/code) and open this repository (`belltower-site`).
 2. Describe the change the way you'd describe it to a colleague. For example: "In The team tab,
-   add a sentence to Uday's paragraph saying he is based in Chicago," or "Replace the second
-   testimonial with this quote from Jane Smith, General Counsel at Smith & Co. She gave written
-   permission on May 3: ..."
+   add a sentence to Uday's paragraph saying [what to add]," or "Replace the second testimonial
+   with this quote from [client name], [title] at [firm]. They gave written permission on
+   [date]: ..."
 3. Claude edits the content, checks that the site still builds, and opens a pull request. The pull
    request description says what changed.
 4. Cloudflare builds a preview of the site with the change and posts a preview link on the pull
