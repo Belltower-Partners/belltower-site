@@ -9,11 +9,6 @@ import site from '../data/site.json';
 const memos = (await getCollection('memos')).sort((a, b) => a.data.order - b.data.order);
 const memoBodies = await Promise.all(memos.map(async (m) => (await render(m)).Content));
 
-const quotes = (await getCollection('testimonials')).sort((a, b) => a.data.order - b.data.order);
-const lead = quotes.find((q) => q.data.lead);
-const rest = quotes.filter((q) => q !== lead);
-const quoteBodies = new Map(await Promise.all(quotes.map(async (q) => [q.id, (await render(q)).Content] as const)));
-
 // The footer line is plain text; the email address in it becomes a link.
 const [footBefore, footAfter] = site.footerLine.includes(site.email)
   ? [site.footerLine.slice(0, site.footerLine.indexOf(site.email)), site.footerLine.slice(site.footerLine.indexOf(site.email) + site.email.length)]
@@ -87,41 +82,6 @@ const words = JSON.stringify({ ...c, email: site.email });
     </main>
 
     <div class="closing">
-      <section aria-labelledby="testimonials-h">
-        <h2 id="testimonials-h">{site.testimonialsHeading}</h2>
-        <div class="quotes">
-          {lead && (() => {
-            const Q = quoteBodies.get(lead.id)!;
-            return (
-              <figure class="quote lead">
-                <span class="mark" aria-hidden="true">“</span>
-                <blockquote><Q /></blockquote>
-                <figcaption>
-                  <span class="dash" aria-hidden="true"></span>
-                  <span class="who"><span class="name">{lead.data.name}</span><span class="role">{lead.data.title}, {lead.data.firm}</span></span>
-                </figcaption>
-              </figure>
-            );
-          })()}
-          {rest.length > 0 && (
-            <div class="pair">
-              {rest.map((q) => {
-                const Q = quoteBodies.get(q.id)!;
-                return (
-                  <figure class="quote">
-                    <blockquote><Q /></blockquote>
-                    <figcaption>
-                      <span class="dash" aria-hidden="true"></span>
-                      <span class="who"><span class="name">{q.data.name}</span><span class="role">{q.data.title}, {q.data.firm}</span></span>
-                    </figcaption>
-                  </figure>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </section>
-
       <footer class="foot">
         <p>{footBefore}{footAfter !== null && <><a href={`mailto:${site.email}`}>{site.email}</a>{footAfter}</>}</p>
       </footer>

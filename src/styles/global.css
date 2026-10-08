@@ -1,7 +1,7 @@
 /* Belltower letterhead.
    One 760px column of black-and-white text, with the sentence machine's enamel palette below the form.
    Light only, like printed stationery: every color is set explicitly.
-   Desktop values come from HomeTestimonials (1440px); below 800px the HomePhone values apply. */
+   Desktop values come from the 1440px design; below 800px the HomePhone values apply. */
 
 :root {
   --paper: #FFFFFF;
@@ -99,31 +99,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .fit-desk { max-width: 760px; height: 700px; }
 .fit-phone { display: none; max-width: 358px; height: 470px; margin: 0 auto; }
 
-/* ---- testimonials and footer ---------------------------------------------- */
-.closing { display: flex; flex-direction: column; min-height: 760px; box-sizing: border-box; padding-bottom: 56px; border-top: 2px solid var(--ink); }
-.closing h2 { margin: 62px 0 0; font-family: var(--display); font-weight: 400; font-size: 25px; line-height: 35px; }
-.quotes { margin-top: 49px; display: flex; flex-direction: column; gap: 64px; }
-.quote { position: relative; margin: 0; display: flex; flex-direction: column; gap: 22px; }
-.quote blockquote { margin: 0; font-family: var(--display); font-size: 21px; line-height: 31px; color: var(--ink-2); text-wrap: pretty; }
-.quote blockquote p { margin: 0; }
-.quote.lead { gap: 28px; }
-.quote.lead blockquote { max-width: 700px; font-size: 31px; line-height: 43px; letter-spacing: -0.005em; color: var(--ink); }
-.quote .mark { position: absolute; left: -44px; top: -22px; font-family: var(--display); font-size: 96px; line-height: 96px; color: var(--mark); }
-.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; row-gap: 48px; }
-.pair .quote { padding-top: 28px; border-top: 1px solid var(--rule); }
-.quote figcaption { display: flex; align-items: center; gap: 14px; }
-.quote .dash { width: 24px; border-top: 1px solid var(--ink); }
-.quote .who { display: flex; flex-direction: column; gap: 2px; }
-.quote .name { font-family: var(--serif); font-size: 15px; line-height: 22px; font-weight: 500; color: var(--ink); }
-.quote .role { font-family: var(--mono); font-size: 11px; line-height: 16px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--quiet); }
-.foot { margin-top: auto; padding-top: 48px; }
+/* ---- footer --------------------------------------------------------------- */
+.closing { padding-bottom: 56px; border-top: 2px solid var(--ink); }
+.foot { padding-top: 48px; }
 .foot p { margin: 0; font-family: var(--mono); font-size: 12px; color: var(--quiet); }
 .foot a { color: var(--quiet); }
-
-/* The hanging quote mark needs room in the margin; without it the mark sits above the quote. */
-@media (max-width: 879.98px) {
-  .quote .mark { position: static; display: block; height: 44px; margin-bottom: -16px; font-size: 72px; line-height: 72px; }
-}
 
 /* ---- phone (HomePhone, 390px) --------------------------------------------- */
 @media (max-width: 799.98px) {
@@ -154,14 +134,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .fit-desk { display: none; }
   .fit-phone { display: block; }
 
-  .closing { margin-top: 72px; min-height: 0; padding: 32px 0 40px; }
-  .closing h2 { margin: 0; font-size: 23px; line-height: 32px; }
-  .quotes { margin-top: 28px; gap: 40px; }
-  .quote.lead { gap: 22px; }
-  .quote.lead blockquote { font-size: 24px; line-height: 34px; }
-  .quote blockquote { font-size: 19px; line-height: 28px; }
-  .pair { grid-template-columns: minmax(0, 1fr); row-gap: 32px; }
-  .pair .quote { padding-top: 24px; }
+  .closing { margin-top: 72px; padding-bottom: 40px; }
   .foot { padding-top: 40px; }
   .foot p { font-size: 11px; line-height: 1.6; }
 }
