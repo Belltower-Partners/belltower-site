@@ -53,16 +53,20 @@ working here must follow these rules.
 | Firm name at the top, browser title, page description | `src/data/site.json` (`firmName`, `title`, `description`) |
 | "Our work" tab and its text | `src/content/memos/our-work.md` |
 | "The team" tab and its text | `src/content/memos/the-team.md` |
+| "Our clients" tab and its opening text | `src/content/memos/our-clients.md` |
+| Each case study on "Our clients" (heading, name and title, quote or description) | `src/content/cases/*.md` (`order` sets the order; the body is what opens) |
+| "Case study" label and the "Read / Close the case study" button text | `src/data/site.json` under `cases` |
 | Tab labels and their order | the `tab` and `order` lines at the top of each memo file |
 | Contact section wording, form messages, "Sent" text | `src/data/site.json` under `contact` |
 | Contact email address | `src/data/site.json` (`email`) and the `failed` message under `contact` |
 | Where the contact form sends messages (Formspree) | `src/data/site.json` (`formspreeEndpoint`) |
 | The 47 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
-| Testimonials heading | `src/data/site.json` (`testimonialsHeading`) |
-| Each testimonial | `src/content/testimonials/*.md` (quote in the body; `name`, `title`, `firm`, `order`, `lead` at the top) |
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
 | "Coming soon" screen in front of the site: on/off, password and its words | `src/data/site.json` under `comingSoon` (`enabled: false` turns it off) |
+
+The page has no Testimonials section; it was removed in October 2026. If a partner asks for one
+again, it can be restored from git history (the pull request "Remove the Testimonials section").
 
 Notes on the machine data: `machine.json`'s `map[role][topic][stage]` holds a sentence's position in
 `sentences.json`, counting from 0. There are 45 settings and each prints a different sentence. If

@@ -1,8 +1,8 @@
 # Belltower Partners website
 
 This is the code and the words for the Belltower Partners homepage: the letterhead, the two memo
-tabs ("Our work" and "The team"), the contact form, the sentence machine, the testimonials and
-the footer. It is a single page. Cloudflare hosts it.
+tabs ("Our work" and "The team"), the contact form, the sentence machine and the
+footer. It is a single page. Cloudflare hosts it.
 
 You don't need to read code to change it. Changes are made by asking Claude in plain English, and
 nothing goes live until a partner has looked at a preview and approved it.
@@ -11,9 +11,8 @@ nothing goes live until a partner has looked at a preview and approved it.
 
 1. Go to [claude.ai/code](https://claude.ai/code) and open this repository (`belltower-site`).
 2. Describe the change the way you'd describe it to a colleague. For example: "In The team tab,
-   add a sentence to Uday's paragraph saying [what to add]," or "Replace the second testimonial
-   with this quote from [client name], [title] at [firm]. They gave written permission on
-   [date]: ..."
+   add a sentence to Uday's paragraph saying [what to add]," or "In Our work, split the long second
+   paragraph into two."
 3. Claude edits the content, checks that the site still builds, and opens a pull request. The pull
    request description says what changed.
 4. Cloudflare builds a preview of the site with the change and posts a preview link on the pull
@@ -37,7 +36,6 @@ have, it leaves a bracketed placeholder such as `[Name]` and says so.
 | Contact email address | `src/data/site.json` |
 | The sentences the machine prints | `src/data/sentences.json` |
 | The machine's dials, and which setting prints which sentence | `src/data/machine.json` |
-| Testimonials | `src/content/testimonials/` (one file per quote) |
 | Footer line | `src/data/site.json`, `footerLine` |
 
 `CLAUDE.md` has the full map and the house rules every Claude session follows.

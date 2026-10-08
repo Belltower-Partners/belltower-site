@@ -1,7 +1,7 @@
 /* Belltower letterhead.
    One 760px column of black-and-white text, with the sentence machine's enamel palette below the form.
    Light only, like printed stationery: every color is set explicitly.
-   Desktop values come from HomeTestimonials (1440px); below 800px the HomePhone values apply. */
+   Desktop values come from the 1440px design; below 800px the HomePhone values apply. */
 
 :root {
   --paper: #FFFFFF;
@@ -11,7 +11,6 @@
   --quiet: #6B6B6B;
   --label: #555555;
   --rule: #D6D6D6;
-  --mark: #D6D6D6;
   --wash: rgba(250, 247, 241, 0.2);
   --serif: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
   --display: Newsreader, 'IBM Plex Serif', Georgia, serif;
@@ -68,6 +67,24 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .memo p { margin: 0; }
 .memo a { text-decoration: underline; text-underline-offset: 3px; }
 
+/* ---- case studies on the "Our clients" tab -------------------------------- */
+.cases { margin-top: 16px; }
+.case { padding: 32px 0 36px; border-top: 2px solid var(--ink); }
+.case:last-child { border-bottom: 1px solid var(--rule); }
+.memo .case-lab { font-family: var(--mono); font-size: 11px; line-height: 16px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--label); }
+.case h2 { margin: 12px 0 0; font-family: var(--display); font-weight: 400; font-size: 27px; line-height: 36px; color: var(--ink); }
+.memo .case-who { margin-top: 10px; display: flex; flex-direction: column; gap: 2px; }
+.case-name { font-size: 16px; line-height: 24px; font-weight: 500; color: var(--ink); }
+.case-title { font-size: 15px; line-height: 23px; color: #444444; }
+.memo .case-sub { margin-top: 6px; font-size: 16px; line-height: 24px; color: #444444; }
+.case-toggle { margin-top: 14px; min-height: 44px; padding: 0; background: none; border: 0; font-size: 15px; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; cursor: pointer; }
+.case-toggle:hover { text-decoration-thickness: 2px; }
+.case-body { margin-top: 20px; display: flex; flex-wrap: wrap; column-gap: 32px; row-gap: 10px; padding-top: 24px; border-top: 1px solid var(--rule); }
+.memo .case-body-lab { flex: 0 0 132px; font-family: var(--mono); font-size: 11px; line-height: 30px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--label); }
+.case-text { flex: 999 1 420px; min-width: 0; margin: 0; display: flex; flex-direction: column; gap: 20px; }
+.case-text blockquote { margin: 0; display: flex; flex-direction: column; gap: 16px; font-family: var(--display); font-size: 21px; line-height: 31px; color: var(--ink-2); text-wrap: pretty; }
+.case-text figcaption { font-size: 15px; line-height: 22px; font-weight: 500; color: var(--ink); }
+
 /* ---- contact ---------------------------------------------------------------- */
 .contact { position: relative; margin-top: 72px; padding-bottom: 96px; border-top: 2px solid var(--ink); }
 .contact h2 { margin: 62px 0 0; font-family: var(--display); font-weight: 400; font-size: 25px; line-height: 35px; }
@@ -99,31 +116,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .fit-desk { max-width: 760px; height: 700px; }
 .fit-phone { display: none; max-width: 358px; height: 470px; margin: 0 auto; }
 
-/* ---- testimonials and footer ---------------------------------------------- */
-.closing { display: flex; flex-direction: column; min-height: 760px; box-sizing: border-box; padding-bottom: 56px; border-top: 2px solid var(--ink); }
-.closing h2 { margin: 62px 0 0; font-family: var(--display); font-weight: 400; font-size: 25px; line-height: 35px; }
-.quotes { margin-top: 49px; display: flex; flex-direction: column; gap: 64px; }
-.quote { position: relative; margin: 0; display: flex; flex-direction: column; gap: 22px; }
-.quote blockquote { margin: 0; font-family: var(--display); font-size: 21px; line-height: 31px; color: var(--ink-2); text-wrap: pretty; }
-.quote blockquote p { margin: 0; }
-.quote.lead { gap: 28px; }
-.quote.lead blockquote { max-width: 700px; font-size: 31px; line-height: 43px; letter-spacing: -0.005em; color: var(--ink); }
-.quote .mark { position: absolute; left: -44px; top: -22px; font-family: var(--display); font-size: 96px; line-height: 96px; color: var(--mark); }
-.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; row-gap: 48px; }
-.pair .quote { padding-top: 28px; border-top: 1px solid var(--rule); }
-.quote figcaption { display: flex; align-items: center; gap: 14px; }
-.quote .dash { width: 24px; border-top: 1px solid var(--ink); }
-.quote .who { display: flex; flex-direction: column; gap: 2px; }
-.quote .name { font-family: var(--serif); font-size: 15px; line-height: 22px; font-weight: 500; color: var(--ink); }
-.quote .role { font-family: var(--mono); font-size: 11px; line-height: 16px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--quiet); }
-.foot { margin-top: auto; padding-top: 48px; }
+/* ---- footer --------------------------------------------------------------- */
+.closing { padding-bottom: 56px; border-top: 2px solid var(--ink); }
+.foot { padding-top: 48px; }
 .foot p { margin: 0; font-family: var(--mono); font-size: 12px; color: var(--quiet); }
 .foot a { color: var(--quiet); }
-
-/* The hanging quote mark needs room in the margin; without it the mark sits above the quote. */
-@media (max-width: 879.98px) {
-  .quote .mark { position: static; display: block; height: 44px; margin-bottom: -16px; font-size: 72px; line-height: 72px; }
-}
 
 /* ---- phone (HomePhone, 390px) --------------------------------------------- */
 @media (max-width: 799.98px) {
@@ -136,6 +133,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .wash { display: none; }
   .panel { margin-top: 28px; min-height: 0; padding: 0; }
   .memo { gap: 18px; font-size: 16px; line-height: 1.7; }
+  .case { padding: 28px 0 30px; }
+  .case h2 { font-size: 23px; line-height: 31px; }
+  .memo .case-body-lab { line-height: 16px; }
+  .case-text blockquote { font-size: 19px; line-height: 28px; }
 
   .contact { margin-top: 56px; padding: 32px 0 0; }
   .contact h2 { margin: 0; font-size: 23px; line-height: 32px; }
@@ -154,14 +155,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .fit-desk { display: none; }
   .fit-phone { display: block; }
 
-  .closing { margin-top: 72px; min-height: 0; padding: 32px 0 40px; }
-  .closing h2 { margin: 0; font-size: 23px; line-height: 32px; }
-  .quotes { margin-top: 28px; gap: 40px; }
-  .quote.lead { gap: 22px; }
-  .quote.lead blockquote { font-size: 24px; line-height: 34px; }
-  .quote blockquote { font-size: 19px; line-height: 28px; }
-  .pair { grid-template-columns: minmax(0, 1fr); row-gap: 32px; }
-  .pair .quote { padding-top: 24px; }
+  .closing { margin-top: 72px; padding-bottom: 40px; }
   .foot { padding-top: 40px; }
   .foot p { font-size: 11px; line-height: 1.6; }
 }
