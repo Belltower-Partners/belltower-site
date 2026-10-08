@@ -67,6 +67,24 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .memo p { margin: 0; }
 .memo a { text-decoration: underline; text-underline-offset: 3px; }
 
+/* ---- case studies on the "Our clients" tab -------------------------------- */
+.cases { margin-top: 16px; }
+.case { padding: 32px 0 36px; border-top: 2px solid var(--ink); }
+.case:last-child { border-bottom: 1px solid var(--rule); }
+.memo .case-lab { font-family: var(--mono); font-size: 11px; line-height: 16px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--label); }
+.case h2 { margin: 12px 0 0; font-family: var(--display); font-weight: 400; font-size: 27px; line-height: 36px; color: var(--ink); }
+.memo .case-who { margin-top: 10px; display: flex; flex-direction: column; gap: 2px; }
+.case-name { font-size: 16px; line-height: 24px; font-weight: 500; color: var(--ink); }
+.case-title { font-size: 15px; line-height: 23px; color: #444444; }
+.memo .case-sub { margin-top: 6px; font-size: 16px; line-height: 24px; color: #444444; }
+.case-toggle { margin-top: 14px; min-height: 44px; padding: 0; background: none; border: 0; font-size: 15px; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; cursor: pointer; }
+.case-toggle:hover { text-decoration-thickness: 2px; }
+.case-body { margin-top: 20px; display: flex; flex-wrap: wrap; column-gap: 32px; row-gap: 10px; padding-top: 24px; border-top: 1px solid var(--rule); }
+.memo .case-body-lab { flex: 0 0 132px; font-family: var(--mono); font-size: 11px; line-height: 30px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--label); }
+.case-text { flex: 999 1 420px; min-width: 0; margin: 0; display: flex; flex-direction: column; gap: 20px; }
+.case-text blockquote { margin: 0; display: flex; flex-direction: column; gap: 16px; font-family: var(--display); font-size: 21px; line-height: 31px; color: var(--ink-2); text-wrap: pretty; }
+.case-text figcaption { font-size: 15px; line-height: 22px; font-weight: 500; color: var(--ink); }
+
 /* ---- contact ---------------------------------------------------------------- */
 .contact { position: relative; margin-top: 72px; padding-bottom: 96px; border-top: 2px solid var(--ink); }
 .contact h2 { margin: 62px 0 0; font-family: var(--display); font-weight: 400; font-size: 25px; line-height: 35px; }
@@ -115,6 +133,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .wash { display: none; }
   .panel { margin-top: 28px; min-height: 0; padding: 0; }
   .memo { gap: 18px; font-size: 16px; line-height: 1.7; }
+  .case { padding: 28px 0 30px; }
+  .case h2 { font-size: 23px; line-height: 31px; }
+  .memo .case-body-lab { line-height: 16px; }
+  .case-text blockquote { font-size: 19px; line-height: 28px; }
 
   .contact { margin-top: 56px; padding: 32px 0 0; }
   .contact h2 { margin: 0; font-size: 23px; line-height: 32px; }

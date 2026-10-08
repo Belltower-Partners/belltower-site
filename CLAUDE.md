@@ -53,6 +53,9 @@ working here must follow these rules.
 | Firm name at the top, browser title, page description | `src/data/site.json` (`firmName`, `title`, `description`) |
 | "Our work" tab and its text | `src/content/memos/our-work.md` |
 | "The team" tab and its text | `src/content/memos/the-team.md` |
+| "Our clients" tab and its opening text | `src/content/memos/our-clients.md` |
+| Each case study on "Our clients" (heading, name and title, quote or description) | `src/content/cases/*.md` (`order` sets the order; the body is what opens) |
+| "Case study" label and the "Read / Close the case study" button text | `src/data/site.json` under `cases` |
 | Tab labels and their order | the `tab` and `order` lines at the top of each memo file |
 | Contact section wording, form messages, "Sent" text | `src/data/site.json` under `contact` |
 | Contact email address | `src/data/site.json` (`email`) and the `failed` message under `contact` |

@@ -9,6 +9,9 @@ import site from '../data/site.json';
 const memos = (await getCollection('memos')).sort((a, b) => a.data.order - b.data.order);
 const memoBodies = await Promise.all(memos.map(async (m) => (await render(m)).Content));
 
+const cases = (await getCollection('cases')).sort((a, b) => a.data.order - b.data.order);
+const caseBodies = await Promise.all(cases.map(async (c) => (await render(c)).Content));
+
 // The footer line is plain text; the email address in it becomes a link.
 const [footBefore, footAfter] = site.footerLine.includes(site.email)
   ? [site.footerLine.slice(0, site.footerLine.indexOf(site.email)), site.footerLine.slice(site.footerLine.indexOf(site.email) + site.email.length)]
@@ -41,6 +44,34 @@ const words = JSON.stringify({ ...c, email: site.email });
             return (
               <div class="memo" role="tabpanel" id={`memo-${m.id}`} aria-labelledby={`tab-${m.id}`} tabindex="0" hidden={i !== 0}>
                 <Body />
+                {m.data.cases && (
+                  <div class="cases">
+                    {cases.map((cs, k) => {
+                      const CaseBody = caseBodies[k];
+                      return (
+                        <article class="case">
+                          <p class="case-lab">{site.cases.label} {String(k + 1).padStart(2, '0')} · {cs.data.label}</p>
+                          <h2 id={`case-h-${cs.id}`}>{cs.data.heading}</h2>
+                          {cs.data.name ? (
+                            <p class="case-who"><span class="case-name">{cs.data.name}</span>{cs.data.title && <span class="case-title">{cs.data.title}</span>}</p>
+                          ) : cs.data.subtitle && <p class="case-sub">{cs.data.subtitle}</p>}
+                          <button class="case-toggle" type="button" aria-expanded="true" aria-controls={`case-${cs.id}`} aria-describedby={`case-h-${cs.id}`} data-case-toggle data-open={site.cases.open} data-close={site.cases.close} hidden>{site.cases.close}</button>
+                          <div class="case-body" id={`case-${cs.id}`}>
+                            <p class="case-body-lab">{cs.data.bodyLabel}</p>
+                            {cs.data.quote ? (
+                              <figure class="case-text">
+                                <blockquote><CaseBody /></blockquote>
+                                {cs.data.name && <figcaption>— {cs.data.name}</figcaption>}
+                              </figure>
+                            ) : (
+                              <div class="case-text"><CaseBody /></div>
+                            )}
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -90,6 +121,7 @@ const words = JSON.stringify({ ...c, email: site.email });
 
   <script>
     import '../scripts/tabs.js';
+    import '../scripts/cases.js';
     import '../scripts/contact.js';
     import '../scripts/machine.js';
   </script>

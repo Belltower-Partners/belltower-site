@@ -19,5 +19,10 @@
     "needEmail": "We'll need an email address to reply to.",
     "failed": "That didn't go through. Please write to us at go@gobelltower.com instead."
   },
-  "machineLabel": "Sentence machine"
+  "machineLabel": "Sentence machine",
+  "cases": {
+    "label": "Case study",
+    "open": "Read the case study",
+    "close": "Close the case study"
+  }
 }
