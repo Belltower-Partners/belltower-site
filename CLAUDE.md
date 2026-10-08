@@ -63,6 +63,7 @@ working here must follow these rules.
 | The 47 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
+| "Coming soon" screen in front of the site: on/off, password and its words | `src/data/site.json` under `comingSoon` (`enabled: false` turns it off) |
 
 The page has no Testimonials section; it was removed in October 2026. If a partner asks for one
 again, it can be restored from git history (the pull request "Remove the Testimonials section").
@@ -71,6 +72,13 @@ Notes on the machine data: `machine.json`'s `map[role][topic][stage]` holds a se
 `sentences.json`, counting from 0. There are 45 settings and each prints a different sentence. If
 sentences are added or removed, check every number in the map still points at the right one; the
 "OF 047" counter on the machine follows the length of `sentences.json`.
+
+The "Coming soon" gate: while `comingSoon.enabled` is true, visitors see only a Coming soon screen
+(`src/components/ComingSoon.astro`, `src/scripts/gate.js`, `src/styles/gate.css`), and the page asks
+search engines not to index it. Typing "ring" on a keyboard, or swiping up on a phone, opens a password
+box; the password is `comingSoon.password`, and a browser that enters it is remembered. The password is
+in this public repository on purpose: the gate keeps the unfinished site out of casual view, not out of
+reach. When a partner asks to launch the site or take the gate down, set `enabled` to false.
 
 Layout and behavior, for when a partner does ask for a design change:
 

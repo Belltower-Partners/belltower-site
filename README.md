@@ -11,8 +11,8 @@ nothing goes live until a partner has looked at a preview and approved it.
 
 1. Go to [claude.ai/code](https://claude.ai/code) and open this repository (`belltower-site`).
 2. Describe the change the way you'd describe it to a colleague. For example: "In The team tab,
-   add a sentence to Uday's paragraph saying he is based in Chicago," or "In Our work, split the
-   long second paragraph into two."
+   add a sentence to Uday's paragraph saying [what to add]," or "In Our work, split the long second
+   paragraph into two."
 3. Claude edits the content, checks that the site still builds, and opens a pull request. The pull
    request description says what changed.
 4. Cloudflare builds a preview of the site with the change and posts a preview link on the pull
@@ -39,6 +39,13 @@ have, it leaves a bracketed placeholder such as `[Name]` and says so.
 | Footer line | `src/data/site.json`, `footerLine` |
 
 `CLAUDE.md` has the full map and the house rules every Claude session follows.
+
+## The "Coming soon" screen
+
+Until launch, visitors to the site see only a "Coming soon" screen. To see the real site, type
+`ring` on your keyboard (or swipe up on your phone) and enter the password, which is
+`comingSoon.password` in `src/data/site.json`. Your browser remembers it after that. To launch, ask
+Claude to turn off the Coming soon screen.
 
 ## Still to fill in
 

@@ -24,5 +24,14 @@
     "label": "Case study",
     "open": "Read the case study",
     "close": "Close the case study"
+  },
+  "comingSoon": {
+    "enabled": true,
+    "password": "jinut",
+    "eyebrow": "Belltower Partners",
+    "heading": "Coming soon",
+    "passwordLabel": "Password",
+    "enter": "Enter",
+    "wrong": "That isn't it."
   }
 }

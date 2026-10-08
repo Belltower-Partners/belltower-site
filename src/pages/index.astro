@@ -4,6 +4,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SentenceMachine from '../components/SentenceMachine.astro';
 import SentenceMachinePhone from '../components/SentenceMachinePhone.astro';
+import ComingSoon from '../components/ComingSoon.astro';
 import site from '../data/site.json';
 
 const memos = (await getCollection('memos')).sort((a, b) => a.data.order - b.data.order);
@@ -19,9 +20,13 @@ const [footBefore, footAfter] = site.footerLine.includes(site.email)
 
 const c = site.contact;
 const words = JSON.stringify({ ...c, email: site.email });
+
+// While the site is unfinished, a "Coming soon" screen sits in front of it (see comingSoon in site.json).
+const gated = site.comingSoon.enabled;
 ---
 <Base>
-  <div class="col">
+  {gated && <ComingSoon />}
+  <div class={gated ? 'col gated' : 'col'}>
     <header class="head">
       <h1>{site.firmName}</h1>
     </header>
@@ -124,5 +129,6 @@ const words = JSON.stringify({ ...c, email: site.email });
     import '../scripts/cases.js';
     import '../scripts/contact.js';
     import '../scripts/machine.js';
+    import '../scripts/gate.js';
   </script>
 </Base>
