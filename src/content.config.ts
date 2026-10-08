@@ -11,17 +11,4 @@ const memos = defineCollection({
   }),
 });
 
-// Client quotes. The body of each file is the quote itself.
-// Exactly one should have `lead: true`; it is set large above the others.
-const testimonials = defineCollection({
-  loader: glob({ pattern: '*.md', base: './src/content/testimonials' }),
-  schema: z.object({
-    order: z.number(),
-    lead: z.boolean().default(false),
-    name: z.string(),
-    title: z.string(),
-    firm: z.string(),
-  }),
-});
-
-export const collections = { memos, testimonials };
+export const collections = { memos };

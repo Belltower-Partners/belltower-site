@@ -59,13 +59,10 @@ working here must follow these rules.
 | Where the contact form sends messages (Formspree) | `src/data/site.json` (`formspreeEndpoint`) |
 | The 47 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
-| Testimonials heading | `src/data/site.json` (`testimonialsHeading`); not currently shown, see below |
-| Each testimonial | `src/content/testimonials/*.md` (quote in the body; `name`, `title`, `firm`, `order`, `lead` at the top); not currently shown |
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
 
-The Testimonials section was taken off the page in October 2026. Its files are kept so it can be
-brought back; doing that means restoring the section in `src/pages/index.astro` and its styles in
-`src/styles/global.css` (see the pull request that removed them).
+The page has no Testimonials section; it was removed in October 2026. If a partner asks for one
+again, it can be restored from git history (the pull request "Remove the Testimonials section").
 
 Notes on the machine data: `machine.json`'s `map[role][topic][stage]` holds a sentence's position in
 `sentences.json`, counting from 0. There are 45 settings and each prints a different sentence. If
