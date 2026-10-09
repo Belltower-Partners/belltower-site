@@ -59,7 +59,7 @@ working here must follow these rules.
 | Tab labels and their order | the `tab` and `order` lines at the top of each memo file |
 | Contact email address | `src/data/site.json` (`email`, and in `footerLine`) |
 | Heading, line and "Try me" label above the machine | `src/data/site.json` under `machine` |
-| The 47 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
+| The 24 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
 | "Coming soon" screen in front of the site: on/off, password and its words | `src/data/site.json` under `comingSoon` (`enabled: false` turns it off) |
@@ -70,9 +70,9 @@ section either; it was removed in October 2026. If a partner asks for one
 again, it can be restored from git history (the pull request "Remove the Testimonials section").
 
 Notes on the machine data: `machine.json`'s `map[role][topic][stage]` holds a sentence's position in
-`sentences.json`, counting from 0. There are 45 settings and each prints a different sentence. If
+`sentences.json`, counting from 0. There are 24 settings (2 roles, 4 topics, 3 stages) and each prints a different sentence. If
 sentences are added or removed, check every number in the map still points at the right one; the
-"OF 047" counter on the machine follows the length of `sentences.json`.
+"OF 024" counter on the machine follows the length of `sentences.json`.
 
 The "Coming soon" gate: while `comingSoon.enabled` is true, visitors see only a Coming soon screen
 (`src/components/ComingSoon.astro`, `src/scripts/gate.js`, `src/styles/gate.css`), and the page asks
