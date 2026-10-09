@@ -39,8 +39,8 @@ working here must follow these rules.
 - The approved desktop design is 1440px wide with a single 760px text column. Below 800px the page
   switches to the phone design and the compact machine. Never cause sideways scrolling; keep at
   least a 16px gutter on each side.
-- Use Pretext (`@chenglou/pretext`) for any text measurement or text geometry, as the contact box
-  and the machine already do. Don't use canvas `measureText` or DOM measuring for text. After web
+- Use Pretext (`@chenglou/pretext`) for any text measurement or text geometry, as the machine
+  already does. Don't use canvas `measureText` or DOM measuring for text. After web
   fonts load, call `clearCache()` and measure again.
 - Keep the page accessible: the tabs follow the WAI-ARIA tabs pattern, the machine's dials work from
   the keyboard, the printed sentence is announced through a live region, motion respects
@@ -55,17 +55,18 @@ working here must follow these rules.
 | "The team" tab and its text | `src/content/memos/the-team.md` |
 | "Our clients" tab and its opening text | `src/content/memos/our-clients.md` |
 | Each case study on "Our clients" (heading, name and title, quote or description) | `src/content/cases/*.md` (`order` sets the order; the body is what opens) |
-| "Case study" label and the "Read / Close the case study" button text | `src/data/site.json` under `cases` |
+| "Case study" label and the "Testimonial" / "Close the testimonial" button text | `src/data/site.json` under `cases` |
 | Tab labels and their order | the `tab` and `order` lines at the top of each memo file |
-| Contact section wording, form messages, "Sent" text | `src/data/site.json` under `contact` |
-| Contact email address | `src/data/site.json` (`email`) and the `failed` message under `contact` |
-| Where the contact form sends messages (Formspree) | `src/data/site.json` (`formspreeEndpoint`) |
+| Contact email address | `src/data/site.json` (`email`, and in `footerLine`) |
+| Heading, line and "Try me" label above the machine | `src/data/site.json` under `machine` |
 | The 47 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
 | "Coming soon" screen in front of the site: on/off, password and its words | `src/data/site.json` under `comingSoon` (`enabled: false` turns it off) |
 
-The page has no Testimonials section; it was removed in October 2026. If a partner asks for one
+The page has no contact form; it was removed in October 2026 and can be restored from git history
+(the pull request "Update site content from the v1 content document"). The page has no Testimonials
+section either; it was removed in October 2026. If a partner asks for one
 again, it can be restored from git history (the pull request "Remove the Testimonials section").
 
 Notes on the machine data: `machine.json`'s `map[role][topic][stage]` holds a sentence's position in
@@ -85,4 +86,4 @@ Layout and behavior, for when a partner does ask for a design change:
 - `src/pages/index.astro`: the page structure.
 - `src/styles/global.css`: type, colors and spacing for the page, desktop and phone.
 - `src/styles/machine.css`, `src/components/SentenceMachine*.astro`: the machine's look.
-- `src/scripts/tabs.js`, `contact.js`, `machine.js`: tabs, the contact form, the machine.
+- `src/scripts/tabs.js`, `cases.js`, `machine.js`: tabs, the case studies, the machine.
