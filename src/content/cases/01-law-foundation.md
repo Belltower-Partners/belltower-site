@@ -1,6 +1,6 @@
 ---
 # Melissa Hollatz confirmed permission on 10/5.
-order: 1
+order: 2
 label: "Law Foundation of Silicon Valley"
 heading: "Effective AI agents to scale review of corporate legal documents like bylaws and conflicts policies"
 name: "Melissa Hollatz"
