@@ -26,6 +26,8 @@ const cases = defineCollection({
     subtitle: z.string().optional(),
     bodyLabel: z.string(),
     quote: z.boolean().default(false),
+    // `draft: true` keeps a case study off the page while it is being finalized.
+    draft: z.boolean().default(false),
   }),
 });
 

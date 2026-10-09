@@ -10,7 +10,7 @@ import site from '../data/site.json';
 const memos = (await getCollection('memos')).sort((a, b) => a.data.order - b.data.order);
 const memoBodies = await Promise.all(memos.map(async (m) => (await render(m)).Content));
 
-const cases = (await getCollection('cases')).sort((a, b) => a.data.order - b.data.order);
+const cases = (await getCollection('cases', (c) => !c.data.draft)).sort((a, b) => a.data.order - b.data.order);
 const caseBodies = await Promise.all(cases.map(async (c) => (await render(c)).Content));
 
 // The footer line is plain text; the email address in it becomes a link.
@@ -112,6 +112,10 @@ const gated = site.comingSoon.enabled;
       </div>
 
       <section class="machine-sec" aria-label={site.machineLabel}>
+        <div class="machine-intro">
+          <h2>{site.machine.heading}</h2>
+          <p>{site.machine.subtitle}</p>
+        </div>
         <div class="fit fit-desk" data-fit data-w="760" data-h="700"><SentenceMachine /></div>
         <div class="fit fit-phone" data-fit data-w="358" data-h="470"><SentenceMachinePhone /></div>
       </section>

@@ -20,6 +20,10 @@
     "failed": "That didn't go through. Please write to us at go@gobelltower.com instead."
   },
   "machineLabel": "Sentence machine",
+  "machine": {
+    "heading": "You don’t have to figure out AI alone.",
+    "subtitle": "Clients, partners at your firm, and vendors all want answers from you. Dial in what’s on your desk, and let’s work through it together."
+  },
   "cases": {
     "label": "Case study",
     "open": "Read the case study",

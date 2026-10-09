@@ -110,6 +110,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* ---- the sentence machine's section ----------------------------------------- */
 .machine-sec { padding: 96px 0 64px; }
+/* The heading and line above the machine. */
+.machine-intro { margin: 0 0 40px; }
+.machine-intro h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 25px; line-height: 35px; color: var(--ink); }
+.machine-intro p { margin: 11px 0 0; font-size: 16px; line-height: 24px; color: #444444; }
 /* The machine is a fixed-size object; .fit scales it down only if the column is narrower than it. */
 .fit { position: relative; width: 100%; }
 .fit > .sm { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
@@ -152,6 +156,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .err { position: static; }
 
   .machine-sec { padding: 104px 0 0; }
+  .machine-intro { margin-bottom: 28px; }
+  .machine-intro h2 { font-size: 23px; line-height: 32px; }
+  .machine-intro p { margin-top: 6px; font-size: 15px; }
   .fit-desk { display: none; }
   .fit-phone { display: block; }
 
