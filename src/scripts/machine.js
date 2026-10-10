@@ -8,24 +8,20 @@ import MACHINE from '../data/machine.json';
 
 const D = MACHINE.dials;
 const MAP = MACHINE.map;
-// Detents: the index line's rotation from twelve o'clock, in degrees.
-const ANG = D.map((d) => {
-  const n = d.opts.length, step = n === 3 ? 45 : 36;
-  return d.opts.map((_, k) => (k - (n - 1) / 2) * step);
-});
+const COUNT = D.map((d) => d.opts.length);   // settings on each dial
 
 // Paper geometry for each variant: side margin, text width, the paper below the first row (in the slot
 // and peeking out of it), the ticket's left edge in the slot's lip, and where the carriage rests.
 const VARIANTS = {
   desk: {
-    W: 760, H: 700, PAD: 16, TW: 348, LO: 120, BASE: 18, SLOT: 14, PARK: 6, DRUM: 24,
-    BODY: [680, 362, 5200, 0.5, 1400, 0.4],
+    W: 760, H: 553, PAD: 16, TW: 348, LO: 120, BASE: 18, SLOT: 14, PARK: 6, DRUM: 24,
+    BODY: [680, 292, 4200, 0.5, 1130, 0.4],
     rows: { top: 24, num: 18, set: 22, gap: 12, line: 30, tail: 12 },
     num: ["500 10px/18px 'IBM Plex Mono', monospace", "500 10px 'IBM Plex Mono'", 2.2],
     set: [[9.5, 0.95], [9.5, 0.5], [9, 0.5], [9, 0]],
     line: ["italic 400 20px 'IBM Plex Serif'", "italic 400 20px/30px 'IBM Plex Serif', serif"],
     faces: ["italic 400 20px 'IBM Plex Serif'", "400 11px 'IBM Plex Mono'", "500 11px 'IBM Plex Mono'"],
-    moveMin: 16, nearMin: 100,
+    moveMin: 16, wheel: [68, 30], lead: 56, hint: [[11, 1.4], [10.5, 1.1], [10, 0.8], [9.5, 0.5]],
   },
   phone: {
     W: 358, H: 420, PAD: 16, TW: 248, LO: 90, BASE: 14, SLOT: 11, PARK: 5, DRUM: 20,
@@ -35,21 +31,20 @@ const VARIANTS = {
     set: [[9.5, 0.3], [9.5, 0.1], [9, 0.1], [9, 0]],
     line: ["italic 400 16px 'IBM Plex Serif'", "italic 400 16px/24px 'IBM Plex Serif', serif"],
     faces: ["italic 400 16px 'IBM Plex Serif'", "400 10px 'IBM Plex Mono'", "500 10px 'IBM Plex Mono'"],
-    moveMin: 25, nearMin: 64,
+    moveMin: 25, wheel: [52, 30], lead: 44, hint: [[10, 1], [10, 0.6], [9.5, 0.4], [9, 0]],
   },
 };
 
-// The phone's drum dials: each setting sits on a drum of radius WHEEL_R, WHEEL_STEP degrees apart; the
+// The drum dials: each setting sits on a drum of radius R, STEP degrees apart (VARIANTS wheel); the
 // chosen one faces out between the rails. d is how many settings away from the rails a setting is
-// (fractional while dragging). Keep in step with SentenceMachinePhone.astro.
-const WHEEL_R = 52, WHEEL_STEP = 30;
-// How far a finger moves to roll the drum one setting: the distance between neighbours on the drum.
-const WHEEL_PITCH = WHEEL_R * Math.sin(WHEEL_STEP * Math.PI / 180);
-function wheelPose(d) {
-  const th = d * WHEEL_STEP;
+// (fractional while dragging). Keep in step with SentenceMachine.astro and SentenceMachinePhone.astro.
+function wheelPose(d, [R, STEP]) {
+  const th = d * STEP;
   const op = Math.abs(th) >= 90 ? 0 : Math.max(0, 1 - 0.3 * Math.abs(d));
-  return ['translateZ(-' + WHEEL_R + 'px) rotateX(' + (-th).toFixed(2) + 'deg) translateZ(' + WHEEL_R + 'px)', op.toFixed(3)];
+  return ['translateZ(-' + R + 'px) rotateX(' + (-th).toFixed(2) + 'deg) translateZ(' + R + 'px)', op.toFixed(3)];
 }
+// How far a finger or mouse moves to roll a drum one setting: the distance between neighbours.
+const wheelPitch = ([R, STEP]) => R * Math.sin(STEP * Math.PI / 180);
 
 const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -90,6 +85,7 @@ class Machine {
     this.touched = false;
     // The invitation typed onto the paper before the first turn (phone only).
     this.invite = root.dataset.invite || '';
+    this.hint = root.dataset.hint || '';
     this.introOn = false; this.introDone = false; this.cursorRow = null; this.blink = false;
     this.lift = 0;                      // how far the invitation has been pulled up and away, 0 to 1
     this.rnd = makeRng(20260929);
@@ -104,32 +100,22 @@ class Machine {
     this.dials = [...root.querySelectorAll('[data-dial]')].map((el, i) => {
       const ui = {
         knob: el.querySelector('[data-knob]'),
-        rotor: el.querySelector('[data-rotor]'),
-        ticks: [...el.querySelectorAll('[data-tick]')],
-        opts: [...el.querySelectorAll('[data-opt]')],
         items: [...el.querySelectorAll('[data-item]')],
         wpos: null,
       };
       ui.knob.addEventListener('pointerdown', (e) => this.pdown(i, e));
       ui.knob.addEventListener('pointermove', (e) => this.pmove(i, e));
-      ui.knob.addEventListener('pointerup', (e) => this.pup(i, e, false));
-      ui.knob.addEventListener('pointercancel', (e) => this.pup(i, e, true));
-      ui.knob.addEventListener('lostpointercapture', (e) => this.pup(i, e, true));
-      if (this.kind === 'desk') {
-        ui.opts.forEach((b, t) => {
-          b.addEventListener('click', () => this.choose(i, t, 380));
-          b.addEventListener('keydown', (e) => this.keyOpt(i, t, e));
-        });
-      } else {
-        ui.knob.addEventListener('click', () => this.clickDial(i));
-        // Touch screens: drive the drum from touch events, which Safari keeps delivering while the
-        // finger moves (pointer events can be cancelled there when the page decides to scroll).
-        ui.knob.addEventListener('touchstart', (e) => this.tstart(i, e), { passive: false });
-        ui.knob.addEventListener('touchmove', (e) => this.tmove(i, e), { passive: false });
-        ui.knob.addEventListener('touchend', (e) => this.tend(i, e, false), { passive: false });
-        ui.knob.addEventListener('touchcancel', (e) => this.tend(i, e, true), { passive: false });
-        ui.knob.addEventListener('keydown', (e) => this.keyDial(i, e));
-      }
+      ui.knob.addEventListener('pointerup', (e) => this.pup(i, e));
+      ui.knob.addEventListener('pointercancel', (e) => this.pup(i, e));
+      ui.knob.addEventListener('lostpointercapture', (e) => this.pup(i, e));
+      ui.knob.addEventListener('click', () => this.clickDial(i));
+      ui.knob.addEventListener('keydown', (e) => this.keyDial(i, e));
+      // Touch screens: drive the drum from touch events, which Safari keeps delivering while the
+      // finger moves (pointer events can be cancelled there when the page decides to scroll).
+      ui.knob.addEventListener('touchstart', (e) => this.tstart(i, e), { passive: false });
+      ui.knob.addEventListener('touchmove', (e) => this.tmove(i, e), { passive: false });
+      ui.knob.addEventListener('touchend', (e) => this.tend(i, e, false), { passive: false });
+      ui.knob.addEventListener('touchcancel', (e) => this.tend(i, e, true), { passive: false });
       return ui;
     });
     this.tickFn = (t) => this.tick(t);
@@ -187,15 +173,21 @@ class Machine {
     io.observe(this.root);
   }
 
+  // The invitation, then a dashed rule and the instruction, which is typed last so the cursor ends on it.
   introProgram() {
-    const steps = [];
-    const lead = this.mk('top'); lead.h = 72;   // a longer lead of blank paper above the invitation
-    steps.push({ t: 'feed', row: lead });
+    const steps = [], V = this.V;
+    const feed = (row) => steps.push({ t: 'feed', row }), type = (row) => { row.intro = true; steps.push({ t: 'type', row }); };
+    const lead = this.mk('top'); lead.h = V.lead;   // a lead of blank paper above the invitation
+    feed(lead);
     this.wrap(this.invite).forEach((ln) => {
-      const r = this.mk('line', ln, 0, 0, 55); r.intro = true;   // typed slower than a ticket
-      steps.push({ t: 'feed', row: r }); steps.push({ t: 'type', row: r });
+      const r = this.mk('line', ln, 0, 0, 55);   // typed slower than a ticket
+      feed(r); type(r);
     });
-    steps.push({ t: 'feed', row: this.mk('tail') });
+    const rule = this.mk('gap'); rule.rule = true; rule.h = V.rows.gap + 2; feed(rule);
+    const sp = this.mk('gap'); sp.h = V.rows.gap - 2; feed(sp);
+    const hint = this.hint.toUpperCase(), f = this.fitMono(hint, '400', V.hint, V.TW - 4, 9);
+    const h = this.mk('set', hint, f.px, f.ls); h.rule = false; h.col = '#5f594f'; feed(h); type(h);
+    feed(this.mk('tail'));
     this.carriage(steps);
     return steps;
   }
@@ -402,25 +394,9 @@ class Machine {
     this.schedule(delay);
   }
 
-  // Desktop: arrow keys move through a dial's settings, like any radio group.
-  keyOpt(i, t, e) {
-    const n = ANG[i].length;
-    let k;
-    switch (e.key) {
-      case 'ArrowRight': case 'ArrowDown': k = (t + 1) % n; break;
-      case 'ArrowLeft': case 'ArrowUp': k = (t + n - 1) % n; break;
-      case 'Home': k = 0; break;
-      case 'End': k = n - 1; break;
-      default: return;
-    }
-    e.preventDefault();
-    this.choose(i, k, 420);
-    this.dials[i].opts[k].focus();
-  }
-
-  // Phone: each dial is one button. Down or right rolls the drum to the next setting.
+  // Each dial is one button. Down or right rolls the drum to the next setting.
   keyDial(i, e) {
-    const n = ANG[i].length, t = this.sel[i];
+    const n = COUNT[i], t = this.sel[i];
     let k;
     switch (e.key) {
       case 'ArrowRight': case 'ArrowDown': k = (t + 1) % n; break;
@@ -435,10 +411,10 @@ class Machine {
 
   clickDial(i) {
     if (performance.now() - this.dragEnd < 350) return;   // the click that ends a drag
-    this.choose(i, (this.sel[i] + 1) % ANG[i].length, 420);
+    this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);
   }
 
-  // ---- touch, on the phone's drums ----------------------------------------------
+  // ---- touch -------------------------------------------------------------------
 
   tstart(i, e) {
     if (this.drag || e.touches.length > 1) return;
@@ -465,7 +441,7 @@ class Machine {
     e.preventDefault();
     this.drag = null;
     if (d.moved) { this.dragEnd = performance.now(); this.schedule(160); this.render(); }
-    else if (!cancelled) this.choose(i, (this.sel[i] + 1) % ANG[i].length, 420);   // a tap: next setting
+    else if (!cancelled) this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);   // a tap: next setting
     else this.render();
   }
 
@@ -475,10 +451,10 @@ class Machine {
     const dx = x - d.x0, dy = y - d.y0;
     if (!d.moved && dx * dx + dy * dy < this.V.moveMin) return;
     d.moved = true;
-    const last = ANG[i].length - 1;
+    const last = COUNT[i] - 1;
     // The machine may be scaled down to fit a narrow screen; the drum moves in its own pixels.
     const scale = el.getBoundingClientRect().height / el.offsetHeight || 1;
-    let pos = d.pos0 - dy / scale / WHEEL_PITCH;
+    let pos = d.pos0 - dy / scale / wheelPitch(this.V.wheel);
     if (pos < 0) pos *= 0.3; else if (pos > last) pos = last + (pos - last) * 0.3;
     d.pos = pos;
     const k = Math.max(0, Math.min(last, Math.round(pos)));
@@ -486,17 +462,15 @@ class Machine {
     this.render();
   }
 
+  // ---- mouse and pen -------------------------------------------------------------
+
   pdown(i, e) {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    if (this.kind === 'phone' && e.pointerType === 'touch') return;   // touch events handle it
+    if (e.pointerType === 'touch') return;   // touch events handle it
     e.preventDefault();
     this.touch();
-    const el = e.currentTarget, rc = el.getBoundingClientRect();
-    try { el.setPointerCapture(e.pointerId); } catch (x) { /* not capturable */ }
-    const cx = rc.left + rc.width / 2, cy = rc.top + rc.height / 2, rot = ANG[i][this.sel[i]];
-    this.drag = { i, id: e.pointerId, cx, cy, x0: e.clientX, y0: e.clientY,
-                  pa: Math.atan2(e.clientY - cy, e.clientX - cx) * 57.29578, raw: rot, disp: rot, moved: false,
-                  pos0: this.sel[i], pos: this.sel[i] };
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) { /* not capturable */ }
+    this.drag = { i, id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false, pos0: this.sel[i], pos: this.sel[i] };
     clearTimeout(this.timer);
     this.render();
   }
@@ -504,39 +478,16 @@ class Machine {
   pmove(i, e) {
     const d = this.drag;
     if (!d || d.i !== i || e.pointerId !== d.id) return;
-    if (this.kind === 'phone') { this.roll(i, d, e.clientX, e.clientY, e.currentTarget); return; }
-    const dx = e.clientX - d.x0, dy = e.clientY - d.y0;
-    if (!d.moved && dx * dx + dy * dy < this.V.moveMin) return;
-    d.moved = true;
-    const rx = e.clientX - d.cx, ry = e.clientY - d.cy, a = Math.atan2(ry, rx) * 57.29578;
-    let da = a - d.pa;
-    if (da > 180) da -= 360; else if (da < -180) da += 360;
-    d.pa = a;
-    if (rx * rx + ry * ry < this.V.nearMin) return;     // too near the centre to read an angle
-    const A = ANG[i], lo = A[0], hi = A[A.length - 1];
-    let k = 0;
-    d.raw = Math.max(lo - 30, Math.min(hi + 30, d.raw + da));
-    for (let t = 1; t < A.length; t++) if (Math.abs(A[t] - d.raw) < Math.abs(A[k] - d.raw)) k = t;
-    // Past the end stops the knob gives a little; between detents it is drawn toward the nearest one.
-    d.disp = d.raw < lo ? lo + (d.raw - lo) * 0.3 : d.raw > hi ? hi + (d.raw - hi) * 0.3 : d.raw + (A[k] - d.raw) * 0.35;
-    if (k !== this.sel[i]) { this.sel = this.sel.slice(); this.sel[i] = k; }
-    this.render();
+    this.roll(i, d, e.clientX, e.clientY, e.currentTarget);
   }
 
-  pup(i, e, cancelled) {
+  pup(i, e) {
     const d = this.drag;
-    if (!d || d.i !== i) return;
-    if (this.kind === 'phone' && e.pointerType === 'touch') return;   // touch events handle it
+    if (!d || d.i !== i || e.pointerType === 'touch') return;
     this.drag = null;
-    if (this.kind === 'desk') {
-      // Desktop: a press without a turn steps the dial to its next setting.
-      if (!d.moved && !cancelled) this.choose(i, (this.sel[i] + 1) % ANG[i].length, 420);
-      else { this.render(); this.schedule(160); }
-    } else {
-      // Phone: the button's click handles a tap.
-      if (d.moved) { this.dragEnd = performance.now(); this.schedule(160); }
-      this.render();
-    }
+    // A press without a drag is a click, which the button's click handler turns into the next setting.
+    if (d.moved) { this.dragEnd = performance.now(); this.schedule(160); }
+    this.render();
   }
 
   // ---- drawing -----------------------------------------------------------------
@@ -545,18 +496,12 @@ class Machine {
     const s = this.sel, drag = this.drag;
     this.dials.forEach((ui, i) => {
       const k = s[i], live = !!(drag && drag.i === i);
-      ui.knob.classList.toggle('live', live && (this.kind === 'desk' || drag.moved));
-      if (ui.rotor) {
-        ui.rotor.classList.toggle('live', live);
-        ui.rotor.style.transform = 'rotate(' + (live ? drag.disp : ANG[i][k]).toFixed(2) + 'deg)';
-      }
-      ui.ticks.forEach((t, n) => t.classList.toggle('on', n === k));
-      ui.opts.forEach((b, n) => { b.setAttribute('aria-checked', n === k ? 'true' : 'false'); b.tabIndex = n === k ? 0 : -1; });
+      ui.knob.classList.toggle('live', live && drag.moved);
       const pos = live && drag.moved ? drag.pos : k;
       if (ui.items.length && ui.wpos !== pos) {
         ui.wpos = pos;
         ui.items.forEach((it, n) => {
-          const [tf, op] = wheelPose(n - pos);
+          const [tf, op] = wheelPose(n - pos, this.V.wheel);
           it.style.transform = tf; it.style.opacity = op;
           it.classList.toggle('on', n === k);
         });

@@ -2,7 +2,7 @@
    copied from the designs; this file holds the shared materials and the states. */
 
 .sm { position: relative; background: var(--paper); font-family: var(--mono); color: var(--m-ink); -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
-.sm-desk { width: 760px; height: 700px; }
+.sm-desk { width: 760px; }
 .sm-phone { width: 358px; height: 420px; }
 
 .sm-foot { position: absolute; background: #2a2826; }
@@ -20,12 +20,9 @@
 .sm-perf { position: absolute; left: 0; right: 0; top: 0; z-index: 1; height: 6px; background: radial-gradient(circle at 5px 0, #FFFFFF 3px, rgba(255, 255, 255, 0) 3.6px) 0 0 / 10px 6px repeat-x; }
 .sm-sheetshade { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(0deg, rgba(20, 16, 12, 0.55), rgba(40, 30, 20, 0.12) 45%, rgba(60, 45, 30, 0)); }
 
-/* before the first turn: the knobs nudge in turn, the paper peeks out of the slot, the lamp breathes */
-.sm-wob { position: absolute; inset: 0; }
-.sm.waiting .sm-wob { animation: sm-nudge 4.2s ease-in-out infinite; }
+/* before the first turn: the paper peeks out of the slot until the invitation starts, the lamp breathes */
 .sm.waiting:not(.invited) .sm-sheet { animation: sm-peek 4.2s ease-in-out 0.5s infinite; }
 .sm.waiting .sm-lamp { animation: sm-ready 2.1s ease-in-out infinite; }
-@keyframes sm-nudge { 0% { transform: rotate(0); } 5% { transform: rotate(15deg); } 10% { transform: rotate(-6deg); } 14% { transform: rotate(2deg); } 18%, 100% { transform: rotate(0); } }
 @keyframes sm-peek { 0% { transform: translateY(0); } 6% { transform: translateY(-14px); } 11% { transform: translateY(2px); } 15% { transform: translateY(-3px); } 19%, 100% { transform: translateY(0); } }
 @keyframes sm-ready { 0%, 100% { box-shadow: 0 0 0 0 rgba(224, 89, 42, 0); } 50% { box-shadow: 0 0 0 3px rgba(224, 89, 42, 0.12), 0 0 10px 2px rgba(224, 89, 42, 0.4); } }
 
@@ -55,20 +52,6 @@
 .sm-desk .sm-lamp.on { box-shadow: 0 0 0 3px rgba(224, 89, 42, 0.14), 0 0 12px 3px rgba(224, 89, 42, 0.5); }
 .sm-phone .sm-lamp.on { box-shadow: 0 0 0 2.5px rgba(224, 89, 42, 0.14), 0 0 10px 2.5px rgba(224, 89, 42, 0.5); }
 
-/* dials */
-.sm-face { position: relative; border-radius: 50%; background: linear-gradient(135deg, #f7f6f2, #c9c7c0); box-shadow: inset 0 0 0 0.75px rgba(0, 0, 0, 0.13), inset 0 1.5px 1px rgba(255, 255, 255, 0.8), 0 1px 1px rgba(255, 255, 255, 0.6); }
-.sm-tick { position: absolute; border-radius: 1px; background: #8d867a; transition: background-color 220ms ease; }
-.sm-tick.on { background: var(--m-orange); }
-.sm-knob { position: absolute; border-radius: 50%; cursor: grab; touch-action: none; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.28), 0 2px 3px rgba(0, 0, 0, 0.35); transition: box-shadow 200ms ease; }
-.sm-knob:hover { box-shadow: 0 8px 16px rgba(0, 0, 0, 0.32), 0 2px 4px rgba(0, 0, 0, 0.38); }
-.sm-knob.live, .sm-pdial.live { cursor: grabbing; }
-.sm-knobshadow { position: absolute; border-radius: 50%; }
-.sm-rotor { position: absolute; left: 0; top: 0; border-radius: 50%; background: repeating-conic-gradient(from 0deg, #35332f 0deg 2.5deg, #131211 2.5deg 5deg); transition: transform 520ms cubic-bezier(0.3, 1.45, 0.45, 1); }
-.sm-rotor.live { transition: none; }
-.sm-gloss { position: absolute; left: 0; top: 0; width: 100%; height: 100%; border-radius: 50%; pointer-events: none; background: radial-gradient(circle at 36% 28%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.06) 26%, rgba(255, 255, 255, 0) 50%), radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.3) 100%); }
-.sm-pdial { cursor: grab; touch-action: none; }
-.sm-pdial:focus-visible { outline: 2px solid var(--m-ink); outline-offset: 3px; }
-
 /* the phone's drum dials, like the iPhone timer: three paper drums turning in one dark well cut into
    the enamel, each ending in the edge of a paper roll, with two steel rails across them marking the
    chosen settings. The script draws the paper grain on each drum's canvas. */
@@ -94,20 +77,14 @@
 .sm-band { position: absolute; pointer-events: none; border-top: 2px solid #c9c7c0; border-bottom: 2px solid #a7a399; box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.8), 0 1px 0 rgba(255, 255, 255, 0.5), 0 2px 3px rgba(40, 30, 20, 0.25), inset 0 2px 3px rgba(40, 30, 20, 0.12); }
 .sm-band::before, .sm-band::after { content: ""; position: absolute; top: 50%; width: 4px; height: 12px; margin-top: -6px; background: var(--m-orange); }
 .sm-band::before { left: -2px; border-radius: 0 2px 2px 0; } .sm-band::after { right: -2px; border-radius: 2px 0 0 2px; }
-/* until the first turn, a line under the drums says what to do with them */
-.sm-hint { position: absolute; left: 0; right: 0; top: 193px; font-size: 8.5px; line-height: 12px; letter-spacing: 0.22em; text-align: center; color: var(--m-label); transition: opacity 400ms ease; }
-.sm:not(.waiting) .sm-hint { opacity: 0; }
-
-/* the settings under each desktop dial: a radio group */
-.sm-opt { position: relative; min-height: 25px; margin: 0; padding: 0; border: 0; border-radius: 4px; background: rgba(0, 0, 0, 0); font-family: var(--mono); font-size: 11px; line-height: 25px; letter-spacing: 0.08em; font-weight: 400; color: var(--m-label); cursor: pointer; transition: color 200ms ease; }
-.sm-opt .stack { display: inline-block; line-height: 13px; padding: 6px 0; vertical-align: top; }
-.sm-opt:hover { color: var(--m-ink); }
-.sm-opt:focus-visible { outline: 2px solid var(--m-ink); outline-offset: -2px; }
-.sm-opt[aria-checked="true"] { font-weight: 500; color: var(--m-ink); }
-.sm-dot { position: absolute; left: -13px; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--m-orange); opacity: 0; transform: scale(0.3); transition: opacity 200ms ease, transform 200ms ease; }
-.sm-opt[aria-checked="true"] .sm-dot { opacity: 1; transform: scale(1); }
+/* the desktop machine's drums are larger */
+.sm-desk .sm-well { border-radius: 14px; }
+.sm-desk .sm-item { left: 12px; right: 12px; font-size: 13px; line-height: 18px; letter-spacing: 0.04em; }
+.sm-desk .sm-rim { width: 9px; }
+.sm-desk .sm-band { border-top-width: 3px; border-bottom-width: 3px; }
+.sm-desk .sm-band::before, .sm-desk .sm-band::after { width: 5px; height: 15px; margin-top: -7.5px; }
 
 @media (prefers-reduced-motion: reduce) {
   .sm *, .sm *::before { transition: none !important; }
-  .sm.waiting .sm-wob, .sm.waiting .sm-sheet, .sm.waiting .sm-lamp, .sm-cursor.blink::after { animation: none; }
+  .sm.waiting .sm-sheet, .sm.waiting .sm-lamp, .sm-cursor.blink::after { animation: none; }
 }

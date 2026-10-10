@@ -86,14 +86,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* ---- the sentence machine's section ----------------------------------------- */
 .machine-sec { margin-top: 40px; padding: 56px 0 64px; border-top: 2px solid var(--ink); }
-/* The heading and line above the machine. */
-.machine-intro { margin: 0 0 40px; }
+/* The heading and line above the machine. The invitation is typed onto the machine's paper instead;
+   screen readers still hear it here. */
+.machine-intro { margin: 0 0 16px; }
 .machine-intro h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 25px; line-height: 35px; color: var(--ink); }
 .machine-intro p { margin: 11px 0 0; font-size: 16px; line-height: 24px; color: #444444; }
 /* The machine is a fixed-size object; .fit scales it down only if the column is narrower than it. */
 .fit { position: relative; width: 100%; }
 .fit > .sm { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
-.fit-desk { max-width: 760px; height: 700px; }
+.fit-desk { max-width: 760px; height: 553px; }
 .fit-phone { display: none; max-width: 358px; height: 420px; margin: 0 auto; }
 
 /* ---- footer --------------------------------------------------------------- */
@@ -123,8 +124,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .machine-intro { margin-bottom: 12px; }
   .machine-intro h2 { font-size: 23px; line-height: 32px; }
   .machine-intro p { margin-top: 6px; font-size: 15px; }
-  /* On phones the second sentence is typed onto the machine's paper instead; screen readers still hear it here. */
-  .invite-desk { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
   .fit-desk { display: none; }
   .fit-phone { display: block; }
 

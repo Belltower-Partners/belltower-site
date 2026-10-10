@@ -5,7 +5,7 @@
 // through them, arrow keys when focused. The three drums turn in one well cut into the enamel, and two
 // steel rails across them mark the chosen settings. The ticket rises out of the slot on top, as on the
 // desktop machine. Before the first turn, the machine types the invitation (site.json machine.invite)
-// onto the paper, and a line under the drums says they can be tapped or dragged.
+// onto the paper, then the instruction (machine.hint) under it.
 import machine from '../data/machine.json';
 import sentences from '../data/sentences.json';
 import site from '../data/site.json';
@@ -26,7 +26,7 @@ const wheelPose = (d: number) => {
   return `transform: translateZ(-${R}px) rotateX(${(-th).toFixed(2)}deg) translateZ(${R}px); opacity: ${op.toFixed(3)}`;
 };
 ---
-<div class="sm sm-phone waiting" data-machine="phone" data-invite={site.machine.invite} role="group" aria-label={site.machineLabel}>
+<div class="sm sm-phone waiting" data-machine="phone" data-invite={site.machine.invite} data-hint={site.machine.hint} role="group" aria-label={site.machineLabel}>
   <div aria-hidden="true" style="position: absolute; left: 18px; top: 380px; width: 322px; height: 34px; border-radius: 50%; background: radial-gradient(closest-side, rgba(60,45,30,0.2), rgba(60,45,30,0.08) 55%, rgba(60,45,30,0))"></div>
 
   <div class="sm-foot" aria-hidden="true" style="left: 44px; top: 380px; width: 36px; height: 16px; border-radius: 3px"></div>
@@ -63,7 +63,6 @@ const wheelPose = (d: number) => {
     <div class="sm-rule" aria-hidden="true" style="left: 18px; top: 44px; width: 322px"></div>
     <div class="sm-well" aria-hidden="true" style={`left: 12px; top: 70px; width: 334px; height: ${WIN_H + 6}px`}></div>
 
-    <div class="sm-hint" aria-hidden="true">TAP OR DRAG THE DIALS</div>
 
     {machine.dials.map((d, i) => (
       <div data-dial style={`position: absolute; left: ${COLS[i][0]}px; top: 54px; width: ${COLS[i][1]}px; display: flex; flex-direction: column; align-items: center`}>
