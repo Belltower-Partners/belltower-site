@@ -28,8 +28,8 @@ const VARIANTS = {
     moveMin: 16, nearMin: 100,
   },
   phone: {
-    W: 358, H: 492, PAD: 16, TW: 248, LO: 90, BASE: 14, SLOT: 11, PARK: 5, DRUM: 20,
-    BODY: [358, 232, 1600, 0.45, 450, 0.35],
+    W: 358, H: 470, PAD: 16, TW: 248, LO: 90, BASE: 14, SLOT: 11, PARK: 5, DRUM: 20,
+    BODY: [358, 210, 1600, 0.45, 450, 0.35],
     rows: { top: 18, num: 18, set: 20, gap: 8, line: 24, tail: 8 },
     num: ["500 9.5px/18px 'IBM Plex Mono', monospace", "500 9.5px 'IBM Plex Mono'", 1.1],
     set: [[9.5, 0.3], [9.5, 0.1], [9, 0.1], [9, 0]],
@@ -39,13 +39,19 @@ const VARIANTS = {
   },
 };
 
-// The setting drums under the phone dials: each setting sits on a small turning drum of radius r,
-// step degrees apart; the chosen one faces out. Keep in step with SentenceMachinePhone.astro.
+// The phone's drum dials: each setting sits on a drum of radius 42px, step degrees apart; the chosen one
+// faces out. d is how many settings away from the window a setting is (fractional while dragging).
+// Keep in step with SentenceMachinePhone.astro.
+const WHEEL_R = 42;
+const wheelStep = (stack) => (stack ? 38 : 28);
+// How far a finger moves to roll the drum one setting: the distance between neighbours on the drum.
+const wheelPitch = (stack) => WHEEL_R * Math.sin(wheelStep(stack) * Math.PI / 180);
 function wheelPose(d, stack) {
-  const r = stack ? 26 : 20, step = stack ? 50 : 42, th = d * step;
-  if (Math.abs(th) >= 90) return ['translateY(' + Math.sign(th) * r + 'px) scaleY(0)', '0'];
+  const th = d * wheelStep(stack);
+  if (Math.abs(th) >= 90) return ['translateY(' + Math.sign(th) * WHEEL_R + 'px) scaleY(0)', '0'];
   const rad = th * Math.PI / 180, c = Math.cos(rad);
-  return ['translateY(' + (r * Math.sin(rad)).toFixed(2) + 'px) scaleY(' + c.toFixed(3) + ')', d === 0 ? '1' : (0.85 * c).toFixed(3)];
+  return ['translateY(' + (WHEEL_R * Math.sin(rad)).toFixed(2) + 'px) scaleY(' + c.toFixed(3) + ')',
+          (Math.max(0, 1 - 0.35 * Math.abs(d)) * c).toFixed(3)];
 }
 
 const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -105,7 +111,7 @@ class Machine {
         ticks: [...el.querySelectorAll('[data-tick]')],
         opts: [...el.querySelectorAll('[data-opt]')],
         items: [...el.querySelectorAll('[data-item]')],
-        wk: -1,
+        wpos: null,
       };
       ui.knob.addEventListener('pointerdown', (e) => this.pdown(i, e));
       ui.knob.addEventListener('pointermove', (e) => this.pmove(i, e));
@@ -407,13 +413,13 @@ class Machine {
     this.dials[i].opts[k].focus();
   }
 
-  // Phone: each dial is one button. Up or right turns it clockwise.
+  // Phone: each dial is one button. Down or right rolls the drum to the next setting.
   keyDial(i, e) {
     const n = ANG[i].length, t = this.sel[i];
     let k;
     switch (e.key) {
-      case 'ArrowRight': case 'ArrowUp': k = (t + 1) % n; break;
-      case 'ArrowLeft': case 'ArrowDown': k = (t + n - 1) % n; break;
+      case 'ArrowRight': case 'ArrowDown': k = (t + 1) % n; break;
+      case 'ArrowLeft': case 'ArrowUp': k = (t + n - 1) % n; break;
       case 'Home': k = 0; break;
       case 'End': k = n - 1; break;
       default: return;
@@ -435,7 +441,8 @@ class Machine {
     try { el.setPointerCapture(e.pointerId); } catch (x) { /* not capturable */ }
     const cx = rc.left + rc.width / 2, cy = rc.top + rc.height / 2, rot = ANG[i][this.sel[i]];
     this.drag = { i, id: e.pointerId, cx, cy, x0: e.clientX, y0: e.clientY,
-                  pa: Math.atan2(e.clientY - cy, e.clientX - cx) * 57.29578, raw: rot, disp: rot, moved: false };
+                  pa: Math.atan2(e.clientY - cy, e.clientX - cx) * 57.29578, raw: rot, disp: rot, moved: false,
+                  pos0: this.sel[i], pos: this.sel[i] };
     clearTimeout(this.timer);
     this.render();
   }
@@ -446,6 +453,20 @@ class Machine {
     const dx = e.clientX - d.x0, dy = e.clientY - d.y0;
     if (!d.moved && dx * dx + dy * dy < this.V.moveMin) return;
     d.moved = true;
+    if (this.kind === 'phone') {
+      // The drum follows the finger: dragging up brings the next setting into the window. Past the
+      // first and last settings it gives a little.
+      const n = ANG[i].length, last = n - 1;
+      // The machine may be scaled down to fit a narrow screen; the drum moves in its own pixels.
+      const el = e.currentTarget, scale = el.getBoundingClientRect().height / el.offsetHeight || 1;
+      let pos = d.pos0 - dy / scale / wheelPitch(!!D[i].stack);
+      if (pos < 0) pos *= 0.3; else if (pos > last) pos = last + (pos - last) * 0.3;
+      d.pos = pos;
+      const k = Math.max(0, Math.min(last, Math.round(pos)));
+      if (k !== this.sel[i]) { this.sel = this.sel.slice(); this.sel[i] = k; }
+      this.render();
+      return;
+    }
     const rx = e.clientX - d.cx, ry = e.clientY - d.cy, a = Math.atan2(ry, rx) * 57.29578;
     let da = a - d.pa;
     if (da > 180) da -= 360; else if (da < -180) da += 360;
@@ -482,15 +503,18 @@ class Machine {
     const s = this.sel, drag = this.drag;
     this.dials.forEach((ui, i) => {
       const k = s[i], live = !!(drag && drag.i === i);
-      ui.rotor.classList.toggle('live', live);
-      ui.knob.classList.toggle('live', live);
-      ui.rotor.style.transform = 'rotate(' + (live ? drag.disp : ANG[i][k]).toFixed(2) + 'deg)';
+      ui.knob.classList.toggle('live', live && (this.kind === 'desk' || drag.moved));
+      if (ui.rotor) {
+        ui.rotor.classList.toggle('live', live);
+        ui.rotor.style.transform = 'rotate(' + (live ? drag.disp : ANG[i][k]).toFixed(2) + 'deg)';
+      }
       ui.ticks.forEach((t, n) => t.classList.toggle('on', n === k));
       ui.opts.forEach((b, n) => { b.setAttribute('aria-checked', n === k ? 'true' : 'false'); b.tabIndex = n === k ? 0 : -1; });
-      if (ui.items.length && ui.wk !== k) {
-        ui.wk = k;
+      const pos = live && drag.moved ? drag.pos : k;
+      if (ui.items.length && ui.wpos !== pos) {
+        ui.wpos = pos;
         ui.items.forEach((it, n) => {
-          const [tf, op] = wheelPose(n - k, !!D[i].stack);
+          const [tf, op] = wheelPose(n - pos, !!D[i].stack);
           it.style.transform = tf; it.style.opacity = op;
           it.classList.toggle('on', n === k);
         });

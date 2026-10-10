@@ -94,7 +94,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .fit { position: relative; width: 100%; }
 .fit > .sm { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
 .fit-desk { max-width: 760px; height: 700px; }
-.fit-phone { display: none; max-width: 358px; height: 492px; margin: 0 auto; }
+.fit-phone { display: none; max-width: 358px; height: 470px; margin: 0 auto; }
 
 /* ---- footer --------------------------------------------------------------- */
 .closing { padding-bottom: 56px; border-top: 2px solid var(--ink); }
