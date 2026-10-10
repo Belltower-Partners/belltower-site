@@ -3,7 +3,7 @@
 
 .sm { position: relative; background: var(--paper); font-family: var(--mono); color: var(--m-ink); -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
 .sm-desk { width: 760px; height: 700px; }
-.sm-phone { width: 358px; height: 470px; }
+.sm-phone { width: 358px; height: 492px; }
 
 .sm-foot { position: absolute; background: #2a2826; }
 .sm-body { position: absolute; background: linear-gradient(180deg, #f4f0e8, #e2dbcd); }
@@ -23,7 +23,7 @@
 /* before the first turn: the knobs nudge in turn, the paper peeks out of the slot, the lamp breathes */
 .sm-wob { position: absolute; inset: 0; }
 .sm.waiting .sm-wob { animation: sm-nudge 4.2s ease-in-out infinite; }
-.sm.waiting .sm-sheet { animation: sm-peek 4.2s ease-in-out 0.5s infinite; }
+.sm.waiting:not(.invited) .sm-sheet { animation: sm-peek 4.2s ease-in-out 0.5s infinite; }
 .sm.waiting .sm-lamp { animation: sm-ready 2.1s ease-in-out infinite; }
 @keyframes sm-nudge { 0% { transform: rotate(0); } 5% { transform: rotate(15deg); } 10% { transform: rotate(-6deg); } 14% { transform: rotate(2deg); } 18%, 100% { transform: rotate(0); } }
 @keyframes sm-peek { 0% { transform: translateY(0); } 6% { transform: translateY(-14px); } 11% { transform: translateY(2px); } 15% { transform: translateY(-3px); } 19%, 100% { transform: translateY(0); } }
@@ -37,6 +37,12 @@
 .sm-row .rule { position: absolute; bottom: 0; height: 0; border-top: 1px dashed rgba(60, 45, 30, 0.24); }
 .sm-desk .sm-row .rule { left: 40px; width: 300px; }
 .sm-phone .sm-row .rule { left: 30px; width: 220px; }
+
+/* the typing cursor on the invitation: steady while it types, blinking once it has finished */
+.sm-cursor { position: relative; display: inline-block; width: 0; height: 1em; vertical-align: -0.12em; }
+.sm-cursor::after { content: ""; position: absolute; left: 1px; top: 0; bottom: 0; width: 1.5px; border-radius: 1px; background: var(--m-ink); }
+.sm-cursor.blink::after { animation: sm-blink 1.05s steps(1, end) infinite; }
+@keyframes sm-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
 
 /* number drums */
 .sm-drum { position: relative; overflow: hidden; border-radius: 2px; background: #f6f3ea; }
@@ -63,6 +69,11 @@
 .sm-pdial { cursor: grab; touch-action: none; }
 .sm-pdial:focus-visible { outline: 2px solid var(--m-ink); outline-offset: 3px; }
 
+/* the setting drum under each phone dial: the chosen setting faces out, the others are turned away */
+.sm-wheel { position: relative; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35), #000000 34%, #000000 66%, rgba(0, 0, 0, 0.35)); mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35), #000000 34%, #000000 66%, rgba(0, 0, 0, 0.35)); }
+.sm-item { position: absolute; left: 0; right: 0; font-size: 10px; line-height: 13px; font-weight: 400; letter-spacing: 0.04em; text-align: center; white-space: nowrap; color: var(--m-label); transition: transform 520ms cubic-bezier(0.3, 1.25, 0.45, 1), opacity 420ms ease, color 220ms ease; }
+.sm-item.on { font-weight: 500; color: var(--m-ink); }
+
 /* the settings under each desktop dial: a radio group */
 .sm-opt { position: relative; min-height: 25px; margin: 0; padding: 0; border: 0; border-radius: 4px; background: rgba(0, 0, 0, 0); font-family: var(--mono); font-size: 11px; line-height: 25px; letter-spacing: 0.08em; font-weight: 400; color: var(--m-label); cursor: pointer; transition: color 200ms ease; }
 .sm-opt .stack { display: inline-block; line-height: 13px; padding: 6px 0; vertical-align: top; }
@@ -74,5 +85,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sm *, .sm *::before { transition: none !important; }
-  .sm.waiting .sm-wob, .sm.waiting .sm-sheet, .sm.waiting .sm-lamp { animation: none; }
+  .sm.waiting .sm-wob, .sm.waiting .sm-sheet, .sm.waiting .sm-lamp, .sm-cursor.blink::after { animation: none; }
 }

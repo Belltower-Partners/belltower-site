@@ -28,8 +28,8 @@ const VARIANTS = {
     moveMin: 16, nearMin: 100,
   },
   phone: {
-    W: 358, H: 470, PAD: 16, TW: 248, LO: 90, BASE: 14, SLOT: 11, PARK: 5, DRUM: 20,
-    BODY: [358, 210, 1600, 0.45, 450, 0.35],
+    W: 358, H: 492, PAD: 16, TW: 248, LO: 90, BASE: 14, SLOT: 11, PARK: 5, DRUM: 20,
+    BODY: [358, 232, 1600, 0.45, 450, 0.35],
     rows: { top: 18, num: 18, set: 20, gap: 8, line: 24, tail: 8 },
     num: ["500 9.5px/18px 'IBM Plex Mono', monospace", "500 9.5px 'IBM Plex Mono'", 1.1],
     set: [[9.5, 0.3], [9.5, 0.1], [9, 0.1], [9, 0]],
@@ -38,6 +38,15 @@ const VARIANTS = {
     moveMin: 25, nearMin: 64,
   },
 };
+
+// The setting drums under the phone dials: each setting sits on a small turning drum of radius r,
+// step degrees apart; the chosen one faces out. Keep in step with SentenceMachinePhone.astro.
+function wheelPose(d, stack) {
+  const r = stack ? 26 : 20, step = stack ? 50 : 42, th = d * step;
+  if (Math.abs(th) >= 90) return ['translateY(' + Math.sign(th) * r + 'px) scaleY(0)', '0'];
+  const rad = th * Math.PI / 180, c = Math.cos(rad);
+  return ['translateY(' + (r * Math.sin(rad)).toFixed(2) + 'px) scaleY(' + c.toFixed(3) + ')', d === 0 ? '1' : (0.85 * c).toFixed(3)];
+}
 
 const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -76,6 +85,10 @@ class Machine {
     this.drag = null; this.q = []; this.cur = null; this.pending = null; this.rush = false; this.dragEnd = 0;
     this.lastJ = -1; this.lastSel = null;   // nothing printed until the first turn
     this.touched = false;
+    // The invitation typed onto the paper before the first turn (phone only).
+    this.invite = root.dataset.invite || '';
+    this.introOn = false; this.introDone = false; this.cursorRow = null; this.blink = false;
+    this.lift = 0;                      // how far the invitation has been pulled up and away, 0 to 1
     this.rnd = makeRng(20260929);
     this.printing = false; this.ready = false; this.raf = 0; this.last = 0; this.timer = 0;
 
@@ -91,7 +104,8 @@ class Machine {
         rotor: el.querySelector('[data-rotor]'),
         ticks: [...el.querySelectorAll('[data-tick]')],
         opts: [...el.querySelectorAll('[data-opt]')],
-        value: el.querySelector('[data-value]'),
+        items: [...el.querySelectorAll('[data-item]')],
+        wk: -1,
       };
       ui.knob.addEventListener('pointerdown', (e) => this.pdown(i, e));
       ui.knob.addEventListener('pointermove', (e) => this.pmove(i, e));
@@ -129,11 +143,14 @@ class Machine {
   boot() {
     // A turn made while the fonts were loading prints now.
     if (this.touched) this.commit();
+    else if (this.invite) this.watchIntro();
     // A face that finishes loading later changes the measurements: reprint the ticket in place.
     if (document.fonts && document.fonts.addEventListener) {
       document.fonts.addEventListener('loadingdone', () => {
         clearCache();
-        if (this.cur || this.pending || this.lastJ < 0) return;
+        if (this.cur || this.pending) return;
+        if (this.introOn) { this.M = []; this.instantIntro(); this.render(); return; }
+        if (this.lastJ < 0) return;
         this.M = [];
         this.instant(this.lastJ, this.lastSel);
         this.render();
@@ -146,6 +163,46 @@ class Machine {
     if (this.touched) return;
     this.touched = true;
     this.root.classList.remove('waiting');
+  }
+
+  // ---- the invitation ----------------------------------------------------------
+
+  // When the machine first comes into view, it types the invitation once, unless a dial has been turned.
+  watchIntro() {
+    const go = () => { if (!this.touched && !this.introDone) setTimeout(() => this.startIntro(), 350); };
+    if (!window.IntersectionObserver) { go(); return; }
+    const io = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { io.disconnect(); go(); }
+    }, { threshold: 0.6 });
+    io.observe(this.root);
+  }
+
+  introProgram() {
+    const steps = [];
+    steps.push({ t: 'feed', row: this.mk('top') });
+    this.wrap(this.invite).forEach((ln) => {
+      const r = this.mk('line', ln, 0, 0, 30); r.intro = true;
+      steps.push({ t: 'feed', row: r }); steps.push({ t: 'type', row: r });
+    });
+    steps.push({ t: 'feed', row: this.mk('tail') });
+    this.carriage(steps);
+    return steps;
+  }
+
+  instantIntro() {
+    this.introProgram().forEach((st) => { if (st.t === 'feed') this.M.push(st.row); else { st.row.k = st.row.n; this.cursorRow = st.row; } });
+    this.F = 0; this.car = this.carT = this.V.PARK;
+  }
+
+  startIntro() {
+    if (this.touched || this.introDone || this.cur) return;
+    this.introDone = true; this.introOn = true;
+    this.root.classList.add('invited');
+    if (reduced) { this.instantIntro(); this.blink = true; this.render(); return; }
+    this.q = this.introProgram();
+    this.cur = this.q.shift();
+    this.printing = true;
+    this.kick();
   }
 
   // ---- the paper ---------------------------------------------------------------
@@ -169,7 +226,7 @@ class Machine {
     return { px: fallback, ls: 0 };
   }
 
-  mk(kind, text, px, ls) {
+  mk(kind, text, px, ls, pace) {
     const V = this.V;
     const r = { kind, h: V.rows[kind], text: text || '', n: 0, k: 0, rule: false,
                 font: this.kind === 'desk' ? "400 11px/20px 'IBM Plex Mono', monospace" : "400 10px/18px 'IBM Plex Mono', monospace", ls: '0px', col: '#1d1c1a', x0: 0, w: [0] };
@@ -181,7 +238,7 @@ class Machine {
       this.measure(r, '400 ' + px + "px 'IBM Plex Mono'", ls, 6);
     } else if (kind === 'line') {
       r.font = V.line[1];
-      this.measure(r, V.line[0], 0, 17);
+      this.measure(r, V.line[0], 0, pace || 17);
     }
     return r;
   }
@@ -220,12 +277,16 @@ class Machine {
     feed(this.mk('gap'));
     this.wrap(SENTENCES[j]).forEach((ln) => { const r = this.mk('line', ln); feed(r); type(r); });
     feed(this.mk('tail'));
-    // While the paper feeds, the carriage returns to where the next line starts.
-    let nx = V.PARK;
-    for (let i = steps.length - 1; i >= 0; i--) {
-      if (steps[i].t === 'type') nx = V.SLOT + steps[i].row.x0 - 2; else steps[i].cr = nx;
-    }
+    this.carriage(steps);
     return steps;
+  }
+
+  // While the paper feeds, the carriage returns to where the next line starts.
+  carriage(steps) {
+    let nx = this.V.PARK;
+    for (let i = steps.length - 1; i >= 0; i--) {
+      if (steps[i].t === 'type') nx = this.V.SLOT + steps[i].row.x0 - 2; else steps[i].cr = nx;
+    }
   }
 
   instant(j, sel) {
@@ -260,14 +321,16 @@ class Machine {
     if (!p) return;
     this.lastJ = p.j; this.lastSel = p.sel;
     this.saidEl.textContent = this.phrase(p.j);
-    if (reduced) { this.M = []; this.instant(p.j, p.sel); this.printing = false; this.render(); return; }
+    if (reduced) { this.endIntro(); this.M = []; this.instant(p.j, p.sel); this.printing = false; this.render(); return; }
     this.q = this.program(p.j, p.sel);
-    // A ticket already out sinks back into the slot before the new one prints.
-    if (this.M.length) this.q.unshift({ t: 'sink' });
+    // The invitation is pulled up and away; a ticket already out sinks back into the slot.
+    if (this.M.length) this.q.unshift({ t: this.introOn ? 'eject' : 'sink' });
     this.cur = this.q.shift();
     this.printing = true;
     this.kick();
   }
+
+  endIntro() { this.introOn = false; this.cursorRow = null; this.blink = false; this.lift = 0; }
 
   kick() { if (!this.raf) { this.last = 0; this.raf = requestAnimationFrame(this.tickFn); } }
 
@@ -278,7 +341,13 @@ class Machine {
     let budget = dt * (this.rush ? 7 : 1);
     while (budget > 0 && this.cur) {
       const st = this.cur;
-      if (st.t === 'sink') {
+      if (st.t === 'eject') {
+        if (st.el == null) { st.el = 0; st.dur = 480; this.cursorRow = null; }
+        const ue = Math.min(budget, st.dur - st.el); st.el += ue; budget -= ue;
+        const u = Math.min(1, st.el / st.dur);
+        this.lift = u * u;
+        if (u >= 1) { this.M = []; this.F = 0; this.endIntro(); this.cur = this.q.shift() || null; }
+      } else if (st.t === 'sink') {
         if (st.el == null) { st.el = 0; st.to = this.printed(); st.from = this.F; st.dur = 260 + st.to * 0.6; }
         const u0 = Math.min(budget, st.dur - st.el); st.el += u0; budget -= u0;
         const u = Math.min(1, st.el / st.dur);
@@ -295,7 +364,7 @@ class Machine {
         if (u >= 1) { this.F = 0; this.cur = this.q.shift() || null; }
       } else {
         const r = st.row;
-        if (st.el == null) st.el = 0;
+        if (st.el == null) { st.el = 0; if (r.intro) { this.cursorRow = r; this.blink = false; } }
         const u2 = Math.min(budget, r.total - st.el); st.el += u2; budget -= u2;
         while (r.k < r.n && r.ts[r.k] <= st.el) r.k++;
         this.carT = this.V.SLOT + r.x0 + r.w[r.k] - 2;
@@ -304,7 +373,7 @@ class Machine {
     }
     if (!this.cur) {
       if (this.pending) this.start();
-      else if (this.printing) { this.carT = this.V.PARK; this.printing = false; }
+      else if (this.printing) { this.carT = this.V.PARK; this.printing = false; if (this.introOn) this.blink = true; }
     }
     const a = 1 - Math.exp(-dt / 30);
     this.car += (this.carT - this.car) * a;
@@ -418,9 +487,14 @@ class Machine {
       ui.rotor.style.transform = 'rotate(' + (live ? drag.disp : ANG[i][k]).toFixed(2) + 'deg)';
       ui.ticks.forEach((t, n) => t.classList.toggle('on', n === k));
       ui.opts.forEach((b, n) => { b.setAttribute('aria-checked', n === k ? 'true' : 'false'); b.tabIndex = n === k ? 0 : -1; });
-      if (ui.value) {
+      if (ui.items.length && ui.wk !== k) {
+        ui.wk = k;
+        ui.items.forEach((it, n) => {
+          const [tf, op] = wheelPose(n - k, !!D[i].stack);
+          it.style.transform = tf; it.style.opacity = op;
+          it.classList.toggle('on', n === k);
+        });
         const v = D[i].opts[k];
-        if (ui.value.textContent !== v) ui.value.textContent = v;
         ui.knob.setAttribute('aria-label', D[i].name + ': ' + v.charAt(0) + v.slice(1).toLowerCase());
       }
     });
@@ -435,10 +509,16 @@ class Machine {
         el.style.height = r.h + 'px'; el.style.font = r.font; el.style.letterSpacing = r.ls; el.style.color = r.col;
         r.ink = document.createElement('span'); r.gh = document.createElement('span'); r.gh.className = 'ghostink';
         el.append(r.ink, r.gh);
+        if (r.intro) { r.cur = document.createElement('span'); r.cur.className = 'sm-cursor'; r.cur.hidden = true; el.insertBefore(r.cur, r.gh); }
         if (r.rule) { const ru = document.createElement('span'); ru.className = 'rule'; el.append(ru); }
         r.el = el; r.shown = -1;
       }
       if (r.shown !== r.k) { r.ink.textContent = r.text.slice(0, r.k); r.gh.textContent = r.text.slice(r.k); r.shown = r.k; }
+      if (r.cur) {
+        const on = r === this.cursorRow;
+        if (r.cur.hidden === on) r.cur.hidden = !on;
+        r.cur.classList.toggle('blink', on && this.blink);
+      }
       return r.el;
     });
     const kids = this.feedEl.children;
@@ -447,6 +527,8 @@ class Machine {
     if (!same) this.feedEl.replaceChildren(...els);
     this.feedEl.style.transform = 'translateY(' + this.F.toFixed(2) + 'px)';
     this.sheetEl.style.height = (this.V.BASE + Math.max(0, this.printed() - this.F)).toFixed(2) + 'px';
+    this.sheetEl.style.transform = this.lift ? 'translateY(' + (-70 * this.lift).toFixed(2) + 'px)' : '';
+    this.sheetEl.style.opacity = this.lift ? (1 - this.lift).toFixed(3) : '';
     this.carEl.style.transform = 'translateX(' + this.car.toFixed(2) + 'px)';
     this.lampEl.classList.toggle('on', this.printing);
   }
