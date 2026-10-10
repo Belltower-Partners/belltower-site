@@ -14,20 +14,25 @@ const ANG = D.map((d) => {
   return d.opts.map((_, k) => (k - (n - 1) / 2) * step);
 });
 
-// Paper geometry for each variant: tape width, side margin, visible height, carriage offset in the slot.
+// Paper geometry for each variant: side margin, text width, the paper below the first row (in the slot
+// and peeking out of it), the ticket's left edge in the slot's lip, and where the carriage rests.
 const VARIANTS = {
   desk: {
-    W: 760, H: 700, PAD: 26, TW: 348, LO: 120, VIEW: 236, KEEP: 24, SLOT: 12, PARK: 32, DRUM: 24,
+    W: 760, H: 700, PAD: 16, TW: 348, LO: 120, BASE: 18, SLOT: 14, PARK: 6, DRUM: 24,
     BODY: [680, 362, 5200, 0.5, 1400, 0.4],
-    rows: { tear: 34, head: 28, gap: 8, line: 30, tail: 22 },
+    rows: { top: 24, num: 18, set: 22, gap: 12, line: 30, tail: 12 },
+    num: ["500 10px/18px 'IBM Plex Mono', monospace", "500 10px 'IBM Plex Mono'", 2.2],
+    set: [[9.5, 0.95], [9.5, 0.5], [9, 0.5], [9, 0]],
     line: ["italic 400 20px 'IBM Plex Serif'", "italic 400 20px/30px 'IBM Plex Serif', serif"],
     faces: ["italic 400 20px 'IBM Plex Serif'", "400 11px 'IBM Plex Mono'", "500 11px 'IBM Plex Mono'"],
     moveMin: 16, nearMin: 100,
   },
   phone: {
-    W: 358, H: 470, PAD: 16, TW: 248, LO: 90, VIEW: 196, KEEP: 20, SLOT: 10, PARK: 22, DRUM: 20,
+    W: 358, H: 470, PAD: 16, TW: 248, LO: 90, BASE: 14, SLOT: 11, PARK: 5, DRUM: 20,
     BODY: [358, 210, 1600, 0.45, 450, 0.35],
-    rows: { tear: 26, num: 18, set: 20, gap: 6, line: 24, tail: 16 },
+    rows: { top: 18, num: 18, set: 20, gap: 8, line: 24, tail: 8 },
+    num: ["500 9.5px/18px 'IBM Plex Mono', monospace", "500 9.5px 'IBM Plex Mono'", 1.1],
+    set: [[9.5, 0.3], [9.5, 0.1], [9, 0.1], [9, 0]],
     line: ["italic 400 16px 'IBM Plex Serif'", "italic 400 16px/24px 'IBM Plex Serif', serif"],
     faces: ["italic 400 16px 'IBM Plex Serif'", "400 10px 'IBM Plex Mono'", "500 10px 'IBM Plex Mono'"],
     moveMin: 25, nearMin: 64,
@@ -65,15 +70,17 @@ class Machine {
     this.kind = root.dataset.machine;
     this.V = VARIANTS[this.kind];
     this.sel = [1, 0, 1];
-    this.M = [];                        // rows on the paper, top to bottom
-    this.F = 0;                         // how far the paper still has to feed up, px
+    this.M = [];                        // rows on the ticket, top to bottom
+    this.F = 0;                         // how far the paper still has to feed up (or has sunk back), px
     this.car = this.carT = this.V.PARK; // print carriage in the slot, x
     this.drag = null; this.q = []; this.cur = null; this.pending = null; this.rush = false; this.dragEnd = 0;
-    this.lastJ = this.j(this.sel); this.lastSel = this.sel.slice(); this.prev = null;
+    this.lastJ = -1; this.lastSel = null;   // nothing printed until the first turn
+    this.touched = false;
     this.rnd = makeRng(20260929);
     this.printing = false; this.ready = false; this.raf = 0; this.last = 0; this.timer = 0;
 
     this.feedEl = root.querySelector('[data-feed]');
+    this.sheetEl = root.querySelector('[data-sheet]');
     this.carEl = root.querySelector('[data-car]');
     this.lampEl = root.querySelector('[data-lamp]');
     this.saidEl = root.querySelector('[data-said]');
@@ -120,24 +127,25 @@ class Machine {
   phrase(j) { return 'No. ' + (j + 1) + '. ' + SENTENCES[j]; }
 
   boot() {
-    // The paper starts with the end of an earlier ticket above the current one.
-    const ps = this.lastJ === MAP[0][0][1] ? [2, 4, 2] : [0, 0, 1];
-    this.prev = { j: this.j(ps), sel: ps };
-    this.instant(this.prev.j, this.prev.sel);
-    this.instant(this.lastJ, this.lastSel);
-    this.saidEl.textContent = this.phrase(this.lastJ);
-    this.render();
-    // A face that finishes loading later changes the measurements: reset the paper to the last tickets.
+    // A turn made while the fonts were loading prints now.
+    if (this.touched) this.commit();
+    // A face that finishes loading later changes the measurements: reprint the ticket in place.
     if (document.fonts && document.fonts.addEventListener) {
       document.fonts.addEventListener('loadingdone', () => {
         clearCache();
-        if (this.cur || this.pending) return;
+        if (this.cur || this.pending || this.lastJ < 0) return;
         this.M = [];
-        if (this.prev) this.instant(this.prev.j, this.prev.sel);
         this.instant(this.lastJ, this.lastSel);
         this.render();
       });
     }
+  }
+
+  // The first turn ends the invitation: the knobs and paper stop nudging and the ticket prints.
+  touch() {
+    if (this.touched) return;
+    this.touched = true;
+    this.root.classList.remove('waiting');
   }
 
   // ---- the paper ---------------------------------------------------------------
@@ -163,16 +171,13 @@ class Machine {
 
   mk(kind, text, px, ls) {
     const V = this.V;
-    const r = { kind, h: V.rows[kind], text: text || '', n: 0, k: 0, rule: false, tear: kind === 'tear',
+    const r = { kind, h: V.rows[kind], text: text || '', n: 0, k: 0, rule: false,
                 font: this.kind === 'desk' ? "400 11px/20px 'IBM Plex Mono', monospace" : "400 10px/18px 'IBM Plex Mono', monospace", ls: '0px', col: '#1d1c1a', x0: 0, w: [0] };
-    if (kind === 'head') {          // desktop: number and setting on one line
-      r.rule = true; r.font = '500 ' + px + "px/24px 'IBM Plex Mono', monospace"; r.ls = ls + 'px'; r.col = '#6f685e';
-      this.measure(r, '500 ' + px + "px 'IBM Plex Mono'", ls, 6);
-    } else if (kind === 'num') {    // phone: the number on its own line
-      r.font = "500 9.5px/18px 'IBM Plex Mono', monospace"; r.ls = '1.1px'; r.col = '#6f685e';
-      this.measure(r, "500 9.5px 'IBM Plex Mono'", 1.1, 8);
-    } else if (kind === 'set') {    // phone: the setting under it
-      r.rule = true; r.font = '400 ' + px + "px/16px 'IBM Plex Mono', monospace"; r.ls = ls + 'px'; r.col = '#6f685e';
+    if (kind === 'num') {           // the ticket number on its own line
+      r.font = V.num[0]; r.ls = V.num[2] + 'px'; r.col = '#5f594f';
+      this.measure(r, V.num[1], V.num[2], 8);
+    } else if (kind === 'set') {    // the setting under it, then a dashed rule
+      r.rule = true; r.font = '400 ' + px + "px/16px 'IBM Plex Mono', monospace"; r.ls = ls + 'px'; r.col = '#7d7568';
       this.measure(r, '400 ' + px + "px 'IBM Plex Mono'", ls, 6);
     } else if (kind === 'line') {
       r.font = V.line[1];
@@ -198,28 +203,20 @@ class Machine {
     r.total = tm + base * 3;
   }
 
-  setting(sel) { return D[0].opts[sel[0]] + ' × ' + D[1].opts[sel[1]] + ' × ' + D[2].opts[sel[2]]; }
+  setting(sel) { return D[0].opts[sel[0]] + ' · ' + D[1].opts[sel[1]] + ' · ' + D[2].opts[sel[2]]; }
 
-  // One ticket: a tear line, the header, the sentence line by line, and a margin under it.
+  // One ticket: a margin, the number, the setting, the sentence line by line, and a margin under it.
   program(j, sel) {
     const steps = [], V = this.V;
     const feed = (row) => { steps.push({ t: 'feed', row }); return row; };
     const type = (row) => { steps.push({ t: 'type', row }); };
-    if (this.M.length) feed(this.mk('tear'));
-    const no = 'No. ' + String(j + 1).padStart(3, '0');
-    if (this.kind === 'desk') {
-      const text = no + ' · ' + this.setting(sel);
-      const f = this.fitMono(text, '500', [[10.5, 0.42], [10.5, 0.2], [10, 0.2], [10, 0]], 342, 9.5);
-      const hr = this.mk('head', text, f.px, f.ls);
-      feed(hr); type(hr);
-    } else {
-      const nr = this.mk('num', no);
-      feed(nr); type(nr);
-      const text = this.setting(sel);
-      const f = this.fitMono(text, '400', [[9.5, 0.3], [9.5, 0.1], [9, 0.1], [9, 0]], V.TW - 4, 8.5);
-      const sr = this.mk('set', text, f.px, f.ls);
-      feed(sr); type(sr);
-    }
+    feed(this.mk('top'));
+    const nr = this.mk('num', 'No. ' + String(j + 1).padStart(3, '0'));
+    feed(nr); type(nr);
+    const text = this.setting(sel);
+    const f = this.fitMono(text, '400', V.set, V.TW - 4, 8.5);
+    const sr = this.mk('set', text, f.px, f.ls);
+    feed(sr); type(sr);
     feed(this.mk('gap'));
     this.wrap(SENTENCES[j]).forEach((ln) => { const r = this.mk('line', ln); feed(r); type(r); });
     feed(this.mk('tail'));
@@ -234,18 +231,10 @@ class Machine {
   instant(j, sel) {
     this.program(j, sel).forEach((st) => { if (st.t === 'feed') this.M.push(st.row); else st.row.k = st.row.n; });
     this.F = 0; this.car = this.carT = this.V.PARK;
-    this.prune();
   }
 
-  // Drop rows that have gone up under the roll.
-  prune() {
-    let acc = 0, keep = 0;
-    for (let i = this.M.length - 1; i >= 0; i--) {
-      if (acc > this.V.VIEW + this.V.KEEP) { keep = i + 1; break; }
-      acc += this.M[i].h;
-    }
-    if (keep > 0) this.M.splice(0, keep);
-  }
+  // The printed part of the ticket, px.
+  printed() { return this.M.reduce((a, r) => a + r.h, 0); }
 
   // ---- printing ----------------------------------------------------------------
 
@@ -269,11 +258,12 @@ class Machine {
     const p = this.pending;
     this.pending = null; this.rush = false;
     if (!p) return;
-    this.prev = { j: this.lastJ, sel: this.lastSel };
     this.lastJ = p.j; this.lastSel = p.sel;
     this.saidEl.textContent = this.phrase(p.j);
-    if (reduced) { this.instant(p.j, p.sel); this.printing = false; this.render(); return; }
+    if (reduced) { this.M = []; this.instant(p.j, p.sel); this.printing = false; this.render(); return; }
     this.q = this.program(p.j, p.sel);
+    // A ticket already out sinks back into the slot before the new one prints.
+    if (this.M.length) this.q.unshift({ t: 'sink' });
     this.cur = this.q.shift();
     this.printing = true;
     this.kick();
@@ -288,7 +278,13 @@ class Machine {
     let budget = dt * (this.rush ? 7 : 1);
     while (budget > 0 && this.cur) {
       const st = this.cur;
-      if (st.t === 'feed') {
+      if (st.t === 'sink') {
+        if (st.el == null) { st.el = 0; st.to = this.printed(); st.from = this.F; st.dur = 260 + st.to * 0.6; }
+        const u0 = Math.min(budget, st.dur - st.el); st.el += u0; budget -= u0;
+        const u = Math.min(1, st.el / st.dur);
+        this.F = st.from + (st.to - st.from) * u * u;
+        if (u >= 1) { this.M = []; this.F = 0; this.cur = this.q.shift() || null; }
+      } else if (st.t === 'feed') {
         if (st.el == null) {
           st.el = 0; this.M.push(st.row); this.F += st.row.h; st.from = this.F; st.dur = 70 + st.row.h * 3.6;
           if (st.cr != null) this.carT = st.cr;
@@ -307,8 +303,8 @@ class Machine {
       }
     }
     if (!this.cur) {
-      if (this.pending) { this.prune(); this.start(); }
-      else if (this.printing) { this.prune(); this.carT = this.V.PARK; this.printing = false; }
+      if (this.pending) this.start();
+      else if (this.printing) { this.carT = this.V.PARK; this.printing = false; }
     }
     const a = 1 - Math.exp(-dt / 30);
     this.car += (this.carT - this.car) * a;
@@ -320,6 +316,7 @@ class Machine {
   // ---- the dials ---------------------------------------------------------------
 
   choose(i, k, delay) {
+    this.touch();
     this.sel = this.sel.slice(); this.sel[i] = k;
     this.render();
     this.schedule(delay);
@@ -364,6 +361,7 @@ class Machine {
   pdown(i, e) {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     e.preventDefault();
+    this.touch();
     const el = e.currentTarget, rc = el.getBoundingClientRect();
     try { el.setPointerCapture(e.pointerId); } catch (x) { /* not capturable */ }
     const cx = rc.left + rc.width / 2, cy = rc.top + rc.height / 2, rot = ANG[i][this.sel[i]];
@@ -426,7 +424,7 @@ class Machine {
         ui.knob.setAttribute('aria-label', D[i].name + ': ' + v.charAt(0) + v.slice(1).toLowerCase());
       }
     });
-    const num = this.j(s) + 1, dg = [Math.floor(num / 100), Math.floor(num / 10) % 10, num % 10];
+    const num = this.touched ? this.j(s) + 1 : 0, dg = [Math.floor(num / 100), Math.floor(num / 10) % 10, num % 10];
     this.drums.forEach((col, t) => { col.style.transform = 'translateY(' + (-dg[t] * this.V.DRUM) + 'px)'; });
 
     // Paper rows: one element per row; rows only ever join at the bottom and leave from the top.
@@ -438,7 +436,6 @@ class Machine {
         r.ink = document.createElement('span'); r.gh = document.createElement('span'); r.gh.className = 'ghostink';
         el.append(r.ink, r.gh);
         if (r.rule) { const ru = document.createElement('span'); ru.className = 'rule'; el.append(ru); }
-        if (r.tear) { const te = document.createElement('span'); te.className = 'tear'; el.append(te); }
         r.el = el; r.shown = -1;
       }
       if (r.shown !== r.k) { r.ink.textContent = r.text.slice(0, r.k); r.gh.textContent = r.text.slice(r.k); r.shown = r.k; }
@@ -449,6 +446,7 @@ class Machine {
     for (let n = 0; same && n < els.length; n++) if (kids[n] !== els[n]) same = false;
     if (!same) this.feedEl.replaceChildren(...els);
     this.feedEl.style.transform = 'translateY(' + this.F.toFixed(2) + 'px)';
+    this.sheetEl.style.height = (this.V.BASE + Math.max(0, this.printed() - this.F)).toFixed(2) + 'px';
     this.carEl.style.transform = 'translateX(' + this.car.toFixed(2) + 'px)';
     this.lampEl.classList.toggle('on', this.printing);
   }
