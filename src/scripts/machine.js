@@ -28,7 +28,7 @@ const VARIANTS = {
     moveMin: 16, nearMin: 100,
   },
   phone: {
-    W: 358, H: 470, PAD: 16, TW: 248, LO: 90, BASE: 14, SLOT: 11, PARK: 5, DRUM: 20,
+    W: 358, H: 420, PAD: 16, TW: 248, LO: 90, BASE: 14, SLOT: 11, PARK: 5, DRUM: 20,
     BODY: [358, 210, 1600, 0.45, 450, 0.35],
     rows: { top: 18, num: 18, set: 20, gap: 8, line: 24, tail: 8 },
     num: ["500 9.5px/18px 'IBM Plex Mono', monospace", "500 9.5px 'IBM Plex Mono'", 1.1],
@@ -39,19 +39,16 @@ const VARIANTS = {
   },
 };
 
-// The phone's drum dials: each setting sits on a drum of radius 42px, step degrees apart; the chosen one
-// faces out. d is how many settings away from the window a setting is (fractional while dragging).
-// Keep in step with SentenceMachinePhone.astro.
-const WHEEL_R = 42;
-const wheelStep = (stack) => (stack ? 38 : 28);
+// The phone's drum dials: each setting sits on a drum of radius WHEEL_R, WHEEL_STEP degrees apart; the
+// chosen one faces out between the rails. d is how many settings away from the rails a setting is
+// (fractional while dragging). Keep in step with SentenceMachinePhone.astro.
+const WHEEL_R = 52, WHEEL_STEP = 30;
 // How far a finger moves to roll the drum one setting: the distance between neighbours on the drum.
-const wheelPitch = (stack) => WHEEL_R * Math.sin(wheelStep(stack) * Math.PI / 180);
-function wheelPose(d, stack) {
-  const th = d * wheelStep(stack);
-  if (Math.abs(th) >= 90) return ['translateY(' + Math.sign(th) * WHEEL_R + 'px) scaleY(0)', '0'];
-  const rad = th * Math.PI / 180, c = Math.cos(rad);
-  return ['translateY(' + (WHEEL_R * Math.sin(rad)).toFixed(2) + 'px) scaleY(' + c.toFixed(3) + ')',
-          (Math.max(0, 1 - 0.35 * Math.abs(d)) * c).toFixed(3)];
+const WHEEL_PITCH = WHEEL_R * Math.sin(WHEEL_STEP * Math.PI / 180);
+function wheelPose(d) {
+  const th = d * WHEEL_STEP;
+  const op = Math.abs(th) >= 90 ? 0 : Math.max(0, 1 - 0.3 * Math.abs(d));
+  return ['translateZ(-' + WHEEL_R + 'px) rotateX(' + (-th).toFixed(2) + 'deg) translateZ(' + WHEEL_R + 'px)', op.toFixed(3)];
 }
 
 const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -125,6 +122,12 @@ class Machine {
         });
       } else {
         ui.knob.addEventListener('click', () => this.clickDial(i));
+        // Touch screens: drive the drum from touch events, which Safari keeps delivering while the
+        // finger moves (pointer events can be cancelled there when the page decides to scroll).
+        ui.knob.addEventListener('touchstart', (e) => this.tstart(i, e), { passive: false });
+        ui.knob.addEventListener('touchmove', (e) => this.tmove(i, e), { passive: false });
+        ui.knob.addEventListener('touchend', (e) => this.tend(i, e, false), { passive: false });
+        ui.knob.addEventListener('touchcancel', (e) => this.tend(i, e, true), { passive: false });
         ui.knob.addEventListener('keydown', (e) => this.keyDial(i, e));
       }
       return ui;
@@ -132,6 +135,7 @@ class Machine {
     this.tickFn = (t) => this.tick(t);
 
     this.speckle(root.querySelector('[data-speck]'));
+    root.querySelectorAll('[data-paper]').forEach((cv, n) => this.grain(cv, n));
     this.render();
 
     const go = () => { if (this.ready) return; this.ready = true; this.boot(); };
@@ -175,19 +179,20 @@ class Machine {
 
   // When the machine first comes into view, it types the invitation once, unless a dial has been turned.
   watchIntro() {
-    const go = () => { if (!this.touched && !this.introDone) setTimeout(() => this.startIntro(), 350); };
+    const go = () => { if (!this.touched && !this.introDone) setTimeout(() => this.startIntro(), 120); };
     if (!window.IntersectionObserver) { go(); return; }
     const io = new IntersectionObserver((es) => {
       if (es.some((e) => e.isIntersecting)) { io.disconnect(); go(); }
-    }, { threshold: 0.6 });
+    }, { threshold: 0.05 });   // as soon as the machine starts to show
     io.observe(this.root);
   }
 
   introProgram() {
     const steps = [];
-    steps.push({ t: 'feed', row: this.mk('top') });
+    const lead = this.mk('top'); lead.h = 72;   // a longer lead of blank paper above the invitation
+    steps.push({ t: 'feed', row: lead });
     this.wrap(this.invite).forEach((ln) => {
-      const r = this.mk('line', ln, 0, 0, 30); r.intro = true;
+      const r = this.mk('line', ln, 0, 0, 55); r.intro = true;   // typed slower than a ticket
       steps.push({ t: 'feed', row: r }); steps.push({ t: 'type', row: r });
     });
     steps.push({ t: 'feed', row: this.mk('tail') });
@@ -433,8 +438,57 @@ class Machine {
     this.choose(i, (this.sel[i] + 1) % ANG[i].length, 420);
   }
 
+  // ---- touch, on the phone's drums ----------------------------------------------
+
+  tstart(i, e) {
+    if (this.drag || e.touches.length > 1) return;
+    e.preventDefault();                  // no page scroll, no synthetic click: the drum handles it
+    const t = e.changedTouches[0];
+    this.touch();
+    this.drag = { i, id: 't' + t.identifier, x0: t.clientX, y0: t.clientY, moved: false, pos0: this.sel[i], pos: this.sel[i] };
+    clearTimeout(this.timer);
+    this.render();
+  }
+
+  tmove(i, e) {
+    const d = this.drag;
+    if (!d || d.i !== i) return;
+    const t = [...e.changedTouches].find((x) => 't' + x.identifier === d.id);
+    if (!t) return;
+    e.preventDefault();
+    this.roll(i, d, t.clientX, t.clientY, e.currentTarget);
+  }
+
+  tend(i, e, cancelled) {
+    const d = this.drag;
+    if (!d || d.i !== i || ![...e.changedTouches].some((x) => 't' + x.identifier === d.id)) return;
+    e.preventDefault();
+    this.drag = null;
+    if (d.moved) { this.dragEnd = performance.now(); this.schedule(160); this.render(); }
+    else if (!cancelled) this.choose(i, (this.sel[i] + 1) % ANG[i].length, 420);   // a tap: next setting
+    else this.render();
+  }
+
+  // The drum follows the finger: dragging up brings the next setting into the window. Past the first
+  // and last settings it gives a little.
+  roll(i, d, x, y, el) {
+    const dx = x - d.x0, dy = y - d.y0;
+    if (!d.moved && dx * dx + dy * dy < this.V.moveMin) return;
+    d.moved = true;
+    const last = ANG[i].length - 1;
+    // The machine may be scaled down to fit a narrow screen; the drum moves in its own pixels.
+    const scale = el.getBoundingClientRect().height / el.offsetHeight || 1;
+    let pos = d.pos0 - dy / scale / WHEEL_PITCH;
+    if (pos < 0) pos *= 0.3; else if (pos > last) pos = last + (pos - last) * 0.3;
+    d.pos = pos;
+    const k = Math.max(0, Math.min(last, Math.round(pos)));
+    if (k !== this.sel[i]) { this.sel = this.sel.slice(); this.sel[i] = k; }
+    this.render();
+  }
+
   pdown(i, e) {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (this.kind === 'phone' && e.pointerType === 'touch') return;   // touch events handle it
     e.preventDefault();
     this.touch();
     const el = e.currentTarget, rc = el.getBoundingClientRect();
@@ -450,23 +504,10 @@ class Machine {
   pmove(i, e) {
     const d = this.drag;
     if (!d || d.i !== i || e.pointerId !== d.id) return;
+    if (this.kind === 'phone') { this.roll(i, d, e.clientX, e.clientY, e.currentTarget); return; }
     const dx = e.clientX - d.x0, dy = e.clientY - d.y0;
     if (!d.moved && dx * dx + dy * dy < this.V.moveMin) return;
     d.moved = true;
-    if (this.kind === 'phone') {
-      // The drum follows the finger: dragging up brings the next setting into the window. Past the
-      // first and last settings it gives a little.
-      const n = ANG[i].length, last = n - 1;
-      // The machine may be scaled down to fit a narrow screen; the drum moves in its own pixels.
-      const el = e.currentTarget, scale = el.getBoundingClientRect().height / el.offsetHeight || 1;
-      let pos = d.pos0 - dy / scale / wheelPitch(!!D[i].stack);
-      if (pos < 0) pos *= 0.3; else if (pos > last) pos = last + (pos - last) * 0.3;
-      d.pos = pos;
-      const k = Math.max(0, Math.min(last, Math.round(pos)));
-      if (k !== this.sel[i]) { this.sel = this.sel.slice(); this.sel[i] = k; }
-      this.render();
-      return;
-    }
     const rx = e.clientX - d.cx, ry = e.clientY - d.cy, a = Math.atan2(ry, rx) * 57.29578;
     let da = a - d.pa;
     if (da > 180) da -= 360; else if (da < -180) da += 360;
@@ -482,9 +523,10 @@ class Machine {
     this.render();
   }
 
-  pup(i, _e, cancelled) {
+  pup(i, e, cancelled) {
     const d = this.drag;
     if (!d || d.i !== i) return;
+    if (this.kind === 'phone' && e.pointerType === 'touch') return;   // touch events handle it
     this.drag = null;
     if (this.kind === 'desk') {
       // Desktop: a press without a turn steps the dial to its next setting.
@@ -514,7 +556,7 @@ class Machine {
       if (ui.items.length && ui.wpos !== pos) {
         ui.wpos = pos;
         ui.items.forEach((it, n) => {
-          const [tf, op] = wheelPose(n - pos, !!D[i].stack);
+          const [tf, op] = wheelPose(n - pos);
           it.style.transform = tf; it.style.opacity = op;
           it.classList.toggle('on', n === k);
         });
@@ -555,6 +597,30 @@ class Machine {
     this.sheetEl.style.opacity = this.lift ? (1 - this.lift).toFixed(3) : '';
     this.carEl.style.transform = 'translateX(' + this.car.toFixed(2) + 'px)';
     this.lampEl.classList.toggle('on', this.printing);
+  }
+
+  // Paper grain on the drums: fine fibres and flecks, drawn once.
+  grain(cv, n) {
+    const W = cv.offsetWidth, H = cv.offsetHeight;
+    if (!W || !H) return;
+    const dpr = Math.min(3, window.devicePixelRatio || 1), rnd = makeRng(31 + n);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    const g = cv.getContext('2d');
+    if (!g) return;
+    g.scale(dpr, dpr);
+    for (let i = 0; i < W * H * 0.05; i++) {
+      g.fillStyle = 'rgba(96,74,48,' + (0.04 + rnd() * 0.08).toFixed(3) + ')';
+      g.fillRect(rnd() * W, rnd() * H, 0.4 + rnd() * 0.5, 0.4 + rnd() * 0.5);
+    }
+    for (let i = 0; i < W * H * 0.004; i++) {   // short fibres
+      g.strokeStyle = 'rgba(96,74,48,' + (0.05 + rnd() * 0.07).toFixed(3) + ')'; g.lineWidth = 0.4;
+      const x = rnd() * W, y = rnd() * H, a = rnd() * 6.28, l = 1.5 + rnd() * 3;
+      g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke();
+    }
+    for (let i = 0; i < W * H * 0.02; i++) {
+      g.fillStyle = 'rgba(255,255,255,' + (0.3 + rnd() * 0.4).toFixed(3) + ')';
+      g.fillRect(rnd() * W, rnd() * H, 0.5, 0.5);
+    }
   }
 
   // Enamel grain for the body, drawn once.

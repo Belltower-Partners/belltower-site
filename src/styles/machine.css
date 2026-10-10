@@ -3,7 +3,7 @@
 
 .sm { position: relative; background: var(--paper); font-family: var(--mono); color: var(--m-ink); -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
 .sm-desk { width: 760px; height: 700px; }
-.sm-phone { width: 358px; height: 470px; }
+.sm-phone { width: 358px; height: 420px; }
 
 .sm-foot { position: absolute; background: #2a2826; }
 .sm-body { position: absolute; background: linear-gradient(180deg, #f4f0e8, #e2dbcd); }
@@ -69,21 +69,34 @@
 .sm-pdial { cursor: grab; touch-action: none; }
 .sm-pdial:focus-visible { outline: 2px solid var(--m-ink); outline-offset: 3px; }
 
-/* the phone's drum dials: a drum in a dark window set into the enamel, like the number counter.
-   The chosen setting faces out between two hairlines; the others curve away above and below. */
-.sm-roller { position: relative; display: block; padding: 0; border: 0; border-radius: 6px; background: #26241f; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.7); cursor: grab; touch-action: none; font-family: var(--mono); }
+/* the phone's drum dials, like the iPhone timer: three paper drums turning in one dark well cut into
+   the enamel, each ending in the edge of a paper roll, with two steel rails across them marking the
+   chosen settings. The script draws the paper grain on each drum's canvas. */
+.sm-roller { position: relative; display: block; padding: 0; border: 0; border-radius: 6px; background: rgba(0, 0, 0, 0); cursor: grab; touch-action: none; -webkit-touch-callout: none; font-family: var(--mono); }
 .sm-roller.live { cursor: grabbing; }
-.sm-roller:focus-visible { outline: 2px solid var(--m-ink); outline-offset: 3px; }
-.sm-rwin { position: absolute; inset: 3px; overflow: hidden; border-radius: 3px; background: #f6f3ea; }
-.sm-rwob { position: absolute; inset: 0; }
-.sm-item { position: absolute; left: 0; right: 0; font-size: 11px; line-height: 14px; font-weight: 400; letter-spacing: 0.04em; text-align: center; white-space: nowrap; color: var(--m-label); transition: transform 520ms cubic-bezier(0.3, 1.25, 0.45, 1), opacity 420ms ease, color 220ms ease; }
-.sm-item.on { font-weight: 500; color: var(--m-ink); }
+.sm-roller:focus-visible { outline: 2px solid var(--m-orange); outline-offset: -1px; }
+.sm-well { position: absolute; border-radius: 12px; pointer-events: none; background: linear-gradient(180deg, #0c0b0a, #2f2b27); box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.85), 0 0 0 3px #e2dbcd, 0 0 0 4px rgba(120, 100, 70, 0.3), 0 1px 0 4px rgba(255, 255, 255, 0.8); }
+.sm-rwin { position: absolute; inset: 0; overflow: hidden; border-radius: 6px; background: linear-gradient(180deg, #e6dfcf, #fdfaf3 50%, #e6dfcf); }
+.sm-paper { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sm-rwob { position: absolute; inset: 0; perspective: 260px; -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.1), #000000 24%, #000000 76%, rgba(0, 0, 0, 0.1)); mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.1), #000000 24%, #000000 76%, rgba(0, 0, 0, 0.1)); }
+/* lettering struck in ink: a little bleed, the chosen setting darker */
+.sm-item { position: absolute; left: 8px; right: 8px; font-size: 10.5px; line-height: 15px; font-weight: 400; letter-spacing: 0.03em; text-align: center; white-space: nowrap; color: rgba(29, 28, 26, 0.45); text-shadow: 0 0 0.7px rgba(29, 28, 26, 0.35); backface-visibility: hidden; transition: transform 520ms cubic-bezier(0.3, 1.25, 0.45, 1), opacity 420ms ease, color 220ms ease; }
+.sm-item.on { font-weight: 500; color: var(--m-ink); text-shadow: 0 0 0.8px rgba(29, 28, 26, 0.55), 0.3px 0 0 rgba(29, 28, 26, 0.25); }
 .sm-roller.live .sm-item { transition: color 220ms ease; }
-.sm-rband { position: absolute; left: 0; right: 0; border-top: 1px solid rgba(60, 45, 30, 0.2); border-bottom: 1px solid rgba(60, 45, 30, 0.2); pointer-events: none; }
-.sm-rband::before { content: ""; position: absolute; left: 0; top: 50%; width: 3px; height: 10px; margin-top: -5px; border-radius: 0 1px 1px 0; background: var(--m-orange); }
-.sm-rshade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(40, 30, 20, 0.3), rgba(40, 30, 20, 0) 30%, rgba(40, 30, 20, 0) 70%, rgba(40, 30, 20, 0.3)); }
-.sm.waiting .sm-rwob { animation: sm-roll 4.2s ease-in-out infinite; }
-@keyframes sm-roll { 0% { transform: translateY(0); } 5% { transform: translateY(-11px); } 10% { transform: translateY(4px); } 14% { transform: translateY(-1.5px); } 18%, 100% { transform: translateY(0); } }
+.sm-rshade, .sm-rim { position: absolute; pointer-events: none; }
+.sm-rshade { inset: 0; background: linear-gradient(180deg, rgba(40, 30, 20, 0.5), rgba(40, 30, 20, 0) 32%, rgba(40, 30, 20, 0) 68%, rgba(40, 30, 20, 0.5)); }
+/* each drum ends in the edge of a paper roll: its wound layers show as fine lines */
+.sm-rim { top: 0; bottom: 0; width: 7px; background: repeating-linear-gradient(90deg, #f4efe4 0 0.6px, #d6cdbb 0.6px 1.1px, #ece6d9 1.1px 1.6px, #cbc1ad 1.6px 2.3px); }
+.sm-rim-l { left: 0; box-shadow: inset -1px 0 0 rgba(90, 70, 45, 0.4), 1px 0 1px rgba(40, 30, 20, 0.25); }
+.sm-rim-r { right: 0; box-shadow: inset 1px 0 0 rgba(90, 70, 45, 0.4), -1px 0 1px rgba(40, 30, 20, 0.25); }
+.sm-rim::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(40, 30, 20, 0.55), rgba(40, 30, 20, 0) 32%, rgba(255, 255, 255, 0.15) 50%, rgba(40, 30, 20, 0) 68%, rgba(40, 30, 20, 0.55)); }
+/* the steel rails across the chosen settings, an orange index at each end */
+.sm-band { position: absolute; pointer-events: none; border-top: 2px solid #c9c7c0; border-bottom: 2px solid #a7a399; box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.8), 0 1px 0 rgba(255, 255, 255, 0.5), 0 2px 3px rgba(40, 30, 20, 0.25), inset 0 2px 3px rgba(40, 30, 20, 0.12); }
+.sm-band::before, .sm-band::after { content: ""; position: absolute; top: 50%; width: 4px; height: 12px; margin-top: -6px; background: var(--m-orange); }
+.sm-band::before { left: -2px; border-radius: 0 2px 2px 0; } .sm-band::after { right: -2px; border-radius: 2px 0 0 2px; }
+/* until the first turn, a line under the drums says what to do with them */
+.sm-hint { position: absolute; left: 0; right: 0; top: 193px; font-size: 8.5px; line-height: 12px; letter-spacing: 0.22em; text-align: center; color: var(--m-label); transition: opacity 400ms ease; }
+.sm:not(.waiting) .sm-hint { opacity: 0; }
 
 /* the settings under each desktop dial: a radio group */
 .sm-opt { position: relative; min-height: 25px; margin: 0; padding: 0; border: 0; border-radius: 4px; background: rgba(0, 0, 0, 0); font-family: var(--mono); font-size: 11px; line-height: 25px; letter-spacing: 0.08em; font-weight: 400; color: var(--m-label); cursor: pointer; transition: color 200ms ease; }
@@ -96,5 +109,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sm *, .sm *::before { transition: none !important; }
-  .sm.waiting .sm-wob, .sm.waiting .sm-rwob, .sm.waiting .sm-sheet, .sm.waiting .sm-lamp, .sm-cursor.blink::after { animation: none; }
+  .sm.waiting .sm-wob, .sm.waiting .sm-sheet, .sm.waiting .sm-lamp, .sm-cursor.blink::after { animation: none; }
 }

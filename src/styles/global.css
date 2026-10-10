@@ -94,7 +94,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .fit { position: relative; width: 100%; }
 .fit > .sm { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
 .fit-desk { max-width: 760px; height: 700px; }
-.fit-phone { display: none; max-width: 358px; height: 470px; margin: 0 auto; }
+.fit-phone { display: none; max-width: 358px; height: 420px; margin: 0 auto; }
 
 /* ---- footer --------------------------------------------------------------- */
 .closing { padding-bottom: 56px; border-top: 2px solid var(--ink); }
@@ -120,7 +120,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 
   .machine-sec { margin-top: 56px; padding: 32px 0 0; }
-  .machine-intro { margin-bottom: 28px; }
+  .machine-intro { margin-bottom: 12px; }
   .machine-intro h2 { font-size: 23px; line-height: 32px; }
   .machine-intro p { margin-top: 6px; font-size: 15px; }
   /* On phones the second sentence is typed onto the machine's paper instead; screen readers still hear it here. */

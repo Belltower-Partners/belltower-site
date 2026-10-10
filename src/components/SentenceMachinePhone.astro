@@ -1,9 +1,11 @@
 ---
-// The compact sentence machine for narrow screens: 358 x 470 (SentenceMachinePhone.dc.html, with the
-// knobs replaced by drum dials). Each dial is a drum in a window set into the enamel, one button:
-// tap to roll to the next setting, drag up or down to roll through them, arrow keys when focused. The
-// ticket rises out of the slot on top, as on the desktop machine. Before the first turn, the machine
-// types the invitation (site.json machine.invite) onto the paper.
+// The compact sentence machine for narrow screens: 358 x 420 (SentenceMachinePhone.dc.html, with the
+// knobs replaced by drum dials and the space above the body cut to what the tallest ticket needs).
+// Each dial is a paper drum, one button: tap to roll to the next setting, drag up or down to roll
+// through them, arrow keys when focused. The three drums turn in one well cut into the enamel, and two
+// steel rails across them mark the chosen settings. The ticket rises out of the slot on top, as on the
+// desktop machine. Before the first turn, the machine types the invitation (site.json machine.invite)
+// onto the paper, and a line under the drums says they can be tapped or dragged.
 import machine from '../data/machine.json';
 import sentences from '../data/sentences.json';
 import site from '../data/site.json';
@@ -12,25 +14,25 @@ const total = String(sentences.length).padStart(3, '0');
 const start = [1, 0, 1];
 const sentenceCase = (v: string) => v.charAt(0) + v.slice(1).toLowerCase();
 
-// The drum dials: every setting sits on a drum of radius 42px, step degrees apart; the chosen one faces
-// out through the window and the others curve away above and below it. Two-word settings (stack) take
-// two lines. Keep in step with wheelPose() in src/scripts/machine.js.
-const WIN_H = 108;
-const wheelGeo = (stack: boolean) => (stack ? { r: 42, step: 38, h: 28 } : { r: 42, step: 28, h: 14 });
-const wheelPose = (d: number, stack: boolean) => {
-  const g = wheelGeo(stack), th = d * g.step;
-  if (Math.abs(th) >= 90) return `transform: translateY(${Math.sign(th) * g.r}px) scaleY(0); opacity: 0`;
-  const rad = (th * Math.PI) / 180, c = Math.cos(rad);
-  return `transform: translateY(${(g.r * Math.sin(rad)).toFixed(2)}px) scaleY(${c.toFixed(3)}); opacity: ${(Math.max(0, 1 - 0.35 * Math.abs(d)) * c).toFixed(3)}`;
+// The drum dials: every setting sits on a drum of radius R, STEP degrees apart; the chosen one faces out
+// between the rails and the others turn away above and below it, like the iPhone timer.
+// Keep in step with wheelPose() in src/scripts/machine.js.
+const WIN_H = 114, ROW_H = 15, R = 52, STEP = 30;
+// Each drum's left edge and width: Role is wider so every setting fits on one line.
+const COLS = [[17, 148], [167, 86], [255, 86]];
+const wheelPose = (d: number) => {
+  const th = d * STEP;
+  const op = Math.abs(th) >= 90 ? 0 : Math.max(0, 1 - 0.3 * Math.abs(d));
+  return `transform: translateZ(-${R}px) rotateX(${(-th).toFixed(2)}deg) translateZ(${R}px); opacity: ${op.toFixed(3)}`;
 };
 ---
 <div class="sm sm-phone waiting" data-machine="phone" data-invite={site.machine.invite} role="group" aria-label={site.machineLabel}>
-  <div aria-hidden="true" style="position: absolute; left: 18px; top: 430px; width: 322px; height: 34px; border-radius: 50%; background: radial-gradient(closest-side, rgba(60,45,30,0.2), rgba(60,45,30,0.08) 55%, rgba(60,45,30,0))"></div>
+  <div aria-hidden="true" style="position: absolute; left: 18px; top: 380px; width: 322px; height: 34px; border-radius: 50%; background: radial-gradient(closest-side, rgba(60,45,30,0.2), rgba(60,45,30,0.08) 55%, rgba(60,45,30,0))"></div>
 
-  <div class="sm-foot" aria-hidden="true" style="left: 44px; top: 430px; width: 36px; height: 16px; border-radius: 3px"></div>
-  <div class="sm-foot" aria-hidden="true" style="left: 278px; top: 430px; width: 36px; height: 16px; border-radius: 3px"></div>
+  <div class="sm-foot" aria-hidden="true" style="left: 44px; top: 380px; width: 36px; height: 16px; border-radius: 3px"></div>
+  <div class="sm-foot" aria-hidden="true" style="left: 278px; top: 380px; width: 36px; height: 16px; border-radius: 3px"></div>
 
-  <div class="sm-body" style="left: 0; top: 230px; width: 358px; height: 210px; border-radius: 26px; box-shadow: 0 12px 22px rgba(60,40,20,0.18), 0 2px 5px rgba(60,40,20,0.08), inset 0 1.5px 0 rgba(255,255,255,0.9), inset 0 -2px 4px rgba(120,100,70,0.12)">
+  <div class="sm-body" style="left: 0; top: 180px; width: 358px; height: 210px; border-radius: 26px; box-shadow: 0 12px 22px rgba(60,40,20,0.18), 0 2px 5px rgba(60,40,20,0.08), inset 0 1.5px 0 rgba(255,255,255,0.9), inset 0 -2px 4px rgba(120,100,70,0.12)">
     <canvas data-speck aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 358px; height: 210px; border-radius: 26px; pointer-events: none"></canvas>
 
     <div class="sm-slotframe" aria-hidden="true" style="left: 25px; top: 2px; width: 308px; height: 15px; border-radius: 7.5px"></div>
@@ -59,25 +61,31 @@ const wheelPose = (d: number, stack: boolean) => {
     </div>
 
     <div class="sm-rule" aria-hidden="true" style="left: 18px; top: 44px; width: 322px"></div>
+    <div class="sm-well" aria-hidden="true" style={`left: 12px; top: 70px; width: 334px; height: ${WIN_H + 6}px`}></div>
+
+    <div class="sm-hint" aria-hidden="true">TAP OR DRAG THE DIALS</div>
 
     {machine.dials.map((d, i) => (
-      <div data-dial style={`position: absolute; left: ${7 + 116 * i}px; top: 54px; width: 112px; display: flex; flex-direction: column; align-items: center`}>
+      <div data-dial style={`position: absolute; left: ${COLS[i][0]}px; top: 54px; width: ${COLS[i][1]}px; display: flex; flex-direction: column; align-items: center`}>
         <div aria-hidden="true" style="height: 13px; font-size: 10px; line-height: 13px; font-weight: 500; letter-spacing: 0.14em; color: #5f594f">{d.cap}</div>
-        <button type="button" data-knob class="sm-roller" aria-label={`${d.name}: ${sentenceCase(d.opts[start[i]])}`} style={`margin: 10px 0 0; width: 104px; height: ${WIN_H + 6}px`}>
+        <button type="button" data-knob class="sm-roller" aria-label={`${d.name}: ${sentenceCase(d.opts[start[i]])}`} style={`margin: 6px 0 0; width: ${COLS[i][1]}px; height: ${WIN_H}px`}>
           <span class="sm-rwin" aria-hidden="true">
-            <span class="sm-rwob" style={`animation-delay: ${i * 0.16}s`}>
+            <canvas data-paper class="sm-paper"></canvas>
+            <span class="sm-rwob">
               {d.opts.map((o, t) => (
-                <span data-item class:list={['sm-item', { on: t === start[i] }]} style={`top: ${(WIN_H - wheelGeo(!!d.stack).h) / 2}px; height: ${wheelGeo(!!d.stack).h}px; ${wheelPose(t - start[i], !!d.stack)}`}>
-                  {d.stack ? o.split(' ').map((w, n) => <>{n > 0 && <br />}{w}</>) : o}
+                <span data-item class:list={['sm-item', { on: t === start[i] }]} style={`top: ${(WIN_H - ROW_H) / 2}px; height: ${ROW_H}px; ${wheelPose(t - start[i])}`}>
+                  {o}
                 </span>
               ))}
             </span>
-            <span class="sm-rband" style={`top: ${(WIN_H - wheelGeo(!!d.stack).h) / 2 - 5}px; height: ${wheelGeo(!!d.stack).h + 10}px`}></span>
             <span class="sm-rshade"></span>
+            <span class="sm-rim sm-rim-l"></span>
+            <span class="sm-rim sm-rim-r"></span>
           </span>
         </button>
       </div>
     ))}
+    <div class="sm-band" aria-hidden="true" style={`left: 14px; top: ${73 + WIN_H / 2 - 16}px; width: 330px; height: 32px`}></div>
   </div>
 
   <div data-sheet class="sm-sheet" aria-hidden="true" style="left: 39px; bottom: 228px; width: 280px; height: 14px">
@@ -85,7 +93,7 @@ const wheelPose = (d: number, stack: boolean) => {
     <div data-feed style="position: absolute; left: 0; bottom: 14px; width: 280px"></div>
     <div class="sm-sheetshade" style="height: 18px"></div>
   </div>
-  <div class="sm-lip" aria-hidden="true" style="left: 28px; top: 239px; width: 302px; height: 6px; border-radius: 0 0 5.5px 5.5px">
+  <div class="sm-lip" aria-hidden="true" style="left: 28px; top: 189px; width: 302px; height: 6px; border-radius: 0 0 5.5px 5.5px">
     <div data-car class="sm-car" style="top: 1.5px; width: 9px; height: 3px"></div>
   </div>
 
