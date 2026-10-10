@@ -38,6 +38,10 @@
 
 /* dials */
 .sm-face { position: relative; border-radius: 50%; background: linear-gradient(135deg, #f7f6f2, #c9c7c0); box-shadow: inset 0 0 0 0.75px rgba(0, 0, 0, 0.13), inset 0 1.5px 1px rgba(255, 255, 255, 0.8), 0 1px 1px rgba(255, 255, 255, 0.6); }
+/* a soft blue glow that pulses behind each knob */
+.sm-face { isolation: isolate; }
+.sm-face::before { content: ''; position: absolute; inset: -16px; z-index: -1; border-radius: 50%; pointer-events: none; background: radial-gradient(closest-side, rgba(70, 130, 255, 0.5), rgba(70, 130, 255, 0.22) 55%, rgba(70, 130, 255, 0)); animation: sm-glow 3.2s ease-in-out infinite; }
+@keyframes sm-glow { 0%, 100% { opacity: 0.35; transform: scale(0.94); } 50% { opacity: 0.85; transform: scale(1.06); } }
 .sm-tick { position: absolute; border-radius: 1px; background: #8d867a; transition: background-color 220ms ease; }
 .sm-tick.on { background: var(--m-orange); }
 .sm-knob { position: absolute; border-radius: 50%; cursor: grab; touch-action: none; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.28), 0 2px 3px rgba(0, 0, 0, 0.35); transition: box-shadow 200ms ease; }
@@ -51,7 +55,8 @@
 .sm-pdial:focus-visible { outline: 2px solid var(--m-ink); outline-offset: 3px; }
 
 /* the settings under each desktop dial: a radio group */
-.sm-opt { position: relative; height: 25px; margin: 0; padding: 0; border: 0; border-radius: 4px; background: rgba(0, 0, 0, 0); font-family: var(--mono); font-size: 11px; line-height: 25px; letter-spacing: 0.08em; font-weight: 400; color: var(--m-label); cursor: pointer; transition: color 200ms ease; }
+.sm-opt { position: relative; min-height: 25px; margin: 0; padding: 0; border: 0; border-radius: 4px; background: rgba(0, 0, 0, 0); font-family: var(--mono); font-size: 11px; line-height: 25px; letter-spacing: 0.08em; font-weight: 400; color: var(--m-label); cursor: pointer; transition: color 200ms ease; }
+.sm-opt .stack { display: inline-block; line-height: 13px; padding: 6px 0; vertical-align: top; }
 .sm-opt:hover { color: var(--m-ink); }
 .sm-opt:focus-visible { outline: 2px solid var(--m-ink); outline-offset: -2px; }
 .sm-opt[aria-checked="true"] { font-weight: 500; color: var(--m-ink); }
@@ -60,4 +65,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sm *, .sm *::before { transition: none !important; }
+  .sm-face::before { animation: none; opacity: 0.6; }
 }

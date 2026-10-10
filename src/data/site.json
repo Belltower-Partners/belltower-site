@@ -1,29 +1,18 @@
 {
   "title": "Belltower Partners",
-  "firmName": "Belltower Partners Consulting",
+  "firmName": "Belltower Partners",
   "description": "Technology and AI consulting for small and medium sized law firms.",
   "email": "go@gobelltower.com",
-  "footerLine": "Belltower Partners, LLC · [City] · go@gobelltower.com",
-  "formspreeEndpoint": "https://formspree.io/f/REPLACE_ME",
-  "contact": {
-    "heading": "Contact us",
-    "orEmail": "Or email",
-    "label": "Problems. Ideas. Questions.",
-    "emailPlaceholder": "Work email",
-    "send": "Send",
-    "sending": "Sending",
-    "sendAnother": "Send another",
-    "sent": "Sent",
-    "reply": "One of us will reply to {email}.",
-    "needText": "Write a sentence or two about the problem first.",
-    "needEmail": "We'll need an email address to reply to.",
-    "failed": "That didn't go through. Please write to us at go@gobelltower.com instead."
-  },
+  "footerLine": "Belltower Partners, LLC · Chicago · go@gobelltower.com",
   "machineLabel": "Sentence machine",
+  "machine": {
+    "heading": "You don’t have to figure out AI alone.",
+    "subtitle": "Clients, partners at your firm, and vendors all want answers from you. Dial in what’s on your desk, and let’s work through it together."
+  },
   "cases": {
     "label": "Case study",
-    "open": "Read the case study",
-    "close": "Close the case study"
+    "open": "Testimonial",
+    "close": "Close the testimonial"
   },
   "comingSoon": {
     "enabled": true,

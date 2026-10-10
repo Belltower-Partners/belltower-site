@@ -79,7 +79,7 @@ const first = machine.map[start[0]][start[1]][start[2]];
         </div>
         <div role="radiogroup" aria-labelledby={`sm-${d.name.toLowerCase()}`} style="margin-top: 12px; width: 196px; display: flex; flex-direction: column">
           {d.opts.map((label, t) => (
-            <button type="button" role="radio" data-opt class="sm-opt" aria-checked={t === start[i] ? 'true' : 'false'} tabindex={t === start[i] ? 0 : -1}><span style="position: relative"><span class="sm-dot" aria-hidden="true"></span>{label}</span></button>
+            <button type="button" role="radio" data-opt class="sm-opt" aria-checked={t === start[i] ? 'true' : 'false'} tabindex={t === start[i] ? 0 : -1}><span class:list={['sm-lab', { stack: d.stack }]} style="position: relative"><span class="sm-dot" aria-hidden="true"></span>{d.stack ? label.split(' ').map((w, n) => <>{n > 0 && <br />}{w}</>) : label}</span></button>
           ))}
         </div>
       </div>

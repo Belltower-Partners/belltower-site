@@ -1,6 +1,7 @@
 ---
 # Douglas Baird confirmed permission on 10/7 but is still wordsmithing the quote.
-order: 2
+draft: true
+order: 1
 label: "University of Chicago Law School"
 heading: "Building custom AI agents for a senior scholar"
 name: "Douglas Baird"
