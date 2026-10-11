@@ -90,6 +90,11 @@ const gated = site.comingSoon.enabled;
         <div class="fit fit-desk" data-fit data-w="760" data-h="700"><SentenceMachine /></div>
         <div class="fit fit-phone" data-fit data-w="358" data-h="470"><SentenceMachinePhone /></div>
       </section>
+
+      <section class="cta" aria-labelledby="cta-head">
+        <h2 class="cta-head" id="cta-head">{site.getInTouch}</h2>
+        <p class="cta-mail"><a href={`mailto:${site.email}`}>{site.email}</a></p>
+      </section>
     </main>
 
     <div class="closing">

@@ -96,6 +96,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .fit-desk { max-width: 760px; height: 700px; }
 .fit-phone { display: none; max-width: 358px; height: 470px; margin: 0 auto; }
 
+/* ---- get in touch, under the machine ---------------------------------------- */
+/* A typewriter label over the email address, centered under the machine. */
+.cta { padding-bottom: 64px; text-align: center; }
+.cta-head { margin: 0; font-family: var(--mono); font-size: 14px; line-height: 18px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--label); }
+.cta-mail { margin: 10px 0 0; font-family: var(--display); font-size: 28px; line-height: 36px; }
+.cta-mail a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.cta-mail a:hover { color: #444444; }
+
 /* ---- footer --------------------------------------------------------------- */
 .closing { padding-bottom: 56px; border-top: 2px solid var(--ink); }
 .foot { padding-top: 48px; }
@@ -125,6 +133,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .machine-intro p { margin-top: 6px; font-size: 15px; }
   .fit-desk { display: none; }
   .fit-phone { display: block; }
+
+  .cta { margin-top: 44px; padding-bottom: 0; }
+  .cta-head { font-size: 13px; line-height: 17px; }
+  .cta-mail { font-size: 24px; line-height: 32px; }
 
   .closing { margin-top: 72px; padding-bottom: 40px; }
   .foot { padding-top: 40px; }
