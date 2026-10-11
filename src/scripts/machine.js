@@ -97,6 +97,7 @@ class Machine {
     this.F = 0;                         // how far the paper still has to feed up (or has sunk back), px
     this.car = this.carT = this.V.PARK; // print carriage in the slot, x
     this.drag = null; this.q = []; this.cur = null; this.pending = null; this.rush = false; this.dragEnd = 0;
+    this.tap = null; this.tapAt = -1e9;
     this.lastJ = -1; this.lastSel = null;   // nothing printed until the first turn
     this.touched = false;
     // The invitation on the paper before the first turn.
@@ -418,6 +419,7 @@ class Machine {
 
   clickDial(i) {
     if (performance.now() - this.dragEnd < 350) return;   // the click that ends a drag
+    if (performance.now() - this.tapAt < 800) return;     // the click Safari may still send after a tap
     this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);
   }
 
@@ -427,7 +429,12 @@ class Machine {
     // A new touch starts fresh: any drag still open here has lost its touchend.
     if (e.touches.length > 1) return;
     this.drag = null;
-    // Safari has already decided to scroll the page: leave it to the page. A tap still arrives as a click.
+    // Every touch may turn out to be a tap. The drum counts taps itself when the finger lifts, rather
+    // than waiting for a click: iPhone Safari doesn't always send one (after a touch it couldn't
+    // cancel, or while something on the page is animating, like the paper's blinking cursor).
+    const t0 = e.changedTouches[0];
+    this.tap = { i, id: t0.identifier, x0: t0.clientX, y0: t0.clientY, at: performance.now() };
+    // Safari has already decided to scroll the page: leave the drag to the page.
     if (!e.cancelable) return;
     e.preventDefault();                  // no page scroll, no synthetic click: the drum handles it
     const t = e.changedTouches[0];
@@ -439,6 +446,11 @@ class Machine {
   }
 
   tmove(i, e) {
+    const tap = this.tap;
+    if (tap) {   // a finger that travels is a drag or a scroll, not a tap
+      const m = [...e.changedTouches].find((x) => x.identifier === tap.id);
+      if (m && (m.clientX - tap.x0) ** 2 + (m.clientY - tap.y0) ** 2 > 100) this.tap = null;
+    }
     const d = this.drag;
     if (!d || d.i !== i) return;
     const t = [...e.changedTouches].find((x) => 't' + x.identifier === d.id);
@@ -456,13 +468,22 @@ class Machine {
   }
 
   tend(i, e, cancelled) {
+    const tap = this.tap, now = performance.now();
+    this.tap = null;
     const d = this.drag;
-    if (!d || d.i !== i || ![...e.changedTouches].some((x) => 't' + x.identifier === d.id)) return;
+    if (!d || d.i !== i || ![...e.changedTouches].some((x) => 't' + x.identifier === d.id)) {
+      // A tap the drum couldn't take over (Safari had the page scrolling): count it here.
+      if (tap && tap.i === i && !cancelled && now - tap.at < 600 && [...e.changedTouches].some((x) => x.identifier === tap.id)) {
+        this.tapAt = now;
+        this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);
+      }
+      return;
+    }
     e.preventDefault();
     this.drag = null;
     if (touchDrag === this) touchDrag = null;
-    if (d.moved) { this.dragEnd = performance.now(); this.schedule(160); this.render(); }
-    else if (!cancelled) this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);   // a tap: next setting
+    if (d.moved) { this.dragEnd = now; this.schedule(160); this.render(); }
+    else if (!cancelled) { this.tapAt = now; this.choose(i, (this.sel[i] + 1) % COUNT[i], 420); }   // a tap: next setting
     else this.render();
   }
 
