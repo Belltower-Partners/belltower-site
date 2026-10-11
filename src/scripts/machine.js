@@ -142,6 +142,10 @@ class Machine {
 
     this.speckle(root.querySelector('[data-speck]'));
     if (this.invite) this.startIntro();
+    // The cursor on the paper blinks only while the machine is on screen (see .sm-cursor in machine.css).
+    if (window.IntersectionObserver) {
+      new IntersectionObserver((es) => { root.classList.toggle('onscreen', es[es.length - 1].isIntersecting); }).observe(root);
+    } else root.classList.add('onscreen');
     root.querySelectorAll('[data-paper]').forEach((cv, n) => this.grain(cv, n));
     this.render();
 

@@ -38,8 +38,11 @@
 /* the typing cursor on the invitation: steady while it types, blinking once it has finished */
 .sm-cursor { position: relative; display: inline-block; width: 0; height: 1em; vertical-align: -0.12em; }
 .sm-cursor::after { content: ""; position: absolute; left: 1px; top: 0; bottom: 0; width: 1.5px; border-radius: 1px; background: var(--m-ink); }
-.sm-cursor.blink::after { animation: sm-blink 1.05s steps(1, end) infinite; }
-@keyframes sm-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+/* It blinks by colour, never by opacity or visibility, and only while the machine is on screen:
+   iPhone Safari drops a tap's click when something on the page turns from invisible to visible
+   just as the finger lifts, which a blink at opacity 0 does every second. */
+.sm.onscreen .sm-cursor.blink::after { animation: sm-blink 1.05s steps(1, end) infinite; }
+@keyframes sm-blink { 0%, 55% { background-color: var(--m-ink); } 56%, 100% { background-color: rgba(0, 0, 0, 0); } }
 
 /* number drums */
 .sm-drum { position: relative; overflow: hidden; border-radius: 2px; background: #f6f3ea; }
@@ -97,5 +100,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sm *, .sm *::before { transition: none !important; }
-  .sm.waiting .sm-sheet, .sm.waiting .sm-lamp, .sm-cursor.blink::after { animation: none; }
+  .sm.waiting .sm-sheet, .sm.waiting .sm-lamp, .sm.onscreen .sm-cursor.blink::after { animation: none; }
 }
