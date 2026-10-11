@@ -62,6 +62,7 @@ working here must follow these rules.
 | The 24 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
+| "Get in touch" and the email address under the machine | `src/data/site.json` (`getInTouch` is the label; the address is `email`) |
 | "Coming soon" screen in front of the site: on/off, password and its words | `src/data/site.json` under `comingSoon` (`enabled: false` turns it off) |
 
 The page has no contact form; it was removed in October 2026 and can be restored from git history
