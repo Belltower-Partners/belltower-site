@@ -57,8 +57,9 @@
    chosen settings. The script draws the paper grain on each drum's canvas. */
 .sm-roller { position: relative; display: block; padding: 0; border: 0; border-radius: 6px; background: rgba(0, 0, 0, 0); cursor: grab; touch-action: none; -webkit-touch-callout: none; font-family: var(--mono); }
 .sm-roller.live { cursor: grabbing; }
-/* Safari works out where a page may not scroll from each element, so the drum's turned labels need it too. */
-.sm-roller * { touch-action: none; }
+/* Touches land on the flat button itself, never on the turned 3D labels or masked layers inside it:
+   Safari can lose track of where the page may not scroll on layers like those. */
+.sm-roller * { pointer-events: none; }
 .sm-roller:focus-visible { outline: 2px solid var(--m-orange); outline-offset: -1px; }
 .sm-well { position: absolute; border-radius: 12px; pointer-events: none; background: linear-gradient(180deg, #0c0b0a, #2f2b27); box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.85), 0 0 0 3px #e2dbcd, 0 0 0 4px rgba(120, 100, 70, 0.3), 0 1px 0 4px rgba(255, 255, 255, 0.8); }
 .sm-rwin { position: absolute; inset: 0; overflow: hidden; border-radius: 6px; background: linear-gradient(180deg, #e6dfcf, #fdfaf3 50%, #e6dfcf); }

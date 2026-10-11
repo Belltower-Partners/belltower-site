@@ -54,7 +54,13 @@ const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-moti
 // always lets go of it, so the page can never be left unscrollable.
 let touchDrag = null;
 document.addEventListener('touchmove', (e) => { if (touchDrag) e.preventDefault(); }, { passive: false });
-const letGo = (e) => { if (!e.touches.length) touchDrag = null; };
+// When no fingers are left, a drag that never got its own touchend (Safari can drop it once it has
+// started a scroll) is over: let it go, so the drum answers the next touch.
+const letGo = (e) => {
+  if (e.touches.length) return;
+  if (touchDrag) touchDrag.drag = null;
+  touchDrag = null;
+};
 document.addEventListener('touchend', letGo);
 document.addEventListener('touchcancel', letGo);
 
@@ -427,7 +433,11 @@ class Machine {
   // ---- touch -------------------------------------------------------------------
 
   tstart(i, e) {
-    if (this.drag || e.touches.length > 1) return;
+    // A new touch starts fresh: any drag still open here has lost its touchend.
+    if (e.touches.length > 1) return;
+    this.drag = null;
+    // Safari has already decided to scroll the page: leave it to the page. A tap still arrives as a click.
+    if (!e.cancelable) return;
     e.preventDefault();                  // no page scroll, no synthetic click: the drum handles it
     const t = e.changedTouches[0];
     this.touch();
@@ -442,6 +452,14 @@ class Machine {
     if (!d || d.i !== i) return;
     const t = [...e.changedTouches].find((x) => 't' + x.identifier === d.id);
     if (!t) return;
+    // The page took over the scroll after all: let go and put the drum back, so only one thing moves.
+    if (!e.cancelable) {
+      this.drag = null;
+      if (touchDrag === this) touchDrag = null;
+      this.sel = this.sel.slice(); this.sel[i] = d.pos0;
+      this.render();
+      return;
+    }
     e.preventDefault();
     this.roll(i, d, t.clientX, t.clientY, e.currentTarget);
   }
