@@ -42,9 +42,9 @@ const wheelPose = (d: number) => {
     <div class="sm-slotframe" aria-hidden="true" style="left: 132px; top: 2px; width: 416px; height: 20px; border-radius: 10px"></div>
     <div class="sm-slot" aria-hidden="true" style="left: 136px; top: 5px; width: 408px; height: 14px; border-radius: 7px"></div>
 
-    <div aria-hidden="true" style="position: absolute; left: 44px; top: 31px; font-size: 10.5px; line-height: 14px; font-weight: 500; letter-spacing: 0.26em; color: #5f594f">BELLTOWER</div>
+    <div aria-hidden="true" style="position: absolute; left: 44px; top: 41px; font-size: 10.5px; line-height: 14px; font-weight: 500; letter-spacing: 0.26em; color: #5f594f">BELLTOWER</div>
 
-    <div aria-hidden="true" style="position: absolute; left: 0; top: 22px; width: 680px; display: flex; justify-content: center; align-items: center; gap: 10px">
+    <div aria-hidden="true" style="position: absolute; left: 0; top: 32px; width: 680px; display: flex; justify-content: center; align-items: center; gap: 10px">
       <span style="font-size: 10.5px; line-height: 14px; letter-spacing: 0.12em; color: #5f594f">No.</span>
       <div style="display: flex; gap: 3px; padding: 4px; border-radius: 5px; background: #26241f; box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.7)">
         {[0, 1, 2].map((t) => (
@@ -59,17 +59,17 @@ const wheelPose = (d: number) => {
       <span style="font-size: 10.5px; line-height: 14px; letter-spacing: 0.12em; color: #5f594f">OF {total}</span>
     </div>
 
-    <div aria-hidden="true" style="position: absolute; right: 44px; top: 31px; display: flex; align-items: center; gap: 8px">
+    <div aria-hidden="true" style="position: absolute; right: 44px; top: 41px; display: flex; align-items: center; gap: 8px">
       <span style="font-size: 10px; line-height: 14px; letter-spacing: 0.14em; color: #5f594f">ON</span>
       <span data-lamp class="sm-lamp" style="width: 11px; height: 11px"></span>
     </div>
 
-    <div class="sm-rule" aria-hidden="true" style="left: 32px; top: 64px; width: 616px"></div>
+    <div class="sm-rule" aria-hidden="true" style="left: 32px; top: 74px; width: 616px"></div>
 
-    <div class="sm-well" aria-hidden="true" style={`left: 30px; top: 104px; width: 620px; height: ${WIN_H + 6}px`}></div>
+    <div class="sm-well" aria-hidden="true" style={`left: 30px; top: 114px; width: 620px; height: ${WIN_H + 6}px`}></div>
 
     {machine.dials.map((d, i) => (
-      <div data-dial style={`position: absolute; left: ${COLS[i][0]}px; top: 82px; width: ${COLS[i][1]}px; display: flex; flex-direction: column; align-items: center`}>
+      <div data-dial style={`position: absolute; left: ${COLS[i][0]}px; top: 92px; width: ${COLS[i][1]}px; display: flex; flex-direction: column; align-items: center`}>
         <div aria-hidden="true" style="height: 14px; font-size: 10.5px; line-height: 14px; font-weight: 500; letter-spacing: 0.16em; color: #5f594f">{d.cap}</div>
         <button type="button" data-knob class="sm-roller" aria-label={`${d.name}: ${sentenceCase(d.opts[start[i]])}`} style={`margin: 11px 0 0; width: ${COLS[i][1]}px; height: ${WIN_H}px`}>
           <span class="sm-rwin" aria-hidden="true">
@@ -88,7 +88,7 @@ const wheelPose = (d: number) => {
         </button>
       </div>
     ))}
-    <div class="sm-band" aria-hidden="true" style={`left: 30px; top: ${107 + WIN_H / 2 - 20}px; width: 620px; height: 40px`}></div>
+    <div class="sm-band" aria-hidden="true" style={`left: 30px; top: ${117 + WIN_H / 2 - 20}px; width: 620px; height: 40px`}></div>
   </div>
 
   <div data-sheet class="sm-sheet" aria-hidden="true" style="left: 190px; bottom: 321px; width: 380px; height: 18px">

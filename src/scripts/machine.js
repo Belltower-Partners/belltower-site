@@ -48,6 +48,16 @@ const wheelPitch = ([R, STEP]) => R * Math.sin(STEP * Math.PI / 180);
 
 const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
+// iPhone Safari can scroll the page during a drum drag even though the drum's own handlers cancel
+// the touch (its turned, 3D-transformed labels can drop out of the drum's no-scroll area). While a
+// drum is being dragged, a page-level touchmove listener keeps the page still; lifting every finger
+// always lets go of it, so the page can never be left unscrollable.
+let touchDrag = null;
+document.addEventListener('touchmove', (e) => { if (touchDrag) e.preventDefault(); }, { passive: false });
+const letGo = (e) => { if (!e.touches.length) touchDrag = null; };
+document.addEventListener('touchend', letGo);
+document.addEventListener('touchcancel', letGo);
+
 // ---- measuring with Pretext ----------------------------------------------------
 
 function natural(text, font, ls) {
@@ -422,6 +432,7 @@ class Machine {
     const t = e.changedTouches[0];
     this.touch();
     this.drag = { i, id: 't' + t.identifier, x0: t.clientX, y0: t.clientY, moved: false, pos0: this.sel[i], pos: this.sel[i] };
+    touchDrag = this;
     clearTimeout(this.timer);
     this.render();
   }
@@ -440,6 +451,7 @@ class Machine {
     if (!d || d.i !== i || ![...e.changedTouches].some((x) => 't' + x.identifier === d.id)) return;
     e.preventDefault();
     this.drag = null;
+    if (touchDrag === this) touchDrag = null;
     if (d.moved) { this.dragEnd = performance.now(); this.schedule(160); this.render(); }
     else if (!cancelled) this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);   // a tap: next setting
     else this.render();
