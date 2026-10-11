@@ -19,7 +19,7 @@
     "close": "Close the testimonial"
   },
   "comingSoon": {
-    "enabled": true,
+    "enabled": false,
     "password": "jinut",
     "eyebrow": "Belltower Partners",
     "heading": "Coming soon",
