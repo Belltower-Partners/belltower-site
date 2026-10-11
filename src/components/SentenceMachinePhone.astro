@@ -18,6 +18,8 @@ const sentenceCase = (v: string) => v.charAt(0) + v.slice(1).toLowerCase();
 // between the rails and the others turn away above and below it, like the iPhone timer.
 // Keep in step with wheelPose() in src/scripts/machine.js.
 const WIN_H = 114, ROW_H = 15, R = 52, STEP = 30;
+// Snap points in each drum's scroll box, one per setting: keep in step with scrollPitch in machine.js.
+const PITCH = Math.round(R * Math.sin(STEP * Math.PI / 180));
 // Each drum's left edge and width: Role is wider so every setting fits on one line.
 const COLS = [[17, 148], [167, 86], [255, 86]];
 const wheelPose = (d: number) => {
@@ -67,7 +69,8 @@ const wheelPose = (d: number) => {
     {machine.dials.map((d, i) => (
       <div data-dial style={`position: absolute; left: ${COLS[i][0]}px; top: 62px; width: ${COLS[i][1]}px; display: flex; flex-direction: column; align-items: center`}>
         <div aria-hidden="true" style="height: 13px; font-size: 10px; line-height: 13px; font-weight: 500; letter-spacing: 0.14em; color: #5f594f">{d.cap}</div>
-        <button type="button" data-knob class="sm-roller" aria-label={`${d.name}: ${sentenceCase(d.opts[start[i]])}`} style={`margin: 6px 0 0; width: ${COLS[i][1]}px; height: ${WIN_H}px`}>
+        <div class="sm-drumbox" style={`margin: 6px 0 0; width: ${COLS[i][1]}px; height: ${WIN_H}px`}>
+        <button type="button" data-knob class="sm-roller" aria-label={`${d.name}: ${sentenceCase(d.opts[start[i]])}`} style={`width: ${COLS[i][1]}px; height: ${WIN_H}px`}>
           <span class="sm-rwin" aria-hidden="true">
             <canvas data-paper class="sm-paper"></canvas>
             <span class="sm-rwob">
@@ -82,6 +85,11 @@ const wheelPose = (d: number) => {
             <span class="sm-rim sm-rim-r"></span>
           </span>
         </button>
+        <div data-scroll class="sm-scroll" aria-hidden="true" tabindex="-1">
+          {d.opts.map(() => <div class="sm-stop" style={`height: ${PITCH}px`}></div>)}
+          <div style={`height: ${WIN_H - PITCH}px`}></div>
+        </div>
+        </div>
       </div>
     ))}
     <div class="sm-band" aria-hidden="true" style={`left: 14px; top: ${81 + WIN_H / 2 - 16}px; width: 330px; height: 32px`}></div>

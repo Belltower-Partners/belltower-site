@@ -45,24 +45,20 @@ function wheelPose(d, [R, STEP]) {
 }
 // How far a finger or mouse moves to roll a drum one setting: the distance between neighbours.
 const wheelPitch = ([R, STEP]) => R * Math.sin(STEP * Math.PI / 180);
+// The same distance in whole pixels: the spacing of the snap points in each drum's scroll box.
+// Keep in step with PITCH in SentenceMachine.astro and SentenceMachinePhone.astro.
+const scrollPitch = (wheel) => Math.round(wheelPitch(wheel));
 
 const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-// iPhone Safari can scroll the page during a drum drag even though the drum's own handlers cancel
-// the touch (its turned, 3D-transformed labels can drop out of the drum's no-scroll area). While a
-// drum is being dragged, a page-level touchmove listener keeps the page still; lifting every finger
-// always lets go of it, so the page can never be left unscrollable.
-let touchDrag = null;
-document.addEventListener('touchmove', (e) => { if (touchDrag) e.preventDefault(); }, { passive: false });
-// When no fingers are left, a drag that never got its own touchend (Safari can drop it once it has
-// started a scroll) is over: let it go, so the drum answers the next touch.
-const letGo = (e) => {
-  if (e.touches.length) return;
-  if (touchDrag) touchDrag.drag = null;
-  touchDrag = null;
-};
-document.addEventListener('touchend', letGo);
-document.addEventListener('touchcancel', letGo);
+// The drums turn by scrolling. Over each drawn drum lies a transparent scroll box (data-scroll) with
+// one snap point per setting. Fingers, trackpads and mouse wheels scroll that box like any other
+// scrolling area, so the browser itself decides between turning a drum and scrolling the page, the
+// way it does for a native picker, instead of the drum and the page fighting over the same touch.
+// The script reads where the box has scrolled to and turns the drawn drum to match.
+// The page's own scrolling is watched too: a touch that only stops the page gliding is not a tap.
+let pageScrollAt = -1e9;
+window.addEventListener('scroll', () => { pageScrollAt = performance.now(); }, { passive: true });
 
 // ---- measuring with Pretext ----------------------------------------------------
 
@@ -117,22 +113,29 @@ class Machine {
     this.dials = [...root.querySelectorAll('[data-dial]')].map((el, i) => {
       const ui = {
         knob: el.querySelector('[data-knob]'),
+        scroll: el.querySelector('[data-scroll]'),
         items: [...el.querySelectorAll('[data-item]')],
         wpos: null,
+        spin: false, spos: 0, held: false, settle: 0, syncTo: null, synced: null, wacc: 0, wat: -1e9,
       };
-      ui.knob.addEventListener('pointerdown', (e) => this.pdown(i, e));
-      ui.knob.addEventListener('pointermove', (e) => this.pmove(i, e));
-      ui.knob.addEventListener('pointerup', (e) => this.pup(i, e));
-      ui.knob.addEventListener('pointercancel', (e) => this.pup(i, e));
-      ui.knob.addEventListener('lostpointercapture', (e) => this.pup(i, e));
+      // The button underneath is what the keyboard and screen readers use.
       ui.knob.addEventListener('click', () => this.clickDial(i));
       ui.knob.addEventListener('keydown', (e) => this.keyDial(i, e));
-      // Touch screens: drive the drum from touch events, which Safari keeps delivering while the
-      // finger moves (pointer events can be cancelled there when the page decides to scroll).
-      ui.knob.addEventListener('touchstart', (e) => this.tstart(i, e), { passive: false });
-      ui.knob.addEventListener('touchmove', (e) => this.tmove(i, e), { passive: false });
-      ui.knob.addEventListener('touchend', (e) => this.tend(i, e, false), { passive: false });
-      ui.knob.addEventListener('touchcancel', (e) => this.tend(i, e, true), { passive: false });
+      // The scroll box on top is what fingers, wheels and the mouse use.
+      const sc = ui.scroll;
+      sc.addEventListener('scroll', () => this.onScroll(i), { passive: true });
+      if ('onscrollend' in window) sc.addEventListener('scrollend', () => this.settle(i));
+      sc.addEventListener('wheel', (e) => this.wheel(i, e), { passive: false });
+      sc.addEventListener('touchstart', (e) => this.tstart(i, e), { passive: true });
+      sc.addEventListener('touchmove', (e) => this.tmove(i, e), { passive: true });
+      sc.addEventListener('touchend', (e) => this.tend(i, e, false), { passive: true });
+      sc.addEventListener('touchcancel', (e) => this.tend(i, e, true), { passive: true });
+      sc.addEventListener('pointerdown', (e) => this.pdown(i, e));
+      sc.addEventListener('pointermove', (e) => this.pmove(i, e));
+      sc.addEventListener('pointerup', (e) => this.pup(i, e));
+      sc.addEventListener('pointercancel', (e) => this.pup(i, e));
+      sc.addEventListener('lostpointercapture', (e) => this.pup(i, e));
+      sc.addEventListener('click', () => this.clickDial(i));
       return ui;
     });
     this.tickFn = (t) => this.tick(t);
@@ -423,68 +426,109 @@ class Machine {
     this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);
   }
 
-  // ---- touch -------------------------------------------------------------------
+  // ---- scrolling ---------------------------------------------------------------
 
-  tstart(i, e) {
-    // A new touch starts fresh: any drag still open here has lost its touchend.
-    if (e.touches.length > 1) return;
-    this.drag = null;
-    // Every touch may turn out to be a tap. The drum counts taps itself when the finger lifts, rather
-    // than waiting for a click: iPhone Safari doesn't always send one (after a touch it couldn't
-    // cancel, or while something on the page is animating, like the paper's blinking cursor).
-    const t0 = e.changedTouches[0];
-    this.tap = { i, id: t0.identifier, x0: t0.clientX, y0: t0.clientY, at: performance.now() };
-    // Safari has already decided to scroll the page: leave the drag to the page.
-    if (!e.cancelable) return;
-    e.preventDefault();                  // no page scroll, no synthetic click: the drum handles it
-    const t = e.changedTouches[0];
-    this.touch();
-    this.drag = { i, id: 't' + t.identifier, x0: t.clientX, y0: t.clientY, moved: false, pos0: this.sel[i], pos: this.sel[i] };
-    touchDrag = this;
-    clearTimeout(this.timer);
-    this.render();
+  // Put a drum's scroll box at its setting, unless someone is turning it.
+  syncScroll(i) {
+    const ui = this.dials[i], sc = ui.scroll, k = this.sel[i];
+    if (ui.spin || ui.held) return;
+    ui.synced = k;
+    const y = k * scrollPitch(this.V.wheel);
+    if (Math.abs(sc.scrollTop - y) > 0.5) { ui.syncTo = y; sc.scrollTop = y; }
   }
 
-  tmove(i, e) {
-    const tap = this.tap;
-    if (tap) {   // a finger that travels is a drag or a scroll, not a tap
-      const m = [...e.changedTouches].find((x) => x.identifier === tap.id);
-      if (m && (m.clientX - tap.x0) ** 2 + (m.clientY - tap.y0) ** 2 > 100) this.tap = null;
-    }
-    const d = this.drag;
-    if (!d || d.i !== i) return;
-    const t = [...e.changedTouches].find((x) => 't' + x.identifier === d.id);
-    if (!t) return;
-    // The page took over the scroll after all: let go and put the drum back, so only one thing moves.
-    if (!e.cancelable) {
-      this.drag = null;
-      if (touchDrag === this) touchDrag = null;
-      this.sel = this.sel.slice(); this.sel[i] = d.pos0;
-      this.render();
-      return;
-    }
+  // Before a scroll starts, make sure the box sits at the drum's setting. A box can be out of step
+  // after it was hidden (the desktop and phone machines swap at 800px).
+  ready4(i) {
+    const ui = this.dials[i];
+    if (ui.spin || this.drag) return;
+    ui.synced = null;
+    this.syncScroll(i);
+  }
+
+  // A mouse wheel or trackpad turns a drum one setting at a time (a wheel notch would otherwise roll
+  // past several settings at once). At the first or last setting it scrolls the page, as before.
+  wheel(i, e) {
+    const ui = this.dials[i], last = COUNT[i] - 1, k = this.sel[i];
+    const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1);
+    if (!dy || ui.spin || this.drag) return;
     e.preventDefault();
-    this.roll(i, d, t.clientX, t.clientY, e.currentTarget);
+    // Past the end, hand the wheel to the page (the scroll box keeps its own scrolling to itself).
+    if ((dy < 0 && k === 0) || (dy > 0 && k === last)) { ui.wacc = 0; window.scrollBy(0, dy); return; }
+    const now = performance.now();
+    if (now - ui.wat < 140) return;   // one step per notch, and per short trackpad stroke
+    ui.wacc += dy;
+    if (Math.abs(ui.wacc) < 40) return;
+    ui.wat = now;
+    const step = ui.wacc > 0 ? 1 : -1;
+    ui.wacc = 0;
+    this.choose(i, k + step, 420);
+  }
+
+  onScroll(i) {
+    const ui = this.dials[i], y = ui.scroll.scrollTop;
+    if (ui.syncTo != null) {   // the script moved the box itself
+      const ours = Math.abs(y - ui.syncTo) < 1;
+      ui.syncTo = null;
+      if (ours) return;
+    }
+    if (this.drag) return;
+    if (!ui.spin) { ui.spin = true; this.touch(); clearTimeout(this.timer); }
+    const last = COUNT[i] - 1;
+    ui.spos = Math.max(0, Math.min(last, y / scrollPitch(this.V.wheel)));
+    const k = Math.round(ui.spos);
+    if (k !== this.sel[i]) { this.sel = this.sel.slice(); this.sel[i] = k; }
+    this.render();
+    clearTimeout(ui.settle);
+    ui.settle = setTimeout(() => this.settle(i), 160);
+  }
+
+  // The box has stopped (scrollend, or no scroll for a moment with no finger on it): take the
+  // setting it stopped at, and print.
+  settle(i) {
+    const ui = this.dials[i];
+    clearTimeout(ui.settle);
+    if (!ui.spin) return;
+    if (ui.held) { ui.settle = setTimeout(() => this.settle(i), 160); return; }
+    ui.spin = false;
+    const k = Math.max(0, Math.min(COUNT[i] - 1, Math.round(ui.scroll.scrollTop / scrollPitch(this.V.wheel))));
+    ui.synced = null;
+    this.choose(i, k, 160);
+  }
+
+  // ---- touch -------------------------------------------------------------------
+  // The browser scrolls the box; these listeners never block it. They only count taps: a quick
+  // touch that doesn't travel steps the drum to its next setting. The drum counts taps itself when
+  // the finger lifts, rather than waiting for a click: iPhone Safari doesn't always send one (while
+  // something on the page is animating, like the paper's blinking cursor).
+
+  tstart(i, e) {
+    const ui = this.dials[i];
+    if (e.touches.length > 1) { this.tap = null; return; }
+    if (!ui.spin) this.ready4(i);
+    ui.held = true;
+    const t = e.changedTouches[0], now = performance.now();
+    // A touch that stops a turning drum, or the gliding page, is not a tap.
+    this.tap = ui.spin || now - pageScrollAt < 150 ? null
+      : { i, id: t.identifier, x0: t.clientX, y0: t.clientY, at: now };
+  }
+
+  tmove(_i, e) {
+    const tap = this.tap;
+    if (!tap) return;   // a finger that travels is a turn or a scroll, not a tap
+    const m = [...e.changedTouches].find((x) => x.identifier === tap.id);
+    if (m && (m.clientX - tap.x0) ** 2 + (m.clientY - tap.y0) ** 2 > 100) this.tap = null;
   }
 
   tend(i, e, cancelled) {
-    const tap = this.tap, now = performance.now();
+    const ui = this.dials[i], tap = this.tap, now = performance.now();
     this.tap = null;
-    const d = this.drag;
-    if (!d || d.i !== i || ![...e.changedTouches].some((x) => 't' + x.identifier === d.id)) {
-      // A tap the drum couldn't take over (Safari had the page scrolling): count it here.
-      if (tap && tap.i === i && !cancelled && now - tap.at < 600 && [...e.changedTouches].some((x) => x.identifier === tap.id)) {
-        this.tapAt = now;
-        this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);
-      }
-      return;
+    if (!e.touches.length) ui.held = false;
+    if (ui.spin) { clearTimeout(ui.settle); ui.settle = setTimeout(() => this.settle(i), 160); return; }
+    if (tap && tap.i === i && !cancelled && now - tap.at < 600 && [...e.changedTouches].some((x) => x.identifier === tap.id)) {
+      this.tapAt = now;
+      this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);
     }
-    e.preventDefault();
-    this.drag = null;
-    if (touchDrag === this) touchDrag = null;
-    if (d.moved) { this.dragEnd = now; this.schedule(160); this.render(); }
-    else if (!cancelled) { this.tapAt = now; this.choose(i, (this.sel[i] + 1) % COUNT[i], 420); }   // a tap: next setting
-    else this.render();
   }
 
   // The drum follows the finger: dragging up brings the next setting into the window. Past the first
@@ -506,9 +550,12 @@ class Machine {
 
   // ---- mouse and pen -------------------------------------------------------------
 
+  // A mouse can't drag a scroll box, so dragging with a mouse or pen turns the drum here. Touch is
+  // left to the browser's own scrolling.
   pdown(i, e) {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    if (e.pointerType === 'touch') return;   // touch events handle it
+    if (e.pointerType === 'touch') return;
+    if (this.dials[i].spin) return;
     e.preventDefault();
     this.touch();
     try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) { /* not capturable */ }
@@ -527,7 +574,7 @@ class Machine {
     const d = this.drag;
     if (!d || d.i !== i || e.pointerType === 'touch') return;
     this.drag = null;
-    // A press without a drag is a click, which the button's click handler turns into the next setting.
+    // A press without a drag is a click, which the click handler turns into the next setting.
     if (d.moved) { this.dragEnd = performance.now(); this.schedule(160); }
     this.render();
   }
@@ -538,8 +585,9 @@ class Machine {
     const s = this.sel, drag = this.drag;
     this.dials.forEach((ui, i) => {
       const k = s[i], live = !!(drag && drag.i === i);
-      ui.knob.classList.toggle('live', live && drag.moved);
-      const pos = live && drag.moved ? drag.pos : k;
+      ui.knob.classList.toggle('live', (live && drag.moved) || ui.spin);
+      const pos = live && drag.moved ? drag.pos : ui.spin ? ui.spos : k;
+      if (!live && !ui.spin && ui.synced !== k) this.syncScroll(i);
       if (ui.items.length && ui.wpos !== pos) {
         ui.wpos = pos;
         ui.items.forEach((it, n) => {

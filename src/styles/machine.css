@@ -35,11 +35,9 @@
 .sm-desk .sm-row .rule { left: 40px; width: 300px; }
 .sm-phone .sm-row .rule { left: 30px; width: 220px; }
 
-/* the typing cursor on the invitation: steady while it types, blinking once it has finished */
-.sm-cursor { position: relative; display: inline-block; width: 0; height: 1em; vertical-align: -0.12em; }
-.sm-cursor::after { content: ""; position: absolute; left: 1px; top: 0; bottom: 0; width: 1.5px; border-radius: 1px; background: var(--m-ink); }
-.sm-cursor.blink::after { animation: sm-blink 1.05s steps(1, end) infinite; }
-@keyframes sm-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+/* The invitation has no cursor: iPhone Safari dropped taps across the page while it blinked. The
+   script still adds the element, which stays hidden. */
+.sm-cursor { display: none; }
 
 /* number drums */
 .sm-drum { position: relative; overflow: hidden; border-radius: 2px; background: #f6f3ea; }
@@ -57,6 +55,14 @@
    chosen settings. The script draws the paper grain on each drum's canvas. */
 .sm-roller { position: relative; display: block; padding: 0; border: 0; border-radius: 6px; background: rgba(0, 0, 0, 0); cursor: grab; touch-action: none; -webkit-touch-callout: none; font-family: var(--mono); }
 .sm-roller.live { cursor: grabbing; }
+/* The transparent scroll box over each drum: fingers, trackpads and wheels scroll it, one snap point
+   per setting, and the script turns the drawn drum underneath to match. It never hands its scroll on
+   to the page, and its scroll bar is hidden. */
+.sm-drumbox { position: relative; }
+.sm-scroll { position: absolute; inset: 0; z-index: 1; overflow-x: hidden; overflow-y: scroll; overscroll-behavior: contain; scroll-snap-type: y mandatory; scrollbar-width: none; touch-action: pan-y; cursor: grab; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+.sm-scroll::-webkit-scrollbar { display: none; }
+.sm-scroll:active { cursor: grabbing; }
+.sm-stop { scroll-snap-align: start; }
 /* Touches land on the flat button itself, never on the turned 3D labels or masked layers inside it:
    Safari can lose track of where the page may not scroll on layers like those. */
 .sm-roller * { pointer-events: none; }
@@ -89,5 +95,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sm *, .sm *::before { transition: none !important; }
-  .sm.waiting .sm-sheet, .sm.waiting .sm-lamp, .sm-cursor.blink::after { animation: none; }
+  .sm.waiting .sm-sheet, .sm.waiting .sm-lamp { animation: none; }
 }
