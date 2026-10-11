@@ -86,7 +86,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* ---- the sentence machine's section ----------------------------------------- */
 .machine-sec { margin-top: 40px; padding: 56px 0 64px; border-top: 2px solid var(--ink); }
-/* The heading and line above the machine. The invitation is typed onto the machine's paper instead;
+/* The heading and line above the machine. The invitation is on the machine's paper instead;
    screen readers still hear it here. */
 .machine-intro { margin: 0 0 16px; }
 .machine-intro h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 25px; line-height: 35px; color: var(--ink); }
