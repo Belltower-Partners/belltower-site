@@ -1,31 +1,50 @@
 ---
-// The desktop sentence machine: a 760 x 700 enamel device (SentenceMachine.dc.html).
-// Three dials pick one of the sentences in src/data/sentences.json; the machine types it on a ticket
-// that rises out of the slot on top. Until the first turn the knobs nudge and the paper peeks out.
-// Geometry is fixed, as designed; src/scripts/machine.js runs it.
+// The desktop sentence machine: a 760 x 553 enamel device (SentenceMachine.dc.html, with the knobs
+// replaced by paper drums and the space above the body cut to what the tallest ticket needs).
+// Three drums pick one of the sentences in src/data/sentences.json; the machine types it on a ticket
+// that rises out of the slot on top. Each drum is one button: click to roll to the next setting, drag
+// up or down to roll through them, arrow keys when focused. The drums turn in one well cut into the
+// enamel, and two steel rails across them mark the chosen settings. Before the first turn, the machine
+// types the invitation and the instruction (site.json machine.invite and machine.hintDesktop) onto the
+// paper.
+// Geometry is fixed; src/scripts/machine.js runs it.
 import machine from '../data/machine.json';
 import sentences from '../data/sentences.json';
 import site from '../data/site.json';
 
-const ang = (n: number, k: number) => (k - (n - 1) / 2) * (n === 3 ? 45 : 36);
 const total = String(sentences.length).padStart(3, '0');
 const start = [1, 0, 1];
+const sentenceCase = (v: string) => v.charAt(0) + v.slice(1).toLowerCase();
+
+// Where the body sits: T is its top. Everything above it is room for the ticket.
+const T = 215, BODY_H = 292, H = T + BODY_H + 46;   // 760 x 553
+// The drum dials: every setting sits on a drum of radius R, STEP degrees apart; the chosen one faces out
+// between the rails and the others turn away above and below it, like the iPhone timer.
+// Keep in step with wheelPose() and VARIANTS.desk.wheel in src/scripts/machine.js.
+const WIN_H = 150, ROW_H = 18, R = 68, STEP = 30;
+// Each drum's left edge and width: Role is wider so every setting fits on one line.
+const COLS = [[33, 230], [267, 188], [459, 188]];
+const wheelPose = (d: number) => {
+  const th = d * STEP;
+  const op = Math.abs(th) >= 90 ? 0 : Math.max(0, 1 - 0.3 * Math.abs(d));
+  return `transform: translateZ(-${R}px) rotateX(${(-th).toFixed(2)}deg) translateZ(${R}px); opacity: ${op.toFixed(3)}`;
+};
 ---
-<div class="sm sm-desk waiting" data-machine="desk" role="group" aria-label={site.machineLabel}>
-  <div aria-hidden="true" style="position: absolute; left: 50px; top: 636px; width: 660px; height: 44px; border-radius: 50%; background: radial-gradient(closest-side, rgba(60,45,30,0.2), rgba(60,45,30,0.08) 55%, rgba(60,45,30,0))"></div>
+<div class="sm sm-desk waiting" data-machine="desk" data-invite={site.machine.invite} data-hint={site.machine.hintDesktop} role="group" aria-label={site.machineLabel} style={`height: ${H}px`}>
+  <div aria-hidden="true" style={`position: absolute; left: 50px; top: ${T + BODY_H - 18}px; width: 660px; height: 44px; border-radius: 50%; background: radial-gradient(closest-side, rgba(60,45,30,0.2), rgba(60,45,30,0.08) 55%, rgba(60,45,30,0))`}></div>
 
-  <div class="sm-foot" aria-hidden="true" style="left: 112px; top: 646px; width: 52px; height: 17px; border-radius: 4px"></div>
-  <div class="sm-foot" aria-hidden="true" style="left: 596px; top: 646px; width: 52px; height: 17px; border-radius: 4px"></div>
+  <div class="sm-foot" aria-hidden="true" style={`left: 112px; top: ${T + BODY_H - 8}px; width: 52px; height: 17px; border-radius: 4px`}></div>
+  <div class="sm-foot" aria-hidden="true" style={`left: 596px; top: ${T + BODY_H - 8}px; width: 52px; height: 17px; border-radius: 4px`}></div>
 
-  <div class="sm-body" style="left: 40px; top: 292px; width: 680px; height: 362px; border-radius: 34px; box-shadow: 0 16px 30px rgba(60,40,20,0.18), 0 3px 6px rgba(60,40,20,0.08), inset 0 1.5px 0 rgba(255,255,255,0.9), inset 0 -2px 4px rgba(120,100,70,0.12)">
-    <canvas data-speck aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 680px; height: 362px; border-radius: 34px; pointer-events: none"></canvas>
+  <div class="sm-body" style={`left: 40px; top: ${T}px; width: 680px; height: ${BODY_H}px; border-radius: 34px; box-shadow: 0 16px 30px rgba(60,40,20,0.18), 0 3px 6px rgba(60,40,20,0.08), inset 0 1.5px 0 rgba(255,255,255,0.9), inset 0 -2px 4px rgba(120,100,70,0.12)`}>
+    <canvas data-speck aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 680px; height: 292px; border-radius: 34px; pointer-events: none"></canvas>
 
     <div class="sm-slotframe" aria-hidden="true" style="left: 132px; top: 2px; width: 416px; height: 20px; border-radius: 10px"></div>
     <div class="sm-slot" aria-hidden="true" style="left: 136px; top: 5px; width: 408px; height: 14px; border-radius: 7px"></div>
 
-    <div aria-hidden="true" style="position: absolute; left: 44px; top: 31px; font-size: 10.5px; line-height: 14px; font-weight: 500; letter-spacing: 0.26em; color: #5f594f">BELLTOWER</div>
+    <div aria-hidden="true" style="position: absolute; left: 44px; top: 41px; font-size: 10.5px; line-height: 14px; font-weight: 500; letter-spacing: 0.26em; color: #5f594f">BELLTOWER</div>
 
-    <div aria-hidden="true" style="position: absolute; left: 0; top: 22px; width: 680px; display: flex; justify-content: center; align-items: center; gap: 10px">
+    <div aria-hidden="true" style="position: absolute; left: 0; top: 32px; width: 680px; display: flex; justify-content: center; align-items: center; gap: 10px">
       <span style="font-size: 10.5px; line-height: 14px; letter-spacing: 0.12em; color: #5f594f">No.</span>
       <div style="display: flex; gap: 3px; padding: 4px; border-radius: 5px; background: #26241f; box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.7)">
         {[0, 1, 2].map((t) => (
@@ -40,45 +59,44 @@ const start = [1, 0, 1];
       <span style="font-size: 10.5px; line-height: 14px; letter-spacing: 0.12em; color: #5f594f">OF {total}</span>
     </div>
 
-    <div aria-hidden="true" style="position: absolute; right: 44px; top: 31px; display: flex; align-items: center; gap: 8px">
+    <div aria-hidden="true" style="position: absolute; right: 44px; top: 41px; display: flex; align-items: center; gap: 8px">
       <span style="font-size: 10px; line-height: 14px; letter-spacing: 0.14em; color: #5f594f">ON</span>
       <span data-lamp class="sm-lamp" style="width: 11px; height: 11px"></span>
     </div>
 
-    <div class="sm-rule" aria-hidden="true" style="left: 32px; top: 64px; width: 616px"></div>
+    <div class="sm-rule" aria-hidden="true" style="left: 32px; top: 74px; width: 616px"></div>
+
+    <div class="sm-well" aria-hidden="true" style={`left: 30px; top: 114px; width: 620px; height: ${WIN_H + 6}px`}></div>
 
     {machine.dials.map((d, i) => (
-      <div data-dial style={`position: absolute; left: ${30 + 210 * i}px; top: 82px; width: 200px; display: flex; flex-direction: column; align-items: center`}>
-        <div id={`sm-${d.name.toLowerCase()}`} style="height: 14px; font-size: 10.5px; line-height: 14px; font-weight: 500; letter-spacing: 0.16em; color: #5f594f">{d.cap}</div>
-        <div class="sm-face" style="margin-top: 10px; width: 104px; height: 104px">
-          {d.opts.map((_, t) => (
-            <div data-tick class:list={['sm-tick', { on: t === start[i] }]} aria-hidden="true" style={`left: 51px; top: 3px; width: 2px; height: 8px; transform: rotate(${ang(d.opts.length, t)}deg); transform-origin: 1px 49px`}></div>
-          ))}
-          <div data-knob class="sm-knob" aria-hidden="true" style="left: 14px; top: 14px; width: 76px; height: 76px">
-            <div class="sm-wob" style={`animation-delay: ${i * 0.16}s`}>
-              <div data-rotor class="sm-rotor" style={`width: 76px; height: 76px; transform: rotate(${ang(d.opts.length, start[i])}deg)`}>
-                <div style="position: absolute; left: 6px; top: 6px; width: 64px; height: 64px; border-radius: 50%; background: #242321; box-shadow: 0 0 0 1px rgba(0,0,0,0.7)"></div>
-                <div style="position: absolute; left: 36.5px; top: 9px; width: 3px; height: 23px; border-radius: 1.5px; background: #E0592A"></div>
-              </div>
-            </div>
-            <div class="sm-gloss"></div>
-          </div>
-        </div>
-        <div role="radiogroup" aria-labelledby={`sm-${d.name.toLowerCase()}`} style="margin-top: 12px; width: 196px; display: flex; flex-direction: column">
-          {d.opts.map((label, t) => (
-            <button type="button" role="radio" data-opt class="sm-opt" aria-checked={t === start[i] ? 'true' : 'false'} tabindex={t === start[i] ? 0 : -1}><span class:list={['sm-lab', { stack: d.stack }]} style="position: relative"><span class="sm-dot" aria-hidden="true"></span>{d.stack ? label.split(' ').map((w, n) => <>{n > 0 && <br />}{w}</>) : label}</span></button>
-          ))}
-        </div>
+      <div data-dial style={`position: absolute; left: ${COLS[i][0]}px; top: 92px; width: ${COLS[i][1]}px; display: flex; flex-direction: column; align-items: center`}>
+        <div aria-hidden="true" style="height: 14px; font-size: 10.5px; line-height: 14px; font-weight: 500; letter-spacing: 0.16em; color: #5f594f">{d.cap}</div>
+        <button type="button" data-knob class="sm-roller" aria-label={`${d.name}: ${sentenceCase(d.opts[start[i]])}`} style={`margin: 11px 0 0; width: ${COLS[i][1]}px; height: ${WIN_H}px`}>
+          <span class="sm-rwin" aria-hidden="true">
+            <canvas data-paper class="sm-paper"></canvas>
+            <span class="sm-rwob">
+              {d.opts.map((o, t) => (
+                <span data-item class:list={['sm-item', { on: t === start[i] }]} style={`top: ${(WIN_H - ROW_H) / 2}px; height: ${ROW_H}px; ${wheelPose(t - start[i])}`}>
+                  {o}
+                </span>
+              ))}
+            </span>
+            <span class="sm-rshade"></span>
+            <span class="sm-rim sm-rim-l"></span>
+            <span class="sm-rim sm-rim-r"></span>
+          </span>
+        </button>
       </div>
     ))}
+    <div class="sm-band" aria-hidden="true" style={`left: 30px; top: ${117 + WIN_H / 2 - 20}px; width: 620px; height: 40px`}></div>
   </div>
 
-  <div data-sheet class="sm-sheet" aria-hidden="true" style="left: 190px; bottom: 391px; width: 380px; height: 18px">
+  <div data-sheet class="sm-sheet" aria-hidden="true" style="left: 190px; bottom: 321px; width: 380px; height: 18px">
     <div class="sm-perf"></div>
     <div data-feed style="position: absolute; left: 0; bottom: 18px; width: 380px"></div>
     <div class="sm-sheetshade" style="height: 22px"></div>
   </div>
-  <div class="sm-lip" aria-hidden="true" style="left: 176px; top: 304px; width: 408px; height: 7px; border-radius: 0 0 7px 7px">
+  <div class="sm-lip" aria-hidden="true" style={`left: 176px; top: ${T + 12}px; width: 408px; height: 7px; border-radius: 0 0 7px 7px`}>
     <div data-car class="sm-car" style="top: 2px; width: 12px; height: 3px"></div>
   </div>
 
