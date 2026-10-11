@@ -99,7 +99,7 @@ class Machine {
     this.drag = null; this.q = []; this.cur = null; this.pending = null; this.rush = false; this.dragEnd = 0;
     this.lastJ = -1; this.lastSel = null;   // nothing printed until the first turn
     this.touched = false;
-    // The invitation typed onto the paper before the first turn (phone only).
+    // The invitation on the paper before the first turn.
     this.invite = root.dataset.invite || '';
     this.hint = root.dataset.hint || '';
     this.introOn = false; this.introDone = false; this.cursorRow = null; this.blink = false;
@@ -137,6 +137,7 @@ class Machine {
     this.tickFn = (t) => this.tick(t);
 
     this.speckle(root.querySelector('[data-speck]'));
+    if (this.invite) this.startIntro();
     root.querySelectorAll('[data-paper]').forEach((cv, n) => this.grain(cv, n));
     this.render();
 
@@ -155,7 +156,8 @@ class Machine {
   boot() {
     // A turn made while the fonts were loading prints now.
     if (this.touched) this.commit();
-    else if (this.invite) this.watchIntro();
+    // The invitation was laid out before the fonts arrived: lay it out again with them.
+    else if (this.introOn) { clearCache(); this.M = []; this.instantIntro(); this.render(); }
     // A face that finishes loading later changes the measurements: reprint the ticket in place.
     if (document.fonts && document.fonts.addEventListener) {
       document.fonts.addEventListener('loadingdone', () => {
@@ -179,24 +181,15 @@ class Machine {
 
   // ---- the invitation ----------------------------------------------------------
 
-  // When the machine first comes into view, it types the invitation once, unless a dial has been turned.
-  watchIntro() {
-    const go = () => { if (!this.touched && !this.introDone) setTimeout(() => this.startIntro(), 120); };
-    if (!window.IntersectionObserver) { go(); return; }
-    const io = new IntersectionObserver((es) => {
-      if (es.some((e) => e.isIntersecting)) { io.disconnect(); go(); }
-    }, { threshold: 0.05 });   // as soon as the machine starts to show
-    io.observe(this.root);
-  }
-
-  // The invitation, then a dashed rule and the instruction, which is typed last so the cursor ends on it.
+  // Until the first turn, the paper shows the invitation, already typed, with a blinking cursor.
+  // The invitation, then a dashed rule and the instruction, with the cursor blinking after it.
   introProgram() {
     const steps = [], V = this.V;
     const feed = (row) => steps.push({ t: 'feed', row }), type = (row) => { row.intro = true; steps.push({ t: 'type', row }); };
     const lead = this.mk('top'); lead.h = V.lead;   // a lead of blank paper above the invitation
     feed(lead);
     this.wrap(this.invite).forEach((ln) => {
-      const r = this.mk('line', ln, 0, 0, 55);   // typed slower than a ticket
+      const r = this.mk('line', ln);
       feed(r); type(r);
     });
     const rule = this.mk('gap'); rule.rule = true; rule.h = V.rows.gap + 2; feed(rule);
@@ -213,15 +206,13 @@ class Machine {
     this.F = 0; this.car = this.carT = this.V.PARK;
   }
 
+  // The invitation is on the paper from the start, already typed, so a visitor who scrolls past
+  // quickly or looks away can't miss it.
   startIntro() {
     if (this.touched || this.introDone || this.cur) return;
     this.introDone = true; this.introOn = true;
     this.root.classList.add('invited');
-    if (reduced) { this.instantIntro(); this.blink = true; this.render(); return; }
-    this.q = this.introProgram();
-    this.cur = this.q.shift();
-    this.printing = true;
-    this.kick();
+    this.instantIntro(); this.blink = true; this.render();
   }
 
   // ---- the paper ---------------------------------------------------------------

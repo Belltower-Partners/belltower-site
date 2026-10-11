@@ -58,7 +58,7 @@ working here must follow these rules.
 | "Case study" label and the "Testimonial" / "Close the testimonial" button text | `src/data/site.json` under `cases` |
 | Tab labels and their order | the `tab` and `order` lines at the top of each memo file |
 | Contact email address | `src/data/site.json` (`email`, and in `footerLine`) |
-| Heading and line above the machine, and what the machine types onto its paper before the first turn | `src/data/site.json` under `machine` (`heading`, `subtitle`; `invite` is the sentence typed on the paper, `hint` and `hintDesktop` the instruction under it on phones and on desktop) |
+| Heading and line above the machine, and what the machine shows on its paper before the first turn | `src/data/site.json` under `machine` (`heading`, `subtitle`; `invite` is the sentence typed on the paper, `hint` and `hintDesktop` the instruction under it on phones and on desktop) |
 | The 24 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
