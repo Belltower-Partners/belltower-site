@@ -57,6 +57,14 @@
    chosen settings. The script draws the paper grain on each drum's canvas. */
 .sm-roller { position: relative; display: block; padding: 0; border: 0; border-radius: 6px; background: rgba(0, 0, 0, 0); cursor: grab; touch-action: none; -webkit-touch-callout: none; font-family: var(--mono); }
 .sm-roller.live { cursor: grabbing; }
+/* The transparent scroll box over each drum: fingers, trackpads and wheels scroll it, one snap point
+   per setting, and the script turns the drawn drum underneath to match. It never hands its scroll on
+   to the page, and its scroll bar is hidden. */
+.sm-drumbox { position: relative; }
+.sm-scroll { position: absolute; inset: 0; z-index: 1; overflow-x: hidden; overflow-y: scroll; overscroll-behavior: contain; scroll-snap-type: y mandatory; scrollbar-width: none; touch-action: pan-y; cursor: grab; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+.sm-scroll::-webkit-scrollbar { display: none; }
+.sm-scroll:active { cursor: grabbing; }
+.sm-stop { scroll-snap-align: start; }
 /* Touches land on the flat button itself, never on the turned 3D labels or masked layers inside it:
    Safari can lose track of where the page may not scroll on layers like those. */
 .sm-roller * { pointer-events: none; }
