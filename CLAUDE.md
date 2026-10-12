@@ -80,7 +80,8 @@ The "Coming soon" gate: while `comingSoon.enabled` is true, visitors see only a 
 search engines not to index it. Typing "ring" on a keyboard, or swiping up on a phone, opens a password
 box; the password is `comingSoon.password`, and a browser that enters it is remembered. The password is
 in this public repository on purpose: the gate keeps the unfinished site out of casual view, not out of
-reach. When a partner asks to launch the site or take the gate down, set `enabled` to false.
+reach. When a partner asks to launch the site or take the gate down, set `enabled` to false. The gate was
+taken down when the site launched in October 2026; set `enabled` back to true to put it up again.
 
 Layout and behavior, for when a partner does ask for a design change:
 
