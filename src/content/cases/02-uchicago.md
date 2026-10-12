@@ -1,6 +1,5 @@
 ---
-# Douglas Baird confirmed permission on 10/7 but is still wordsmithing the quote.
-draft: true
+# Douglas Baird confirmed this wording and permission to publish it on 10/12.
 order: 1
 label: "University of Chicago Law School"
 heading: "Building custom AI agents for a senior scholar"
@@ -10,4 +9,4 @@ bodyLabel: "In his words"
 quote: true
 ---
 
-“I was relatively AI fluent before I worked with Shawn. In one 3-hour session, he elevated my AI skills to amongst the top of my peer group. He guided me on two applications that are saving me hours each time I use them, which is often. Even more, he taught me how to fish and I’m now more confident in my AI skills going forward.”
+“I was already a regular user of both Chat and Claude before working with Shawn and felt comfortable using them, but he elevated my skills to an altogether different level with a three-hour session that was focused on my particular needs. Shawn left me with applications that I use multiple times every day. He also gave me the ability to develop new applications tailored to my work that are already bringing additional dividends. The power of AI is going to lie with the people who know how to harness it, and Shawn put me on that path.”
