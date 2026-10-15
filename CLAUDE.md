@@ -63,6 +63,7 @@ working here must follow these rules.
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
 | "Get in touch" and the email address under the machine | `src/data/site.json` (`getInTouch` is the label; the address is `email`) |
+| Short links on gobelltower.com that send visitors somewhere else (such as a pitch demo) | `public/_redirects` (one per line: path, destination, `302`) |
 | Google Analytics measurement ID | `src/data/site.json` (`analyticsId`; remove it to turn analytics off) |
 | "Coming soon" screen in front of the site: on/off, password and its words | `src/data/site.json` under `comingSoon` (`enabled: false` turns it off) |
 
