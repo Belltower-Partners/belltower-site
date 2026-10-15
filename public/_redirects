@@ -1,5 +1,5 @@
 # Short links. Each line: path on gobelltower.com, where it goes, and the status code (302 = temporary).
 # Pitch demo for Sperling Kenny (meeting week of Oct 19, 2026). The demo itself stays behind its own
 # Cloudflare Access sign-in. Remove these two lines after the pitch.
-/sperlingkennydemo https://sperlingkennybizdevdemo-belltower.shawn-aa0.workers.dev/ 302
-/sperlingkennydemo/ https://sperlingkennybizdevdemo-belltower.shawn-aa0.workers.dev/ 302
+/sperlingkennydemo https://sperlingkennybelltowerdemo.shawn-aa0.workers.dev/ 302
+/sperlingkennydemo/ https://sperlingkennybelltowerdemo.shawn-aa0.workers.dev/ 302
