@@ -23,6 +23,21 @@ const gated = site.comingSoon.enabled;
         try { if (localStorage.getItem('belltower-unlocked') === '1') document.documentElement.setAttribute('data-unlocked', ''); } catch (e) {}
       </script>
     )}
+    {site.analyticsId && (
+      <script is:inline define:vars={{ gaId: site.analyticsId }}>
+        // Google Analytics, on the live site only: previews and local builds send nothing.
+        if (/(^|\.)gobelltower\.com$/.test(location.hostname)) {
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () { window.dataLayer.push(arguments); };
+          window.gtag('js', new Date());
+          window.gtag('config', gaId);
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+          document.head.appendChild(s);
+        }
+      </script>
+    )}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
