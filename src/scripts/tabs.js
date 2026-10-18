@@ -1,8 +1,13 @@
 // Memo tabs: the WAI-ARIA tabs pattern. Click or Enter picks a tab;
 // Left/Right arrows, Home and End move between tabs and select as they go.
+import { track } from './analytics.js';
+
 const tabs = [...document.querySelectorAll('[role="tab"]')];
 
 function pick(i, focus) {
+  if (tabs[i].getAttribute('aria-selected') !== 'true') {
+    track('tab_view', { tab: tabs[i].querySelector('.lbl')?.textContent?.trim() || String(i + 1) });
+  }
   tabs.forEach((t, k) => {
     const on = k === i;
     t.setAttribute('aria-selected', on ? 'true' : 'false');

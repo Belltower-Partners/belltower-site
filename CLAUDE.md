@@ -64,6 +64,7 @@ working here must follow these rules.
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
 | "Get in touch" and the email address under the machine | `src/data/site.json` (`getInTouch` is the label; the address is `email`) |
 | Short links on gobelltower.com that send visitors somewhere else (such as a pitch demo) | `public/_redirects` (one per line: path, destination, `302`) |
+| Google Analytics measurement ID | `src/data/site.json` (`analyticsId`; remove it to turn analytics off) |
 | "Coming soon" screen in front of the site: on/off, password and its words | `src/data/site.json` under `comingSoon` (`enabled: false` turns it off) |
 
 The page has no contact form; it was removed in October 2026 and can be restored from git history
@@ -83,6 +84,21 @@ box; the password is `comingSoon.password`, and a browser that enters it is reme
 in this public repository on purpose: the gate keeps the unfinished site out of casual view, not out of
 reach. When a partner asks to launch the site or take the gate down, set `enabled` to false. The gate was
 taken down when the site launched in October 2026; set `enabled` back to true to put it up again.
+
+Analytics: Google Analytics loads from `src/layouts/Base.astro`, and only on gobelltower.com, so
+Cloudflare previews and local builds send nothing (add `?ga_debug` to a preview's address to see in
+the browser console what would be sent). Built-in reports cover visits, time on site ("engagement
+time"), scrolling and clicks to other sites. `src/scripts/analytics.js` adds these events, none of
+which identify the visitor:
+
+- `email_click` (`link_location`: `get_in_touch` or `footer`)
+- `tab_view` (`tab`) and `case_study_toggle` (`case_study`, `action`)
+- `machine_view` (the machine is mostly on screen), `machine_first_turn` (`seconds_after_view`)
+- `dial_turn` (`dial`, `setting`, `method`: `tap`, `drag`, `click`, `wheel` or `keyboard`)
+- `sentence_print` (`sentence_number`, `role`, `topic`, `stage`)
+
+The machine events also carry `layout` (`desktop` or `phone`). If you add or rename an event, keep this
+list in step.
 
 Layout and behavior, for when a partner does ask for a design change:
 

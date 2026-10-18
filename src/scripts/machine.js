@@ -5,6 +5,7 @@
 import { prepareWithSegments, measureNaturalWidth, layoutWithLines, clearCache } from '@chenglou/pretext';
 import SENTENCES from '../data/sentences.json';
 import MACHINE from '../data/machine.json';
+import { track } from './analytics.js';
 
 const D = MACHINE.dials;
 const MAP = MACHINE.map;
@@ -94,6 +95,8 @@ class Machine {
     this.car = this.carT = this.V.PARK; // print carriage in the slot, x
     this.drag = null; this.q = []; this.cur = null; this.pending = null; this.rush = false; this.dragEnd = 0;
     this.tap = null; this.tapAt = -1e9;
+    // Analytics: the settings last reported, how the latest turn was made, when the machine was seen.
+    this.reported = this.sel.slice(); this.how = 'click'; this.seenAt = 0;
     this.lastJ = -1; this.lastSel = null;   // nothing printed until the first turn
     this.touched = false;
     // The invitation on the paper before the first turn.
@@ -142,6 +145,7 @@ class Machine {
 
     this.speckle(root.querySelector('[data-speck]'));
     if (this.invite) this.startIntro();
+    this.watchSeen();
     root.querySelectorAll('[data-paper]').forEach((cv, n) => this.grain(cv, n));
     this.render();
 
@@ -181,6 +185,8 @@ class Machine {
     if (this.touched) return;
     this.touched = true;
     this.root.classList.remove('waiting');
+    track('machine_first_turn', { layout: this.layout(),
+      seconds_after_view: this.seenAt ? Math.round((performance.now() - this.seenAt) / 100) / 10 : null });
   }
 
   // ---- the invitation ----------------------------------------------------------
@@ -317,6 +323,7 @@ class Machine {
 
   commit() {
     if (!this.ready || this.drag) return;
+    this.report();
     const s = this.sel, j = this.j(s);
     if (this.cur) {
       // Mid-print: finish this ticket quickly, then print the new one.
@@ -334,6 +341,8 @@ class Machine {
     this.pending = null; this.rush = false;
     if (!p) return;
     this.lastJ = p.j; this.lastSel = p.sel;
+    track('sentence_print', { sentence_number: p.j + 1, role: D[0].opts[p.sel[0]], topic: D[1].opts[p.sel[1]],
+                              stage: D[2].opts[p.sel[2]], layout: this.layout() });
     this.saidEl.textContent = this.phrase(p.j);
     if (reduced) { this.endIntro(); this.M = []; this.instant(p.j, p.sel); this.printing = false; this.render(); return; }
     this.q = this.program(p.j, p.sel);
@@ -398,7 +407,8 @@ class Machine {
 
   // ---- the dials ---------------------------------------------------------------
 
-  choose(i, k, delay) {
+  choose(i, k, delay, how) {
+    if (how) this.how = how;
     this.touch();
     this.sel = this.sel.slice(); this.sel[i] = k;
     this.render();
@@ -417,13 +427,13 @@ class Machine {
       default: return;
     }
     e.preventDefault();
-    this.choose(i, k, 420);
+    this.choose(i, k, 420, 'keyboard');
   }
 
   clickDial(i) {
     if (performance.now() - this.dragEnd < 350) return;   // the click that ends a drag
     if (performance.now() - this.tapAt < 800) return;     // the click Safari may still send after a tap
-    this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);
+    this.choose(i, (this.sel[i] + 1) % COUNT[i], 420, 'click');
   }
 
   // ---- scrolling ---------------------------------------------------------------
@@ -462,7 +472,7 @@ class Machine {
     ui.wat = now;
     const step = ui.wacc > 0 ? 1 : -1;
     ui.wacc = 0;
-    this.choose(i, k + step, 420);
+    this.choose(i, k + step, 420, 'wheel');
   }
 
   onScroll(i) {
@@ -493,7 +503,7 @@ class Machine {
     ui.spin = false;
     const k = Math.max(0, Math.min(COUNT[i] - 1, Math.round(ui.scroll.scrollTop / scrollPitch(this.V.wheel))));
     ui.synced = null;
-    this.choose(i, k, 160);
+    this.choose(i, k, 160, 'drag');
   }
 
   // ---- touch -------------------------------------------------------------------
@@ -527,7 +537,7 @@ class Machine {
     if (ui.spin) { clearTimeout(ui.settle); ui.settle = setTimeout(() => this.settle(i), 160); return; }
     if (tap && tap.i === i && !cancelled && now - tap.at < 600 && [...e.changedTouches].some((x) => x.identifier === tap.id)) {
       this.tapAt = now;
-      this.choose(i, (this.sel[i] + 1) % COUNT[i], 420);
+      this.choose(i, (this.sel[i] + 1) % COUNT[i], 420, 'tap');
     }
   }
 
@@ -575,8 +585,33 @@ class Machine {
     if (!d || d.i !== i || e.pointerType === 'touch') return;
     this.drag = null;
     // A press without a drag is a click, which the click handler turns into the next setting.
-    if (d.moved) { this.dragEnd = performance.now(); this.schedule(160); }
+    if (d.moved) { this.dragEnd = performance.now(); this.how = 'drag'; this.schedule(160); }
     this.render();
+  }
+
+  // ---- analytics ---------------------------------------------------------------
+
+  layout() { return this.kind === 'desk' ? 'desktop' : 'phone'; }
+
+  // Report each dial that changed since the last report, once its turn has settled.
+  report() {
+    D.forEach((d, i) => {
+      if (this.sel[i] === this.reported[i]) return;
+      track('dial_turn', { dial: d.name, setting: d.opts[this.sel[i]], method: this.how, layout: this.layout() });
+    });
+    this.reported = this.sel.slice();
+  }
+
+  // When most of the machine first comes into view, and how long until the first turn after that.
+  watchSeen() {
+    if (!window.IntersectionObserver) return;
+    const io = new IntersectionObserver((es) => {
+      if (!es.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      this.seenAt = performance.now();
+      track('machine_view', { layout: this.layout() });
+    }, { threshold: 0.5 });
+    io.observe(this.root);
   }
 
   // ---- drawing -----------------------------------------------------------------
