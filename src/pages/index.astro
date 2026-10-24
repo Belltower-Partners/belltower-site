@@ -5,6 +5,10 @@ import Base from '../layouts/Base.astro';
 import SentenceMachine from '../components/SentenceMachine.astro';
 import SentenceMachinePhone from '../components/SentenceMachinePhone.astro';
 import ComingSoon from '../components/ComingSoon.astro';
+import Logo from '../components/Logo.astro';
+import Hero from '../components/Hero.astro';
+import ResourceCard from '../components/ResourceCard.astro';
+import Waitlist from '../components/Waitlist.astro';
 import site from '../data/site.json';
 
 const memos = (await getCollection('memos')).sort((a, b) => a.data.order - b.data.order);
@@ -26,10 +30,13 @@ const gated = site.comingSoon.enabled;
   {gated && <ComingSoon />}
   <div class={gated ? 'col gated' : 'col'}>
     <header class="head">
+      <Logo class="head-logo" size={52} />
       <h1>{site.firmName}</h1>
     </header>
 
     <main>
+      <Hero />
+
       <div class="tabs" role="tablist" aria-label="Memos">
         {memos.map((m, i) => (
           <button class="tab" type="button" role="tab" id={`tab-${m.id}`} aria-controls={`memo-${m.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
@@ -47,6 +54,7 @@ const gated = site.comingSoon.enabled;
             return (
               <div class="memo" role="tabpanel" id={`memo-${m.id}`} aria-labelledby={`tab-${m.id}`} tabindex="0" hidden={i !== 0}>
                 <Body />
+                {m.data.resource && <ResourceCard />}
                 {m.data.cases && (
                   <div class="cases">
                     {cases.map((cs, k) => {
@@ -91,14 +99,12 @@ const gated = site.comingSoon.enabled;
         <div class="fit fit-phone" data-fit data-w="358" data-h="420"><SentenceMachinePhone /></div>
       </section>
 
-      <section class="cta" aria-labelledby="cta-head">
-        <h2 class="cta-head" id="cta-head">{site.getInTouch}</h2>
-        <p class="cta-mail"><a href={`mailto:${site.email}`}>{site.email}</a></p>
-      </section>
+      <Waitlist />
     </main>
 
     <div class="closing">
       <footer class="foot">
+        <Logo class="foot-logo" size={28} />
         <p>{footBefore}{footAfter !== null && <><a href={`mailto:${site.email}`}>{site.email}</a>{footAfter}</>}</p>
       </footer>
     </div>
@@ -108,6 +114,8 @@ const gated = site.comingSoon.enabled;
     import '../scripts/analytics.js';
     import '../scripts/tabs.js';
     import '../scripts/cases.js';
+    import '../scripts/footnotes.js';
+    import '../scripts/waitlist.js';
     import '../scripts/machine.js';
     import '../scripts/gate.js';
   </script>

@@ -10,6 +10,8 @@ const memos = defineCollection({
     order: z.number(),
     tab: z.string(),
     cases: z.boolean().default(false),
+    // `resource: true` shows the free-resource card (site.json `resource`) under the tab's text.
+    resource: z.boolean().default(false),
   }),
 });
 

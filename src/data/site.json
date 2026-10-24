@@ -6,6 +6,44 @@
   "analyticsId": "G-LJEE317TM7",
   "footerLine": "Belltower Partners LLC · Chicago · go@gobelltower.com",
   "machineLabel": "Sentence machine",
+  "hero": {
+    "eyebrow": "AI advisory and engineering for law firms",
+    "lines": [
+      {
+        "text": "We know the law.",
+        "note": 1
+      },
+      {
+        "text": "We know the business of law.",
+        "note": 2
+      },
+      {
+        "text": "We know AI.",
+        "note": 3
+      }
+    ],
+    "sentence": "Belltower Partners helps small and mid-size law firms, and senior leaders at firms of all sizes, put AI to work.",
+    "button": "Join the waitlist",
+    "aside": "We take on a small number of firms at a time.",
+    "notes": [
+      {
+        "n": 1,
+        "name": "Shawn Liu",
+        "text": "litigated at Gibson Dunn, clerked on the Ninth Circuit, and was Facebook’s 4th product counsel and Legal Director at Breakthrough Energy. JD, University of Chicago."
+      },
+      {
+        "n": 2,
+        "name": "Uday Khedkar",
+        "text": "was CFO of Feldco and President of Danley’s Garages, with over 25 years of general management experience. MBA, Kellogg School of Management."
+      },
+      {
+        "n": 3,
+        "name": "Mickey Muldoon",
+        "text": "has spent the past decade building enterprise software systems at Amazon and Blue Origin. MA in Computer Science, Brooklyn College."
+      }
+    ],
+    "bioLink": "Read the full bio"
+  },
   "machine": {
     "heading": "You don’t have to figure out AI alone.",
     "subtitle": "Clients, partners at your firm, and vendors all want answers from you.",
@@ -14,6 +52,27 @@
     "hintDesktop": "Click or drag the dials"
   },
   "getInTouch": "Get in touch",
+  "waitlist": {
+    "heading": "Join the waitlist",
+    "text": "We take on a small number of firms at a time, and our calendar is full for now. Leave your details and we will follow up as space opens over the coming months.",
+    "fields": {
+      "name": "Name",
+      "email": "Work email",
+      "firm": "Firm",
+      "role": "Your role",
+      "desk": "What’s on your desk? (optional)"
+    },
+    "button": "Join the waitlist",
+    "thanks": "Thank you. You’re on the list, and we’ll be in touch as space opens.",
+    "orEmail": "Prefer email?"
+  },
+  "resource": {
+    "label": "Free resource",
+    "title": "Getting started with AI, Part 1",
+    "text": "A one-hour, hands-on introduction for lawyers starting from close to zero. Three short exercises, and no client information needed.",
+    "link": "Read it",
+    "href": "/resources/getting-started-with-ai/"
+  },
   "cases": {
     "label": "Case study",
     "open": "Testimonial",

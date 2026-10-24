@@ -1,0 +1,29 @@
+---
+// The Belltower mark. PLACEHOLDER: Uday's first version from the LinkedIn page work; the logo isn't final.
+interface Props { size?: number; class?: string }
+const { size = 48, class: cls = '' } = Astro.props;
+---
+<svg class:list={['logo', cls]} width={size} height={size} viewBox="54 30 92 160" aria-hidden="true" focusable="false">
+  <g fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M90 34 A10 10 0 0 1 110 34"></path>
+    <path d="M82 34 A18 18 0 0 1 118 34" opacity="0.5"></path>
+    <circle cx="100" cy="38" r="3.6" fill="currentColor" stroke="none"></circle>
+    <line x1="100" y1="42" x2="100" y2="52"></line>
+    <path class="logo-cap" d="M86 72 C86 61 92 54 100 52 C108 54 114 61 114 72 Z"></path>
+    <rect x="89" y="72" width="22" height="14"></rect>
+    <line x1="80" y1="86" x2="120" y2="86"></line>
+    <rect x="84" y="86" width="32" height="36"></rect>
+    <path d="M93 122 V105 A7 7 0 0 1 107 105 V122"></path>
+    <circle cx="100" cy="112" r="3.4" fill="currentColor" stroke="none"></circle>
+    <line x1="74" y1="122" x2="126" y2="122"></line>
+    <rect x="79" y="122" width="42" height="44"></rect>
+    <path d="M94 166 V152 A6 6 0 0 1 106 152 V166"></path>
+    <line x1="54" y1="166" x2="146" y2="166"></line>
+    <path d="M68 166 V177 H58"></path>
+    <circle cx="54" cy="177" r="3.2" fill="currentColor" stroke="none"></circle>
+    <path d="M132 166 V177 H142"></path>
+    <circle cx="146" cy="177" r="3.2" fill="currentColor" stroke="none"></circle>
+    <line x1="100" y1="166" x2="100" y2="182"></line>
+    <circle cx="100" cy="186" r="3.2" fill="currentColor" stroke="none"></circle>
+  </g>
+</svg>

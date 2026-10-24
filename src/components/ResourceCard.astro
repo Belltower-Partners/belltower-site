@@ -1,0 +1,11 @@
+---
+// The free-resource card under "Our work" and "Our clients". Words: site.json `resource`.
+import site from '../data/site.json';
+const r = site.resource;
+---
+<a class="res-card" href={r.href}>
+  <span class="res-lab">{r.label}</span>
+  <span class="res-title">{r.title}</span>
+  <span class="res-text">{r.text}</span>
+  <span class="res-link">{r.link} <span aria-hidden="true">→</span></span>
+</a>
