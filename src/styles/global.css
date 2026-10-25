@@ -266,3 +266,23 @@ a:hover { color: #34496B; }
   .wl-row { grid-template-columns: 1fr; }
   .wl-form .btn { width: 100%; }
 }
+
+/* footnote notes: a small card under the line, opened from its number */
+.hero-line { position: relative; }
+.fn { white-space: nowrap; }
+button.fn-chip { -webkit-appearance: none; appearance: none; }
+.fn-chip[aria-expanded="true"] { background: var(--ink); border-color: var(--ink); color: #FBF7EE; }
+.fn-pop {
+  position: absolute; left: 0; top: calc(100% + 6px); z-index: 6; width: min(440px, 100%); box-sizing: border-box;
+  padding: 14px 16px 12px; border: 1px solid var(--gold-soft); border-top: 3px solid var(--gold); border-radius: 3px;
+  background: var(--paper-2); box-shadow: 0 6px 18px rgba(60, 45, 25, 0.12);
+  display: grid; gap: 8px; white-space: normal; text-align: left;
+  font-family: var(--serif); font-size: 15px; line-height: 1.55; font-weight: 400; letter-spacing: 0; color: var(--ink-2);
+}
+.fn-pop[hidden] { display: none; }
+.fn-pop strong { font-weight: 600; color: var(--ink); }
+.fn-bio { justify-self: start; font-size: 15px; color: var(--ink); text-underline-offset: 3px; }
+@media (max-width: 799.98px) {
+  .fn-pop { width: 100%; font-size: 14px; }
+  .fn-bio { font-size: 14px; min-height: 32px; display: inline-flex; align-items: center; }
+}

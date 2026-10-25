@@ -12,22 +12,26 @@
       {
         "text": "We know the law.",
         "note": 1,
-        "bio": "Shawn Liu"
+        "bio": "Shawn Liu",
+        "summary": "litigated at Gibson Dunn, clerked on the Ninth Circuit, and was Facebook’s 4th product counsel and Legal Director at Breakthrough Energy. JD, University of Chicago."
       },
       {
         "text": "We know the business of law.",
         "note": 2,
-        "bio": "Uday Khedkar"
+        "bio": "Uday Khedkar",
+        "summary": "was CFO of Feldco and President of Danley’s Garages, with over 25 years of general management experience. MBA, Kellogg School of Management."
       },
       {
         "text": "We know AI.",
         "note": 3,
-        "bio": "Mickey Muldoon"
+        "bio": "Mickey Muldoon",
+        "summary": "has spent the past decade building enterprise software systems at Amazon and Blue Origin. MA in Computer Science, Brooklyn College."
       }
     ],
     "sentence": "Belltower Partners helps small and mid-size law firms, and senior leaders at firms of all sizes, put AI to work.",
     "aside": "We take on a small number of firms at a time.",
-    "waitlistLink": "Join the waitlist"
+    "waitlistLink": "Join the waitlist",
+    "bioLink": "Read the full bio"
   },
   "machine": {
     "heading": "You don’t have to figure out AI alone.",
