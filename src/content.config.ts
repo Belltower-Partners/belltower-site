@@ -12,6 +12,8 @@ const memos = defineCollection({
     cases: z.boolean().default(false),
     // `resource: true` shows the free-resource card (site.json `resource`) under the tab's text.
     resource: z.boolean().default(false),
+    // Shows the pro bono case-study card (words in site.json `proBono`).
+    proBonoCase: z.boolean().default(false),
   }),
 });
 

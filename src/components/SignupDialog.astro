@@ -1,0 +1,44 @@
+---
+// One sign-up form with two doors. "Get the free guide" opens it in guide mode (the download appears after
+// the form); "Join the waitlist" opens it in waitlist mode. Both send the same fields to one Google Form,
+// with a hidden `source` field saying which door, and a checkbox for the other one.
+// MOCK: data-mock makes it show its thank-you without sending anything. Words: site.json `signup`.
+import site from '../data/site.json';
+const s = site.signup;
+const f = s.fields;
+---
+<dialog class="su" id="signup" aria-labelledby="su-head" data-mode="guide">
+  <button class="su-close" type="button" data-su-close aria-label={s.close}><span aria-hidden="true">×</span></button>
+  <h2 class="su-head" id="su-head"><span data-for="guide">{s.guide.heading}</span><span data-for="waitlist">{s.waitlist.heading}</span></h2>
+  <p class="su-text"><span data-for="guide">{s.guide.text}</span><span data-for="waitlist">{s.waitlist.text}</span></p>
+  <form class="su-form" data-signup-form data-mock novalidate>
+    <input type="hidden" name="source" value="guide" />
+    <div class="su-row">
+      <label class="su-field"><span>{f.name}</span><input name="name" type="text" autocomplete="name" required /></label>
+      <label class="su-field"><span>{f.email}</span><input name="email" type="email" autocomplete="email" required /></label>
+    </div>
+    <div class="su-row">
+      <label class="su-field"><span>{f.org}</span><input name="org" type="text" autocomplete="organization" required /></label>
+      <label class="su-field"><span>{f.title}</span><input name="title" type="text" autocomplete="organization-title" required /></label>
+    </div>
+    <label class="su-field"><span>{f.stage}</span>
+      <select name="stage" required>
+        <option value="">{f.stagePrompt}</option>
+        {f.stages.map((st) => <option>{st}</option>)}
+      </select>
+    </label>
+    <label class="su-field" data-for="waitlist"><span>{f.desk}</span><textarea name="desk" rows="3"></textarea></label>
+    <label class="su-check" data-for="guide"><input type="checkbox" name="alsoWaitlist" /><span>{s.guide.optIn}</span></label>
+    <label class="su-check" data-for="waitlist"><input type="checkbox" name="alsoGuide" checked /><span>{s.waitlist.optIn}</span></label>
+    <p class="su-error" data-su-error hidden>{s.error}</p>
+    <button class="btn" type="submit"><span data-for="guide">{s.guide.button}</span><span data-for="waitlist">{s.waitlist.button}</span></button>
+  </form>
+  <div class="su-done" data-su-done hidden tabindex="-1">
+    <p class="su-thanks" data-thanks="guide">{s.guide.thanks}</p>
+    <p class="su-thanks" data-thanks="waitlist">{s.waitlist.thanks}</p>
+    <div class="su-dl" data-dl>
+      <button class="btn" type="button" aria-disabled="true">{s.guide.download}</button>
+      <p class="su-note">{s.guide.downloadNote}</p>
+    </div>
+  </div>
+</dialog>

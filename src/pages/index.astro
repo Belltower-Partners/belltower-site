@@ -9,6 +9,8 @@ import Logo from '../components/Logo.astro';
 import Hero from '../components/Hero.astro';
 import ResourceCard from '../components/ResourceCard.astro';
 import Waitlist from '../components/Waitlist.astro';
+import SignupDialog from '../components/SignupDialog.astro';
+import ProBonoCase from '../components/ProBonoCase.astro';
 import site from '../data/site.json';
 
 const memos = (await getCollection('memos')).sort((a, b) => a.data.order - b.data.order);
@@ -54,6 +56,7 @@ const gated = site.comingSoon.enabled;
             return (
               <div class="memo" role="tabpanel" id={`memo-${m.id}`} aria-labelledby={`tab-${m.id}`} tabindex="0" hidden={i !== 0}>
                 <Body />
+                {m.data.proBonoCase && <ProBonoCase />}
                 {m.data.resource && <ResourceCard />}
                 {m.data.cases && (
                   <div class="cases">
@@ -101,6 +104,7 @@ const gated = site.comingSoon.enabled;
 
       <Waitlist />
     </main>
+    <SignupDialog />
 
     <div class="closing">
       <footer class="foot">
@@ -115,7 +119,7 @@ const gated = site.comingSoon.enabled;
     import '../scripts/tabs.js';
     import '../scripts/cases.js';
     import '../scripts/footnotes.js';
-    import '../scripts/waitlist.js';
+    import '../scripts/signup.js';
     import '../scripts/machine.js';
     import '../scripts/gate.js';
   </script>

@@ -286,3 +286,58 @@ button.fn-chip { -webkit-appearance: none; appearance: none; }
   .fn-pop { width: 100%; font-size: 14px; }
   .fn-bio { font-size: 14px; min-height: 32px; display: inline-flex; align-items: center; }
 }
+
+/* free-guide card: now a box with a button-like link that opens the form */
+.res-card { color: var(--ink-2); }
+.memo .res-card .res-link { justify-self: start; }
+
+/* pro bono case study placeholder */
+.pb-case { margin-top: 12px; padding-bottom: 28px; }
+.memo .pb-link { margin: 12px 0 0; font-size: 15px; color: var(--muted); }
+
+/* bottom waitlist: a short note and a quiet button */
+.wl-act { margin: 20px 0 0; }
+
+/* the sign-up form, in a dialog */
+.su {
+  width: min(600px, calc(100% - 32px)); max-height: calc(100dvh - 48px); box-sizing: border-box; overflow-y: auto;
+  margin: auto; padding: 32px 32px 28px; border: 1px solid var(--gold-soft); border-top: 4px solid var(--gold); border-radius: 4px;
+  background: var(--paper-2); color: var(--ink-2); font-family: var(--serif);
+}
+.su::backdrop { background: rgba(27, 42, 65, 0.45); }
+.su[data-mode="guide"] [data-for="waitlist"], .su[data-mode="waitlist"] [data-for="guide"] { display: none; }
+.su-close { position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; border: 0; background: none; font-size: 26px; line-height: 1; color: var(--ink); cursor: pointer; }
+.su-head { margin: 0 40px 0 0; font-family: var(--display); font-weight: 400; font-size: 27px; line-height: 1.25; color: var(--ink); }
+.su-text { margin: 10px 0 0; font-size: 15px; line-height: 1.6; }
+.su-form { margin-top: 22px; display: grid; gap: 16px; }
+.su-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.su-field { display: grid; gap: 6px; }
+.su-field > span { font-family: var(--mono); font-size: 11px; line-height: 16px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--label); }
+.su-field input, .su-field textarea, .su-field select {
+  width: 100%; box-sizing: border-box; min-height: 46px; padding: 11px 13px; border: 1px solid #A8936B; border-radius: 3px;
+  background: #FFFDF8; font-family: var(--serif); font-size: 16px; line-height: 1.4; color: var(--ink-2);
+}
+.su-field select { -webkit-appearance: none; appearance: none; padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231B2A41' stroke-width='1.6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; }
+.su-field textarea { resize: vertical; min-height: 80px; }
+.su-field input:focus-visible, .su-field textarea:focus-visible, .su-field select:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; border-color: var(--ink); }
+.su-field [aria-invalid="true"] { border-color: #9B2C1C; }
+.su-check { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; font-size: 15px; line-height: 1.5; cursor: pointer; }
+.su-check input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--ink); }
+.su-error { margin: 0; font-size: 14px; color: #9B2C1C; }
+.su-form .btn { justify-self: start; }
+.su-done { margin-top: 20px; display: grid; gap: 16px; outline: none; }
+.su-done[data-mode="guide"] [data-thanks="waitlist"], .su-done[data-mode="waitlist"] [data-thanks="guide"] { display: none; }
+.su-thanks { margin: 0; padding: 14px 16px; border-left: 4px solid var(--gold); background: var(--paper); font-size: 17px; line-height: 1.55; color: var(--ink); }
+.su-dl { display: grid; gap: 8px; justify-items: start; }
+.su-dl .btn[aria-disabled="true"] { opacity: 0.6; cursor: not-allowed; }
+.su-note { margin: 0; font-size: 13px; color: var(--muted); }
+@media (max-width: 799.98px) {
+  .su { padding: 24px 18px 22px; }
+  .su-head { font-size: 23px; }
+  .su-row { grid-template-columns: 1fr; }
+  .su-form .btn { width: 100%; }
+  .wl-act .btn { width: 100%; }
+}
+.su.is-done .su-text { display: none; }

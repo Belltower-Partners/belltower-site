@@ -1,11 +1,12 @@
 ---
-// The free-resource card under "Our work" and "Our clients". Words: site.json `resource`.
+// The free-guide card under "Our work", "Our clients" and "Pro bono". Its button opens the sign-up form
+// in guide mode; the download appears after the form. Words: site.json `resource`.
 import site from '../data/site.json';
 const r = site.resource;
 ---
-<a class="res-card" href={r.href}>
+<div class="res-card">
   <span class="res-lab">{r.label}</span>
   <span class="res-title">{r.title}</span>
   <span class="res-text">{r.text}</span>
-  <span class="res-link">{r.link} <span aria-hidden="true">→</span></span>
-</a>
+  <a class="res-link" href="#waitlist" data-signup="guide">{r.button} <span aria-hidden="true">→</span></a>
+</div>

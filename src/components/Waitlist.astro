@@ -1,25 +1,12 @@
 ---
-// The waitlist, styled like the rest of the page. Entries go to a Google Form (not connected in this
-// mock: data-mock makes the form show its thank-you without sending anything). Words: site.json `waitlist`.
+// The waitlist at the bottom of the page: a short note and a quiet button that opens the sign-up form.
+// Words: site.json `waitlist`; the form itself is SignupDialog.astro.
 import site from '../data/site.json';
 const w = site.waitlist;
 ---
 <section class="waitlist" id="waitlist" aria-labelledby="waitlist-head">
   <h2 class="wl-head" id="waitlist-head">{w.heading}</h2>
   <p class="wl-text">{w.text}</p>
-  <form class="wl-form" data-waitlist data-mock novalidate>
-    <div class="wl-row">
-      <label class="wl-field"><span>{w.fields.name}</span><input name="name" type="text" autocomplete="name" required /></label>
-      <label class="wl-field"><span>{w.fields.email}</span><input name="email" type="email" autocomplete="email" required /></label>
-    </div>
-    <div class="wl-row">
-      <label class="wl-field"><span>{w.fields.firm}</span><input name="firm" type="text" autocomplete="organization" required /></label>
-      <label class="wl-field"><span>{w.fields.role}</span><input name="role" type="text" autocomplete="organization-title" /></label>
-    </div>
-    <label class="wl-field"><span>{w.fields.desk}</span><textarea name="desk" rows="3"></textarea></label>
-    <p class="wl-error" data-wl-error hidden>Please fill in your name, a work email and your firm.</p>
-    <button class="btn btn-quiet" type="submit">{w.button}</button>
-  </form>
-  <p class="wl-thanks" data-wl-thanks role="status" hidden>{w.thanks}</p>
+  <p class="wl-act"><button class="btn btn-quiet" type="button" data-signup="waitlist">{w.button}</button></p>
   <p class="wl-email">{w.orEmail} <a href={`mailto:${site.email}`}>{site.email}</a></p>
 </section>

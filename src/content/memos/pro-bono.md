@@ -1,6 +1,9 @@
 ---
 order: 4
 tab: Pro bono
+# Shows the Law Foundation case study placeholder and the free-guide card under this tab's text.
+proBonoCase: true
+resource: true
 ---
 
 We will always dedicate a portion of our time to pro bono work focused on the mission below.

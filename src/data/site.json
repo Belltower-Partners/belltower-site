@@ -44,23 +44,56 @@
   "waitlist": {
     "heading": "Join the waitlist",
     "text": "We take on a small number of firms at a time, and our calendar is full for now. Leave your details and we will follow up as space opens over the coming months.",
+    "button": "Join the waitlist",
+    "orEmail": "Prefer email?"
+  },
+  "signup": {
+    "guide": {
+      "heading": "Get the free guide",
+      "text": "Getting started with AI, Part 1 is free. Tell us a little about yourself and the download will appear here.",
+      "button": "Get the guide",
+      "optIn": "I would also like to join the waitlist to work with Belltower.",
+      "thanks": "Thank you. Your guide is ready.",
+      "download": "Download the guide (Word)",
+      "downloadNote": "[Mock: the generalized file goes here once it is ready.]"
+    },
+    "waitlist": {
+      "heading": "Join the waitlist",
+      "text": "We take on a small number of firms at a time. Leave your details and we will follow up as space opens.",
+      "button": "Join the waitlist",
+      "optIn": "Also send me our free guide, Getting started with AI, Part 1.",
+      "thanks": "Thank you. You are on the list, and we will be in touch as space opens."
+    },
     "fields": {
       "name": "Name",
       "email": "Work email",
-      "firm": "Firm",
-      "role": "Your role",
-      "desk": "What’s on your desk? (optional)"
+      "org": "Organization",
+      "title": "Title",
+      "stage": "Where are you with AI?",
+      "stagePrompt": "Choose one",
+      "stages": [
+        "Exploring",
+        "Piloting",
+        "Rolled out"
+      ],
+      "desk": "What's on your desk? (optional)"
     },
-    "button": "Join the waitlist",
-    "thanks": "Thank you. You’re on the list, and we’ll be in touch as space opens.",
-    "orEmail": "Prefer email?"
+    "error": "Please fill in your name, a work email, your organization, your title and where you are with AI.",
+    "close": "Close"
   },
   "resource": {
-    "label": "Free resource",
+    "label": "Free guide",
     "title": "Getting started with AI, Part 1",
-    "text": "A one-hour, hands-on introduction for lawyers starting from close to zero. Three short exercises, and no client information needed.",
-    "link": "Read it",
-    "href": "/resources/getting-started-with-ai/"
+    "text": "A one-hour introduction for lawyers starting from close to zero. By the end you will have turned what is in your head into a written checklist, caught AI being confidently wrong, and made it show its work. No client information needed.",
+    "button": "Get the free guide"
+  },
+  "proBono": {
+    "case": {
+      "label": "Case study · Pro bono",
+      "title": "[Law Foundation of Silicon Valley case study title]",
+      "text": "[Two or three sentences from the one-page case study: the problem, what we built, and the result.]",
+      "link": "Read the one-page case study (coming soon)"
+    }
   },
   "cases": {
     "label": "Case study",

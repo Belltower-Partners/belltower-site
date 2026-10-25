@@ -1,0 +1,12 @@
+---
+// PLACEHOLDER: the Law Foundation of Silicon Valley case study on "Pro bono" (a one-page PDF to come).
+// Words: site.json `proBono.case`.
+import site from '../data/site.json';
+const c = site.proBono.case;
+---
+<article class="case pb-case">
+  <p class="case-lab">{c.label}</p>
+  <h2>{c.title}</h2>
+  <p class="case-sub">{c.text}</p>
+  <p class="pb-link">{c.link}</p>
+</article>
