@@ -18,7 +18,7 @@ const w = site.waitlist;
     </div>
     <label class="wl-field"><span>{w.fields.desk}</span><textarea name="desk" rows="3"></textarea></label>
     <p class="wl-error" data-wl-error hidden>Please fill in your name, a work email and your firm.</p>
-    <button class="btn" type="submit">{w.button}</button>
+    <button class="btn btn-quiet" type="submit">{w.button}</button>
   </form>
   <p class="wl-thanks" data-wl-thanks role="status" hidden>{w.thanks}</p>
   <p class="wl-email">{w.orEmail} <a href={`mailto:${site.email}`}>{site.email}</a></p>

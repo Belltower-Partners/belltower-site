@@ -1,22 +1,10 @@
-// Footnotes on the three lines at the top. A chip jumps to its note (and, on a desktop, previews it on
-// hover or focus); "Read the full bio" opens "The team" and scrolls to that partner's paragraph.
-const notes = document.querySelector('.footnotes');
-
+// Footnotes on the three lines at the top: each number opens "The team" and scrolls to that partner's
+// paragraph, with a brief highlight. Without JavaScript the link still lands on the team tab.
 function flash(el) {
   el.classList.remove('flash');
   void el.offsetWidth;               // restart the highlight
   el.classList.add('flash');
 }
-
-document.querySelectorAll('.fn-chip').forEach((chip) => {
-  chip.addEventListener('click', (e) => {
-    const note = document.getElementById('fn-' + chip.dataset.fn);
-    if (!note) return;
-    e.preventDefault();
-    note.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    flash(note);
-  });
-});
 
 document.querySelectorAll('[data-bio]').forEach((link) => {
   link.addEventListener('click', (e) => {
@@ -35,16 +23,3 @@ document.querySelectorAll('[data-bio]').forEach((link) => {
     });
   });
 });
-
-// Hover and focus previews, built from the notes themselves (desktop: a pointer that can hover).
-if (notes && window.matchMedia && window.matchMedia('(hover: hover)').matches) {
-  document.querySelectorAll('.fn-chip').forEach((chip) => {
-    const src = document.getElementById('fn-' + chip.dataset.fn + '-text');
-    if (!src) return;
-    const tip = document.createElement('span');
-    tip.className = 'fn-tip';
-    tip.setAttribute('aria-hidden', 'true');
-    tip.textContent = src.textContent;
-    chip.append(tip);
-  });
-}

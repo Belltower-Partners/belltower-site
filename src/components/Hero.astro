@@ -1,6 +1,6 @@
 ---
 // The top of the page: three lines, each footnoted to the partner behind it, like a citation in a brief.
-// A footnote chip opens its note; the note links to the full bio on "The team". Words: site.json `hero`.
+// Each footnote number goes to that partner's bio on "The team". Words: site.json `hero`.
 import site from '../data/site.json';
 const h = site.hero;
 ---
@@ -8,18 +8,9 @@ const h = site.hero;
   <p class="hero-eyebrow">{h.eyebrow}</p>
   <h2 class="hero-head" id="hero-head">
     {h.lines.map((l) => (
-      <span class="hero-line">{l.text}<a class="fn-chip" href={`#fn-${l.note}`} id={`fnref-${l.note}`} aria-describedby={`fn-${l.note}-text`} data-fn={l.note}><span class="vh">Footnote </span>{l.note}</a></span>
+      <span class="hero-line">{l.text}<a class="fn-chip" href="#tab-the-team" data-bio={l.bio} title={`${l.bio}, on The team`}><span class="vh">Footnote {l.note}: {l.bio}'s bio</span><span aria-hidden="true">{l.note}</span></a></span>
     ))}
   </h2>
   <p class="hero-sentence">{h.sentence}</p>
-  <p class="hero-act"><a class="btn" href="#waitlist" data-waitlist-link>{h.button}</a><span class="hero-aside">{h.aside}</span></p>
-  <ol class="footnotes">
-    {h.notes.map((n) => (
-      <li id={`fn-${n.n}`} class="footnote">
-        <span class="fn-num" aria-hidden="true">{n.n}</span>
-        <span id={`fn-${n.n}-text`}><strong>{n.name}</strong> {n.text}</span>
-        <a class="fn-bio" href="#tab-the-team" data-bio={n.name}>{h.bioLink}<span class="vh"> of {n.name}</span></a>
-      </li>
-    ))}
-  </ol>
+  <p class="hero-aside">{h.aside} <a href="#waitlist" data-waitlist-link>{h.waitlistLink}<span aria-hidden="true"> →</span></a></p>
 </section>

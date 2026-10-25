@@ -188,28 +188,17 @@ a:hover { color: #34496B; }
   text-decoration: none; cursor: pointer;
 }
 .fn-chip:hover { background: #D9C9A6; color: var(--ink); }
-.fn-tip {
-  position: absolute; left: 50%; bottom: calc(100% + 10px); z-index: 5; width: 300px; transform: translateX(-50%);
-  padding: 12px 14px; border: 1px solid var(--gold-soft); border-radius: 4px; background: var(--paper-2);
-  font-family: var(--serif); font-size: 14px; line-height: 1.5; font-weight: 400; text-align: left; color: var(--ink-2);
-  opacity: 0; visibility: hidden; transition: opacity 140ms ease; pointer-events: none;
-}
-.fn-chip:hover .fn-tip, .fn-chip:focus-visible .fn-tip { opacity: 1; visibility: visible; }
 .hero-sentence { max-width: 620px; margin: 24px 0 0; font-size: 19px; line-height: 1.6; color: var(--ink-2); text-wrap: pretty; }
-.hero-act { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin: 28px 0 0; }
-.hero-aside { font-size: 15px; line-height: 1.5; color: var(--muted); }
+.hero-aside { margin: 22px 0 0; font-size: 15px; line-height: 1.5; color: var(--muted); }
+.hero-aside a { color: var(--ink); text-underline-offset: 3px; white-space: nowrap; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; box-sizing: border-box;
   border: 1px solid var(--ink); border-radius: 3px; background: var(--ink); color: #FBF7EE;
   font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; cursor: pointer;
 }
 .btn:hover { background: #2A3D5C; color: #FBF7EE; }
-.footnotes { list-style: none; margin: 40px 0 0; padding: 18px 0 0; display: grid; gap: 12px; position: relative; }
-.footnotes::before { content: ""; position: absolute; left: 0; top: 0; width: 96px; border-top: 1px solid var(--gold); }
-.footnote { display: grid; grid-template-columns: 22px 1fr; column-gap: 12px; font-size: 14px; line-height: 1.55; color: var(--muted); border-radius: 3px; }
-.footnote strong { font-weight: 500; color: var(--ink-2); }
-.fn-num { font-family: var(--mono); font-size: 11px; line-height: 22px; color: var(--ink); }
-.fn-bio { grid-column: 2; justify-self: start; font-size: 14px; color: var(--ink); text-underline-offset: 3px; }
+.btn-quiet { background: transparent; color: var(--ink); }
+.btn-quiet:hover { background: var(--ink); color: #FBF7EE; }
 .flash { animation: fn-flash 1.8s ease-out; }
 @keyframes fn-flash { 0%, 30% { background: rgba(201, 176, 127, 0.45); box-shadow: 0 0 0 6px rgba(201, 176, 127, 0.45); } 100% { background: rgba(201, 176, 127, 0); box-shadow: 0 0 0 6px rgba(201, 176, 127, 0); } }
 @media (prefers-reduced-motion: reduce) { .flash { animation-duration: 0.01s; outline: 2px solid var(--gold); outline-offset: 4px; } }
@@ -234,8 +223,8 @@ a:hover { color: #34496B; }
 .res-link { margin-top: 4px; font-size: 15px; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
 /* waitlist (replaces "Get in touch") */
-.waitlist { padding: 8px 0 72px; scroll-margin-top: 24px; }
-.wl-head { margin: 0; font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 1.25; color: var(--ink); }
+.waitlist { padding: 0 0 72px; scroll-margin-top: 24px; }
+.wl-head { margin: 0; font-family: var(--display); font-weight: 400; font-size: 25px; line-height: 1.25; color: var(--ink); }
 .wl-text { max-width: 620px; margin: 12px 0 0; font-size: 16px; line-height: 1.65; color: var(--ink-2); }
 .wl-form { margin-top: 28px; display: grid; gap: 18px; }
 .wl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -268,16 +257,12 @@ a:hover { color: #34496B; }
   .fn-chip { min-width: 24px; height: 24px; margin-left: 6px; vertical-align: 0.55em; font-size: 12px; }
   .fn-chip::after { content: ""; position: absolute; inset: -10px; }
   .hero-sentence { margin-top: 14px; font-size: 16px; line-height: 1.55; }
-  .hero-act { margin-top: 18px; gap: 10px; }
-  .hero-act .btn { width: 100%; }
-  .hero-aside { font-size: 14px; }
-  .footnotes { margin-top: 28px; }
-  .footnote { font-size: 13px; }
+  .hero-aside { margin-top: 16px; font-size: 14px; }
   .tabs { margin-top: 0; }
   .res-card { padding: 18px 18px; }
   .res-title { font-size: 21px; }
   .waitlist { margin-top: 44px; padding-bottom: 0; }
-  .wl-head { font-size: 26px; }
+  .wl-head { font-size: 23px; }
   .wl-row { grid-template-columns: 1fr; }
   .wl-form .btn { width: 100%; }
 }
