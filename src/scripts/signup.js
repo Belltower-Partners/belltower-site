@@ -1,7 +1,7 @@
 // The sign-up form (SignupDialog.astro): one form, two doors. Any element with data-signup="guide" or
-// data-signup="waitlist" opens it in that mode. In this mock (data-mock) it checks the required fields and
-// shows the thank-you (and, for the guide, the download) without sending anything. Connected, it posts the
-// same fields, plus `source`, to the firm's Google Form.
+// data-signup="waitlist" opens it in that mode. It checks the required fields; then the guide door goes
+// straight to the guide's page and the waitlist door shows its thank-you. In this mock (data-mock) nothing
+// is sent. Connected, it posts the same fields, plus `source`, to the firm's Google Form.
 import { track } from './analytics.js';
 
 const dlg = document.getElementById('signup');
@@ -38,11 +38,14 @@ if (dlg && typeof dlg.showModal === 'function') {
     if (bad.length) { err.hidden = false; bad[0].focus(); return; }
     err.hidden = true;
     const mode = dlg.dataset.mode;
-    const getsGuide = mode === 'guide' || form.elements.alsoGuide.checked;
-    // Connected version: fetch(GOOGLE_FORM_ACTION, { method: 'POST', mode: 'no-cors', body: <the fields as entry IDs> }).
-    track('signup_submit', { source: mode, also: mode === 'guide' ? form.elements.alsoWaitlist.checked : form.elements.alsoGuide.checked });
-    done.dataset.mode = mode;
-    done.querySelector('[data-dl]').hidden = !getsGuide;
+    // Connected version: post the fields (as the Google Form's entry IDs) with
+    // fetch(GOOGLE_FORM_ACTION, { method: 'POST', mode: 'no-cors', body }) before moving on.
+    track('signup_submit', { source: mode, also_waitlist: mode === 'guide' && form.elements.alsoWaitlist.checked });
+    if (mode === 'guide') {
+      try { localStorage.setItem('belltower-guide', '1'); } catch (e2) {}
+      location.href = dlg.dataset.guidePage;       // straight to the guide's page
+      return;
+    }
     form.hidden = true;
     dlg.classList.add('is-done');
     done.hidden = false;

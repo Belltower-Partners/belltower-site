@@ -31,7 +31,11 @@
     "sentence": "Belltower Partners helps small and mid-size law firms, and senior leaders at firms of all sizes, put AI to work.",
     "aside": "We take on a small number of firms at a time.",
     "waitlistLink": "Join the waitlist",
-    "bioLink": "Read the full bio"
+    "bioLink": "Read the full bio",
+    "machineNote": {
+      "n": 4,
+      "label": "Try the sentence machine below"
+    }
   },
   "machine": {
     "heading": "You don’t have to figure out AI alone.",
@@ -50,19 +54,17 @@
   "signup": {
     "guide": {
       "heading": "Get the free guide",
-      "text": "Getting started with AI, Part 1 is free. Tell us a little about yourself and the download will appear here.",
+      "text": "Getting started with AI, Part 1 is free. Tell us a little about yourself and we will take you straight to it.",
       "button": "Get the guide",
       "optIn": "I would also like to join the waitlist to work with Belltower.",
-      "thanks": "Thank you. Your guide is ready.",
-      "download": "Download the guide (Word)",
-      "downloadNote": "[Mock: the generalized file goes here once it is ready.]"
+      "page": "/free-guide/"
     },
     "waitlist": {
       "heading": "Join the waitlist",
       "text": "We take on a small number of firms at a time. Leave your details and we will follow up as space opens.",
       "button": "Join the waitlist",
-      "optIn": "Also send me our free guide, Getting started with AI, Part 1.",
-      "thanks": "Thank you. You are on the list, and we will be in touch as space opens."
+      "thanks": "Thank you. You are on the list, and we will be in touch as space opens.",
+      "guideLink": "While you wait, here is our free guide, Getting started with AI, Part 1"
     },
     "fields": {
       "name": "Name",
@@ -90,9 +92,9 @@
   "proBono": {
     "case": {
       "label": "Case study · Pro bono",
-      "title": "[Law Foundation of Silicon Valley case study title]",
-      "text": "[Two or three sentences from the one-page case study: the problem, what we built, and the result.]",
-      "link": "Read the one-page case study (coming soon)"
+      "title": "Giving a senior corporate lawyer and pro bono leader the capacity to build her own AI agents",
+      "who": "Melissa Hollatz, 25+ year corporate and M&A partner at Wilson Sonsini, now Senior Counsel leading the Nonprofit Protection Project at the Law Foundation of Silicon Valley",
+      "link": "One-page case study (PDF): [added after the Law Foundation's review]"
     }
   },
   "cases": {
@@ -108,5 +110,15 @@
     "passwordLabel": "Password",
     "enter": "Enter",
     "wrong": "That isn't it."
+  },
+  "freeGuide": {
+    "label": "Free guide",
+    "title": "Getting started with AI, Part 1",
+    "intro": "An introduction to AI for lawyers who are starting from close to zero. Set aside about an hour. By the end you will have turned what is in your head into a written checklist, caught AI being confidently wrong, and made it show its work. No client information is needed.",
+    "file": "/guides/getting-started-with-ai-part-1.pdf",
+    "download": "Download the guide (PDF)",
+    "next": "Part 2 is coming soon. If you would like help putting this to work at your firm, join our waitlist or email us.",
+    "waitlist": "Join the waitlist",
+    "back": "Back to the main page"
   }
 }

@@ -6,9 +6,8 @@ proBonoCase: true
 resource: true
 ---
 
-We will always dedicate a portion of our time to pro bono work focused on the mission below.
+Pro bono is part of how Belltower works and something we will always commit a portion of our time to. Our work here is focused on two related challenges that AI exacerbates for our legal system.
 
-We believe the integration of AI into the legal system presents two distinct challenges, both of which we are committed to addressing:
+**1\. Access to Justice.** Too many people never get legal help, because they can’t afford a lawyer or otherwise assume that the doors of justice are closed to them. Many lawyers and organizations have spent years working to open those doors. We aim to help them go further with next-generation legal technology by expanding their capacity and, where appropriate, getting new tools directly into people’s hands. We want to amplify the impact of those already doing this work so that more people can secure quality representation and enter our legal system with confidence.
 
-1. **Access to Justice:** We aim to ensure that next-generation legal technology empowers the underrepresented to secure quality representation and effectively enter our judicial system.
-2. **Access to Resolution:** We recognize that the vision of universal representation outlined above will overwhelm a legacy court system. Therefore, we dedicate our expertise to scaling the systems of resolution—courts, administrators, and adjudicators in both public and private forums—that support justice. We are working to ensure that a massive increase in legal claims does not destroy the right to a timely and fair resolution.
+**2\. Access to Resolution.** We recognize that opening justice’s doors to everyone will overwhelm our current systems of dispute resolution. Therefore, we also dedicate our expertise to working alongside the administrators and adjudicators, in both public and private forums, so that a massive increase in legal claims does not destroy the right to a timely and fair resolution.

@@ -341,3 +341,18 @@ button.fn-chip { -webkit-appearance: none; appearance: none; }
   .wl-act .btn { width: 100%; }
 }
 .su.is-done .su-text { display: none; }
+
+/* footnote 4: in the sentence, straight to the machine */
+.hero-sentence .fn-chip { min-width: 20px; height: 20px; margin-left: 6px; font-size: 11px; vertical-align: 0.45em; }
+.machine-sec { scroll-margin-top: 8px; }
+.su-guide { margin: 0; font-size: 15px; line-height: 1.5; }
+.su-guide a { color: var(--ink); text-underline-offset: 3px; }
+
+/* the free guide's page */
+.fg main { padding: 28px 0 72px; }
+.fg-back { margin: 0 0 32px; font-size: 15px; }
+.fg-title { margin: 14px 0 0; font-family: var(--display); font-weight: 400; font-size: 42px; line-height: 1.18; color: var(--ink); }
+.fg-intro { max-width: 640px; margin: 18px 0 0; font-size: 18px; line-height: 1.65; color: var(--ink-2); }
+.fg-dl { margin: 28px 0 0; }
+.fg-next { margin: 40px 0 0; padding-top: 24px; border-top: 1px solid var(--gold); font-size: 16px; line-height: 1.6; color: var(--ink-2); }
+@media (max-width: 799.98px) { .fg-title { font-size: 32px; } .fg-dl .btn { width: 100%; } }

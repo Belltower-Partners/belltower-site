@@ -4,8 +4,8 @@ import '../styles/global.css';
 import '../styles/machine.css';
 import '../styles/gate.css';
 
-interface Props { title?: string; description?: string }
-const { title = site.title, description = site.description } = Astro.props;
+interface Props { title?: string; description?: string; noindex?: boolean }
+const { title = site.title, description = site.description, noindex = false } = Astro.props;
 const gated = site.comingSoon.enabled;
 ---
 <!doctype html>
@@ -16,7 +16,7 @@ const gated = site.comingSoon.enabled;
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="color-scheme" content="light" />
-    {gated && <meta name="robots" content="noindex" />}
+    {(gated || noindex) && <meta name="robots" content="noindex" />}
     {gated && (
       <script is:inline>
         // Coming-soon gate: a browser that already entered the password goes straight to the site.

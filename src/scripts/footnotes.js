@@ -70,3 +70,13 @@ document.querySelectorAll('[data-bio]').forEach((link) => {
     });
   });
 });
+
+// Footnote 4 goes straight to the sentence machine.
+document.querySelectorAll('[data-to-machine]').forEach((a) => a.addEventListener('click', (e) => {
+  const target = document.getElementById('machine');
+  if (!target) return;
+  e.preventDefault();
+  const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  target.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' });
+  history.replaceState(null, '', '#machine');
+}));

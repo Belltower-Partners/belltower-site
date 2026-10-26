@@ -1,0 +1,35 @@
+---
+// The free guide's page: where the sign-up form sends people, with the PDF to download. It isn't linked
+// from anywhere else and asks search engines not to list it (a soft gate: the address can still be shared).
+// Words: site.json `freeGuide`; the file is public/guides/. MOCK: the PDF is a placeholder for now.
+import Base from '../../layouts/Base.astro';
+import Logo from '../../components/Logo.astro';
+import site from '../../data/site.json';
+const g = site.freeGuide;
+---
+<Base title={`${g.title} | ${site.firmName}`} description={g.intro} noindex>
+  <div class="col fg">
+    <header class="head">
+      <Logo class="head-logo" size={52} />
+      <p class="h1"><a href="/" class="fg-home">{site.firmName}</a></p>
+    </header>
+    <main>
+      <p class="fg-back"><a href="/">← {g.back}</a></p>
+      <p class="hero-eyebrow">{g.label}</p>
+      <h1 class="fg-title">{g.title}</h1>
+      <p class="fg-intro">{g.intro}</p>
+      <p class="fg-dl"><a class="btn" href={g.file} download data-guide-download>{g.download}</a></p>
+      <p class="fg-next">{g.next} <a href="/#waitlist">{g.waitlist}</a> · <a href={`mailto:${site.email}`}>{site.email}</a></p>
+    </main>
+    <footer class="closing"><div class="foot"><Logo class="foot-logo" size={28} /><p>{site.footerLine}</p></div></footer>
+  </div>
+</Base>
+<style is:global>
+  .fg .head .h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 40px; line-height: 1.25; }
+  .fg-home { color: var(--ink); text-decoration: none; }
+  @media (max-width: 799.98px) { .fg .head .h1 { font-size: 24px; } }
+</style>
+<script>
+  import { track } from '../../scripts/analytics.js';
+  document.querySelector('[data-guide-download]')?.addEventListener('click', () => track('guide_download'));
+</script>
