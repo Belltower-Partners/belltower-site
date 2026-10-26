@@ -1,8 +1,6 @@
 ---
 order: 1
 tab: Our work
-# Shows the free-resource card under this tab's text.
-resource: true
 ---
 
 Belltower Partners is a boutique AI advisory and engineering firm that supports small and mid-size law firms and senior leaders at firms of all sizes. We focus on helping you expand your technology and AI capacity effectively.

@@ -1,9 +1,6 @@
 ---
 order: 4
 tab: Pro bono
-# Shows the Law Foundation case study placeholder and the free-guide card under this tab's text.
-proBonoCase: true
-resource: true
 ---
 
 Pro bono is part of how Belltower works and something we will always commit a portion of our time to. Our work here is focused on two related challenges that AI exacerbates for our legal system.

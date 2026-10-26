@@ -10,10 +10,6 @@ const memos = defineCollection({
     order: z.number(),
     tab: z.string(),
     cases: z.boolean().default(false),
-    // `resource: true` shows the free-resource card (site.json `resource`) under the tab's text.
-    resource: z.boolean().default(false),
-    // Shows the pro bono case-study card (words in site.json `proBono`).
-    proBonoCase: z.boolean().default(false),
   }),
 });
 
@@ -30,6 +26,9 @@ const cases = defineCollection({
     subtitle: z.string().optional(),
     bodyLabel: z.string(),
     quote: z.boolean().default(false),
+    // The one-page case study: the PDF's path under public/case-studies/ (e.g. "/case-studies/law-foundation.pdf"),
+    // or "pending" to show a placeholder while the client reviews it. Leave it out for no one-pager.
+    onePager: z.string().optional(),
     // `draft: true` keeps a case study off the page while it is being finalized.
     draft: z.boolean().default(false),
   }),

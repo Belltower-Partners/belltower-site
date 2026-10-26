@@ -7,10 +7,8 @@ import SentenceMachinePhone from '../components/SentenceMachinePhone.astro';
 import ComingSoon from '../components/ComingSoon.astro';
 import Logo from '../components/Logo.astro';
 import Hero from '../components/Hero.astro';
-import ResourceCard from '../components/ResourceCard.astro';
 import Waitlist from '../components/Waitlist.astro';
 import SignupDialog from '../components/SignupDialog.astro';
-import ProBonoCase from '../components/ProBonoCase.astro';
 import site from '../data/site.json';
 
 const memos = (await getCollection('memos')).sort((a, b) => a.data.order - b.data.order);
@@ -56,8 +54,6 @@ const gated = site.comingSoon.enabled;
             return (
               <div class="memo" role="tabpanel" id={`memo-${m.id}`} aria-labelledby={`tab-${m.id}`} tabindex="0" hidden={i !== 0}>
                 <Body />
-                {m.data.proBonoCase && <ProBonoCase />}
-                {m.data.resource && <ResourceCard />}
                 {m.data.cases && (
                   <div class="cases">
                     {cases.map((cs, k) => {
@@ -69,7 +65,14 @@ const gated = site.comingSoon.enabled;
                           {cs.data.name ? (
                             <p class="case-who"><span class="case-name">{cs.data.name}</span>{cs.data.title && <>, <span class="case-title">{cs.data.title}</span></>}</p>
                           ) : cs.data.subtitle && <p class="case-sub">{cs.data.subtitle}</p>}
-                          <button class="case-toggle" type="button" aria-expanded="true" aria-controls={`case-${cs.id}`} aria-describedby={`case-h-${cs.id}`} data-case-toggle data-open={site.cases.open} data-close={site.cases.close} hidden>{site.cases.close}</button>
+                          <div class="case-actions">
+                            <button class="case-toggle" type="button" aria-expanded="true" aria-controls={`case-${cs.id}`} aria-describedby={`case-h-${cs.id}`} data-case-toggle data-open={site.cases.open} data-close={site.cases.close} hidden>{site.cases.close}</button>
+                            {cs.data.onePager === 'pending' ? (
+                              <span class="case-pdf case-pdf-pending">{site.cases.onePager} {site.cases.onePagerPending}</span>
+                            ) : cs.data.onePager && (
+                              <a class="case-pdf" href={cs.data.onePager} target="_blank" rel="noopener" data-case-pdf aria-describedby={`case-h-${cs.id}`}>{site.cases.onePager}</a>
+                            )}
+                          </div>
                           <div class="case-body" id={`case-${cs.id}`}>
                             <p class="case-body-lab">{cs.data.bodyLabel}</p>
                             {cs.data.quote ? (

@@ -1,19 +1,18 @@
 ---
-// One sign-up form with two doors. "Get the free guide" opens it in guide mode: after the form, the visitor
-// goes straight to the guide's page (/free-guide/), where the PDF is. "Join the waitlist" opens it in
-// waitlist mode, and the thank-you links to the guide. Both send the same fields to one Google Form, with a
-// hidden `source` field saying which door; guide sign-ups can tick a box to join the waitlist too.
-// MOCK: data-mock makes it show its thank-you without sending anything. Words: site.json `signup`.
+// The waitlist form, in a pop-up opened by anything with data-signup="waitlist" (the line at the top and
+// the button at the bottom). Entries go to the firm's Google Form; built so a second door (such as a free
+// guide) can share it later. MOCK: data-mock makes it show its thank-you without sending anything.
+// Words: site.json `signup`.
 import site from '../data/site.json';
 const s = site.signup;
 const f = s.fields;
 ---
-<dialog class="su" id="signup" aria-labelledby="su-head" data-mode="guide" data-guide-page={s.guide.page}>
+<dialog class="su" id="signup" aria-labelledby="su-head" data-mode="waitlist">
   <button class="su-close" type="button" data-su-close aria-label={s.close}><span aria-hidden="true">×</span></button>
-  <h2 class="su-head" id="su-head"><span data-for="guide">{s.guide.heading}</span><span data-for="waitlist">{s.waitlist.heading}</span></h2>
-  <p class="su-text"><span data-for="guide">{s.guide.text}</span><span data-for="waitlist">{s.waitlist.text}</span></p>
+  <h2 class="su-head" id="su-head">{s.waitlist.heading}</h2>
+  <p class="su-text">{s.waitlist.text}</p>
   <form class="su-form" data-signup-form data-mock novalidate>
-    <input type="hidden" name="source" value="guide" />
+    <input type="hidden" name="source" value="waitlist" />
     <div class="su-row">
       <label class="su-field"><span>{f.name}</span><input name="name" type="text" autocomplete="name" required /></label>
       <label class="su-field"><span>{f.email}</span><input name="email" type="email" autocomplete="email" required /></label>
@@ -28,13 +27,11 @@ const f = s.fields;
         {f.stages.map((st) => <option>{st}</option>)}
       </select>
     </label>
-    <label class="su-field" data-for="waitlist"><span>{f.desk}</span><textarea name="desk" rows="3"></textarea></label>
-    <label class="su-check" data-for="guide"><input type="checkbox" name="alsoWaitlist" /><span>{s.guide.optIn}</span></label>
+    <label class="su-field"><span>{f.desk}</span><textarea name="desk" rows="3"></textarea></label>
     <p class="su-error" data-su-error hidden>{s.error}</p>
-    <button class="btn" type="submit"><span data-for="guide">{s.guide.button}</span><span data-for="waitlist">{s.waitlist.button}</span></button>
+    <button class="btn" type="submit">{s.waitlist.button}</button>
   </form>
   <div class="su-done" data-su-done hidden tabindex="-1">
     <p class="su-thanks">{s.waitlist.thanks}</p>
-    <p class="su-guide"><a href={s.guide.page}>{s.waitlist.guideLink}<span aria-hidden="true"> →</span></a></p>
   </div>
 </dialog>

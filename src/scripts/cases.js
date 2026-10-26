@@ -18,3 +18,11 @@ for (const btn of document.querySelectorAll('[data-case-toggle]')) {
     track('case_study_toggle', { case_study: heading ? heading.textContent.trim() : '', action: open ? 'open' : 'close' });
   });
 }
+
+// Opening a one-page case study (PDF).
+for (const a of document.querySelectorAll('[data-case-pdf]')) {
+  a.addEventListener('click', () => {
+    const heading = document.getElementById(a.getAttribute('aria-describedby') || '');
+    track('case_study_pdf', { case_study: heading ? heading.textContent.trim() : '' });
+  });
+}
