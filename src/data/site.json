@@ -28,8 +28,8 @@
         "summary": "has spent the past decade building enterprise software systems at Amazon and Blue Origin. MA in Computer Science, Brooklyn College."
       }
     ],
-    "sentence": "Belltower Partners helps small and mid-size law firms, and senior leaders at firms of all sizes, put AI to work.",
-    "aside": "We take on a small number of firms at a time.",
+    "sentence": "Belltower Partners helps small and mid-size law firms, and senior leaders at firms of all sizes, use AI more effectively.",
+    "aside": "We take on a small number of clients at a time.",
     "waitlistLink": "Join the waitlist",
     "bioLink": "Read the full bio",
     "machineNote": {
@@ -47,14 +47,14 @@
   "getInTouch": "Get in touch",
   "waitlist": {
     "heading": "Join the waitlist",
-    "text": "We take on a small number of firms at a time, and our calendar is full for now. Leave your details and we will follow up as space opens over the coming months.",
+    "text": "We take on a small number of clients at a time. Leave your details to join our waitlist and we will follow up.",
     "button": "Join the waitlist",
     "orEmail": "Prefer email?"
   },
   "signup": {
     "waitlist": {
       "heading": "Join the waitlist",
-      "text": "We take on a small number of firms at a time. Leave your details and we will follow up as space opens.",
+      "text": "We take on a small number of clients at a time. Leave your details to join our waitlist and we will follow up.",
       "button": "Join the waitlist",
       "thanks": "Thank you. You are on the list, and we will be in touch as space opens."
     },
