@@ -2,7 +2,7 @@
 # Melissa Hollatz confirmed permission on 10/5.
 order: 2
 label: "Law Foundation of Silicon Valley"
-heading: "Effective AI agents to scale review of corporate legal documents like bylaws and conflicts policies"
+heading: "Giving a senior corporate lawyer and pro bono leader the capacity to build her own AI agents"
 name: "Melissa Hollatz"
 title: "25+ year corporate and M&A partner at Wilson Sonsini, currently Senior Counsel leading the Nonprofit Protection Project at The Law Foundation of Silicon Valley"
 bodyLabel: "In her words"
