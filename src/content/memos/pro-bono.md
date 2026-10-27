@@ -3,8 +3,10 @@ order: 4
 tab: Pro bono
 ---
 
-Pro bono is part of how Belltower works and something we will always commit a portion of our time to. Our work here is focused on two related challenges that AI exacerbates for our legal system.
+Pro bono is part of how Belltower works and something we will always commit a portion of our time to. This work is focused on two related areas where AI is reshaping our legal system.
 
-**1\. Access to Justice.** Too many people never get legal help, because they can’t afford a lawyer or otherwise assume that the doors of justice are closed to them. Many lawyers and organizations have spent years working to open those doors. We aim to help them go further with next-generation legal technology by expanding their capacity and, where appropriate, getting new tools directly into people’s hands. We want to amplify the impact of those already doing this work so that more people can secure quality representation and enter our legal system with confidence.
+**1\. Access to Justice.** We aim to ensure that next-generation legal technology expands access to quality legal representation and guidance to everyone who needs it.
 
-**2\. Access to Resolution.** We recognize that opening justice’s doors to everyone will overwhelm our current systems of dispute resolution. Therefore, we also dedicate our expertise to working alongside the administrators and adjudicators, in both public and private forums, so that a massive increase in legal claims does not destroy the right to a timely and fair resolution.
+**2\. Access to Resolution.** We recognize that expanding quality representation will overwhelm our current systems of resolution. Therefore, we also dedicate our expertise to supporting these systems, public and private, and the administrators, adjudicators, and courts running them, so that a massive increase in legal claims does not destroy the right to a timely and fair resolution.
+
+Many lawyers, professionals, and organizations have spent years working on these issues. Our role is to amplify their impact.
