@@ -2,13 +2,11 @@
 # Melissa Hollatz confirmed permission on 10/5.
 order: 2
 label: "Law Foundation of Silicon Valley"
-heading: "Giving a senior corporate lawyer and pro bono leader the capacity to build her own AI agents"
+heading: "Effective AI agents to scale review of corporate legal documents like bylaws and conflicts policies"
 name: "Melissa Hollatz"
 title: "25+ year corporate and M&A partner at Wilson Sonsini, currently Senior Counsel leading the Nonprofit Protection Project at The Law Foundation of Silicon Valley"
 bodyLabel: "In her words"
 quote: true
-# The one-pager is with the Law Foundation for review; swap "pending" for its path once approved.
-onePager: pending
 ---
 
 “I started with Belltower Partners as an AI beginner and couldn't have imagined how much they have been able to do. Within just a couple of 1-hour sessions, they coached me to the point where I could build, test, and improve my own agents. My first few have streamlined multiple projects that used to take hours into taking mere minutes, which will allow us to serve more clients. And Belltower Partners continues to find innovative ways to help me better leverage my time and expertise to expand my client base and capabilities.
