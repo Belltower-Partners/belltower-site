@@ -278,7 +278,6 @@ button.fn-chip { -webkit-appearance: none; appearance: none; }
 .su::backdrop { background: rgba(27, 42, 65, 0.45); }
 .su-close { position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; border: 0; background: none; font-size: 26px; line-height: 1; color: var(--ink); cursor: pointer; }
 .su-head { margin: 0 40px 0 0; font-family: var(--display); font-weight: 400; font-size: 27px; line-height: 1.25; color: var(--ink); }
-.su-text { margin: 10px 0 0; font-size: 15px; line-height: 1.6; }
 .su-form { margin-top: 22px; display: grid; gap: 16px; }
 .su-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .su-field { display: grid; gap: 6px; }
@@ -306,10 +305,14 @@ button.fn-chip { -webkit-appearance: none; appearance: none; }
   .su-form .btn { width: 100%; }
   .wl-act .btn { width: 100%; }
 }
-.su.is-done .su-text { display: none; }
 
 /* footnote 4: in the sentence, straight to the machine */
 .hero-sentence .fn-chip { font-size: 0.54em; }
+/* phone: a bit larger, since the desktop size is too small to read on a small screen */
+@media (max-width: 799.98px) {
+  .fn-chip { font-size: 0.46em; }
+  .hero-sentence .fn-chip { font-size: 0.68em; }
+}
 .machine-sec { scroll-margin-top: 8px; }
 
 

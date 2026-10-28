@@ -10,7 +10,6 @@ const f = s.fields;
 <dialog class="su" id="signup" aria-labelledby="su-head" data-mode="contact">
   <button class="su-close" type="button" data-su-close aria-label={s.close}><span aria-hidden="true">×</span></button>
   <h2 class="su-head" id="su-head">{s.heading}</h2>
-  <p class="su-text">{s.text}</p>
   <form class="su-form" action={s.endpoint} method="POST" data-signup-form novalidate>
     <input type="hidden" name="source" value="get_in_touch" />
     <input type="hidden" name="_subject" value={s.subject} />
