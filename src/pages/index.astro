@@ -5,9 +5,8 @@ import Base from '../layouts/Base.astro';
 import SentenceMachine from '../components/SentenceMachine.astro';
 import SentenceMachinePhone from '../components/SentenceMachinePhone.astro';
 import ComingSoon from '../components/ComingSoon.astro';
-import Logo from '../components/Logo.astro';
 import Hero from '../components/Hero.astro';
-import Waitlist from '../components/Waitlist.astro';
+import Contact from '../components/Contact.astro';
 import SignupDialog from '../components/SignupDialog.astro';
 import site from '../data/site.json';
 
@@ -30,7 +29,6 @@ const gated = site.comingSoon.enabled;
   {gated && <ComingSoon />}
   <div class={gated ? 'col gated' : 'col'}>
     <header class="head">
-      <Logo class="head-logo" size={52} />
       <h1>{site.firmName}</h1>
     </header>
 
@@ -105,13 +103,12 @@ const gated = site.comingSoon.enabled;
         <div class="fit fit-phone" data-fit data-w="358" data-h="420"><SentenceMachinePhone /></div>
       </section>
 
-      <Waitlist />
+      <Contact />
     </main>
     <SignupDialog />
 
     <div class="closing">
       <footer class="foot">
-        <Logo class="foot-logo" size={28} />
         <p>{footBefore}{footAfter !== null && <><a href={`mailto:${site.email}`}>{site.email}</a>{footAfter}</>}</p>
       </footer>
     </div>

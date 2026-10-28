@@ -1,5 +1,5 @@
-// The sign-up form (SignupDialog.astro). Any element with data-signup="waitlist" (or, later, another door)
-// data-signup="waitlist" opens it in that mode (only the waitlist door is on the page for now). It checks
+// The "Get in touch" form (SignupDialog.astro). Any element with data-signup="contact" (or, later, another
+// door) opens it in that mode. It checks
 // the required fields and shows the thank-you. In this mock (data-mock) nothing is sent. Connected, it posts
 // the same fields, plus `source`, to the firm's Google Form.
 import { track } from './analytics.js';

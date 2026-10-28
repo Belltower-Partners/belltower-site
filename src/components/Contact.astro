@@ -1,0 +1,12 @@
+---
+// "Get in touch" at the bottom of the page: a short line and a quiet button that opens the contact form,
+// with the email address under it. Words: site.json `contact`; the form itself is SignupDialog.astro.
+import site from '../data/site.json';
+const c = site.contact;
+---
+<section class="waitlist" id="get-in-touch" aria-labelledby="contact-head">
+  <h2 class="wl-head" id="contact-head">{c.heading}</h2>
+  <p class="wl-text">{c.text}</p>
+  <p class="wl-act"><button class="btn btn-quiet" type="button" data-signup="contact">{c.button}</button></p>
+  <p class="wl-email">{c.orEmail} <a href={`mailto:${site.email}`}>{site.email}</a></p>
+</section>

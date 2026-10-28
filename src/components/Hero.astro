@@ -10,9 +10,9 @@ const h = site.hero;
   <p class="hero-eyebrow">{h.eyebrow}</p>
   <h2 class="hero-head" id="hero-head">
     {h.lines.map((l) => (
-      <span class="hero-line">{l.text}<span class="fn"><button class="fn-chip" type="button" aria-expanded="false" aria-controls={`fn-${l.note}`} data-fn><span class="vh">Footnote </span>{l.note}</button><span class="fn-pop" id={`fn-${l.note}`} hidden><span class="fn-pop-text"><strong>{l.bio}</strong> {l.summary}</span> <a class="fn-bio" href="#tab-the-team" data-bio={l.bio}>{h.bioLink}<span class="vh"> of {l.bio}</span><span aria-hidden="true">&nbsp;→</span></a></span></span></span>
+      <span class="hero-line">{l.text}<span class="fn"><button class="fn-chip" type="button" aria-expanded="false" aria-controls={`fn-${l.note}`} data-fn><span class="vh">Footnote </span>{l.note}</button><span class="fn-pop" id={`fn-${l.note}`} hidden><span class="fn-pop-n" aria-hidden="true">{l.note}</span><span class="fn-pop-text">{l.bio} {l.summary}</span> <a class="fn-bio" href="#tab-the-team" data-bio={l.bio}><em>{h.bioSignal}</em> {h.bioLink}<span class="vh"> of {l.bio}</span>.</a></span></span></span>
     ))}
   </h2>
   <p class="hero-sentence">{h.sentence}<a class="fn-chip fn-chip-link" href="#machine" data-to-machine title={h.machineNote.label}><span class="vh">Footnote {h.machineNote.n}: {h.machineNote.label}</span><span aria-hidden="true">{h.machineNote.n}</span></a></p>
-  <p class="hero-aside">{h.aside} <a href="#waitlist" data-signup="waitlist">{h.waitlistLink}<span aria-hidden="true"> →</span></a></p>
+  <p class="hero-aside"><a href="#get-in-touch" data-signup="contact">{h.contactLink}<span aria-hidden="true"> →</span></a></p>
 </section>
