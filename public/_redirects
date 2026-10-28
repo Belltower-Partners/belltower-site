@@ -3,3 +3,6 @@
 # Cloudflare Access sign-in. Remove these two lines after the pitch.
 /sperlingkennydemo https://sperlingkennybelltowerdemo.shawn-aa0.workers.dev/ 302
 /sperlingkennydemo/ https://sperlingkennybelltowerdemo.shawn-aa0.workers.dev/ 302
+# The Law Foundation of Silicon Valley one-page case study, for sharing.
+/lawfoundation /case-studies/law-foundation-of-silicon-valley.pdf 302
+/lawfoundation/ /case-studies/law-foundation-of-silicon-valley.pdf 302
