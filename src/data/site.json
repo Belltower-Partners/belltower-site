@@ -57,7 +57,7 @@
     "endpoint": "https://formspree.io/f/xpppdgnv",
     "subject": "New message from the Get in touch form",
     "heading": "Get in touch",
-    "text": "Tell us a little about yourself and what’s on your desk, and one of us will write back to you personally. Only your email address is required.",
+    "text": "We personally respond to serious inquiries.",
     "button": "Get in touch",
     "sending": "Sending…",
     "thanks": "Thank you. We will follow up shortly.",
@@ -65,11 +65,10 @@
     "fields": {
       "name": "Name",
       "email": "Email",
-      "org": "Organization",
-      "title": "Title",
-      "desk": "What’s on your desk?"
+      "phone": "Phone (optional)",
+      "note": "Note (optional)"
     },
-    "error": "Please enter an email address so we can reply.",
+    "error": "Please enter your name and a valid email address so we can reply.",
     "close": "Close"
   },
   "cases": {

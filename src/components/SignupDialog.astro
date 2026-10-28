@@ -17,14 +17,11 @@ const f = s.fields;
     <!-- A field people never see; Formspree treats anything typed into it as spam. -->
     <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
     <div class="su-row">
-      <label class="su-field"><span>{f.name}</span><input name="name" type="text" autocomplete="name" /></label>
+      <label class="su-field"><span>{f.name}</span><input name="name" type="text" autocomplete="name" required /></label>
       <label class="su-field"><span>{f.email}</span><input name="email" type="email" autocomplete="email" required /></label>
     </div>
-    <div class="su-row">
-      <label class="su-field"><span>{f.org}</span><input name="organization" type="text" autocomplete="organization" /></label>
-      <label class="su-field"><span>{f.title}</span><input name="title" type="text" autocomplete="organization-title" /></label>
-    </div>
-    <label class="su-field"><span>{f.desk}</span><textarea name="whats_on_your_desk" rows="3"></textarea></label>
+    <label class="su-field"><span>{f.phone}</span><input name="phone" type="tel" autocomplete="tel" /></label>
+    <label class="su-field"><span>{f.note}</span><textarea name="note" rows="3"></textarea></label>
     <p class="su-error" data-su-error hidden>{s.error}</p>
     <p class="su-error" data-su-send-error role="alert" hidden>{s.sendError}</p>
     <button class="btn" type="submit" data-label={s.button} data-sending={s.sending}>{s.button}</button>

@@ -70,7 +70,7 @@ working here must follow these rules.
 
 The "Get in touch" form opens in a pop-up from the link under the headline and the button at the bottom of
 the page. It sends each entry to Formspree, which emails it to go@gobelltower.com and keeps a copy in the
-Formspree dashboard (Shawn's account, project "Belltower Partners", form "Get in touch"). Only the email address is required; name, organization, title and "What's on your desk?" are optional, on purpose, so the form asks for as little as possible. The page has no Testimonials
+Formspree dashboard (Shawn's account, project "Belltower Partners", form "Get in touch"). Only name and email are required; phone and "Note" are optional and labeled "(optional)", on purpose, so the form asks for as little as possible. The page has no Testimonials
 section either; it was removed in October 2026. If a partner asks for one
 again, it can be restored from git history (the pull request "Remove the Testimonials section").
 

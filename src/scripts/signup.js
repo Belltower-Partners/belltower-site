@@ -1,5 +1,5 @@
 // The "Get in touch" form (SignupDialog.astro). Any element with data-signup="contact" (or, later, another
-// door) opens it in that mode. It checks the one required field (the email address), sends the entry to Formspree, and shows the
+// door) opens it in that mode. It checks the two required fields (name and a valid email address), sends the entry to Formspree, and shows the
 // thank-you only once Formspree confirms it arrived; if sending fails it says so and offers the email
 // address. Without JavaScript the form still posts to Formspree directly.
 import { track } from './analytics.js';
@@ -11,7 +11,7 @@ if (dlg && typeof dlg.showModal === 'function') {
   const sendErr = dlg.querySelector('[data-su-send-error]');
   const done = dlg.querySelector('[data-su-done]');
   const submit = form.querySelector('[type=submit]');
-  const req = ['email'].map((n) => form.elements[n]);   // everything else is optional
+  const req = ['name', 'email'].map((n) => form.elements[n]);   // phone and note are optional
 
   function openAs(mode) {
     dlg.dataset.mode = mode;
