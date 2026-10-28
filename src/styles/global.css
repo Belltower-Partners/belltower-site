@@ -200,7 +200,8 @@ a:hover { color: #34496B; }
 @media (prefers-reduced-motion: reduce) { .flash { animation-duration: 0.01s; outline: 2px solid var(--gold); outline-offset: 4px; } }
 
 /* tabs and rules: navy marks, gold hairlines */
-.tabs { border-top: 3px double var(--gold); padding-top: 4px; }
+/* room between the double rule and the tabs' own lines under it */
+.tabs { border-top: 3px double var(--gold); padding-top: 26px; }
 .tab { border-top-color: var(--rule); }
 .tab[aria-selected="true"] { border-top-color: var(--ink); }
 .case { border-top: 1px solid var(--gold); }
@@ -242,7 +243,7 @@ a:hover { color: #34496B; }
   .hero-head { margin-top: 12px; font-size: 28px; line-height: 1.22; }
   .hero-sentence { margin-top: 14px; font-size: 16px; line-height: 1.55; }
   .hero-aside { margin-top: 16px; font-size: 14px; }
-  .tabs { margin-top: 0; }
+  .tabs { margin-top: 0; padding-top: 18px; }
   .waitlist { margin-top: 44px; padding-bottom: 0; }
   .wl-head { font-size: 23px; }
   .wl-row { grid-template-columns: 1fr; }

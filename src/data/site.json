@@ -49,7 +49,7 @@
   "getInTouch": "Get in touch",
   "contact": {
     "heading": "Get in touch",
-    "text": "Leave your details and we will follow up.",
+    "text": "Tell us a little about yourself and what’s on your desk, and one of us will write back to you personally.",
     "button": "Get in touch",
     "orEmail": "Prefer email?"
   },
@@ -57,26 +57,19 @@
     "endpoint": "https://formspree.io/f/xpppdgnv",
     "subject": "New message from the Get in touch form",
     "heading": "Get in touch",
-    "text": "Leave your details and we will follow up.",
+    "text": "Tell us a little about yourself and what’s on your desk, and one of us will write back to you personally. Only your email address is required.",
     "button": "Get in touch",
     "sending": "Sending…",
     "thanks": "Thank you. We will follow up shortly.",
     "sendError": "Sorry, that didn't go through. Please try again, or email us at go@gobelltower.com.",
     "fields": {
       "name": "Name",
-      "email": "Work email",
+      "email": "Email",
       "org": "Organization",
       "title": "Title",
-      "stage": "Where are you with AI?",
-      "stagePrompt": "Choose one",
-      "stages": [
-        "Exploring",
-        "Piloting",
-        "Rolled out"
-      ],
-      "desk": "What's on your desk? (optional)"
+      "desk": "What’s on your desk?"
     },
-    "error": "Please fill in your name, a work email, your organization, your title and where you are with AI.",
+    "error": "Please enter an email address so we can reply.",
     "close": "Close"
   },
   "cases": {
