@@ -7,7 +7,6 @@ import site from '../data/site.json';
 const h = site.hero;
 ---
 <section class="hero" aria-labelledby="hero-head">
-  <p class="hero-eyebrow">{h.eyebrow}</p>
   <h2 class="hero-head" id="hero-head">
     {h.lines.map((l) => (
       <span class="hero-line">{l.text}<span class="fn"><button class="fn-chip" type="button" aria-expanded="false" aria-controls={`fn-${l.note}`} data-fn><span class="vh">Footnote </span>{l.note}</button><span class="fn-pop" id={`fn-${l.note}`} hidden><span class="fn-pop-n" aria-hidden="true">{l.note}</span><span class="fn-pop-text">{l.bio} {l.summary}</span> <a class="fn-bio" href="#tab-the-team" data-bio={l.bio}><em>{h.bioSignal}</em> {h.bioLink}<span class="vh"> of {l.bio}</span>.</a></span></span></span>

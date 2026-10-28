@@ -172,8 +172,7 @@ a:hover { color: #34496B; }
 
 /* hero: the three lines, footnoted */
 .hero { padding: 44px 0 40px; }
-.hero-eyebrow { margin: 0; font-family: var(--mono); font-size: 12px; line-height: 16px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5129; }
-.hero-head { margin: 18px 0 0; font-family: var(--display); font-weight: 400; font-size: 46px; line-height: 1.16; letter-spacing: -0.01em; color: var(--ink); }
+.hero-head { margin: 0; font-family: var(--display); font-weight: 400; font-size: 46px; line-height: 1.16; letter-spacing: -0.01em; color: var(--ink); }
 .hero-line { display: block; }
 .fn-chip {
   position: relative; display: inline-block; margin: 0 0 0 0.08em; padding: 0 0.12em; border: 0; border-radius: 2px; background: none;
@@ -237,7 +236,6 @@ a:hover { color: #34496B; }
   .head { padding: 26px 0 14px; }
   .head h1 { font-size: 24px; }
   .hero { padding: 22px 0 28px; }
-  .hero-eyebrow { font-size: 11px; letter-spacing: 0.12em; }
   .hero-head { margin-top: 12px; font-size: 28px; line-height: 1.22; }
   .hero-sentence { margin-top: 14px; font-size: 16px; line-height: 1.55; }
   .hero-aside { margin-top: 16px; font-size: 14px; }
