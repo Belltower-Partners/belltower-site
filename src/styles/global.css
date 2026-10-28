@@ -312,6 +312,11 @@ button.fn-chip { -webkit-appearance: none; appearance: none; }
 
 /* footnote 4: in the sentence, straight to the machine */
 .hero-sentence .fn-chip { font-size: 0.72em; }
+/* phone: each footnote number sits in a thin ring and is larger, so it is easy to see and to tap */
+@media (max-width: 799.98px) {
+  .fn-chip { display: inline-flex; align-items: center; justify-content: center; width: 1.55em; height: 1.55em; box-sizing: border-box; margin-left: 0.2em; padding: 0; border: 1px solid currentColor; border-radius: 50%; font-size: 0.6em; text-decoration: none; }
+  .hero-sentence .fn-chip { font-size: 0.78em; }
+}
 .machine-sec { scroll-margin-top: 8px; }
 
 
