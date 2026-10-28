@@ -23,6 +23,6 @@ for (const btn of document.querySelectorAll('[data-case-toggle]')) {
 for (const a of document.querySelectorAll('[data-case-pdf]')) {
   a.addEventListener('click', () => {
     const heading = document.getElementById(a.getAttribute('aria-describedby') || '');
-    track('case_study_pdf', { case_study: heading ? heading.textContent.trim() : '' });
+    track('case_study_pdf', { case_study: a.dataset.caseName || (heading ? heading.textContent.trim() : '') });
   });
 }

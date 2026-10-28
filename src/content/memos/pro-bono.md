@@ -1,6 +1,8 @@
 ---
 order: 4
 tab: Pro bono
+# Shows the link to the Law Foundation one-pager (site.json `proBono`) under the text.
+proBonoCase: true
 ---
 
 Pro bono is part of how Belltower works and something we will always commit a portion of our time to. This work is focused on two related areas where AI is reshaping our legal system.
