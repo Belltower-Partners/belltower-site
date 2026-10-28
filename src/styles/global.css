@@ -183,8 +183,6 @@ a:hover { color: #34496B; }
 .fn-chip::after { content: ""; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }   /* a 44px fingertip-sized target around the small number */
 .fn-chip:hover, .fn-chip[aria-expanded="true"] { background: #E6ECF6; color: var(--ink); text-decoration-thickness: 2px; }
 .hero-sentence { max-width: 620px; margin: 24px 0 0; font-size: 19px; line-height: 1.6; color: var(--ink-2); text-wrap: pretty; }
-.hero-aside { margin: 22px 0 0; font-size: 15px; line-height: 1.5; color: var(--muted); }
-.hero-aside a { color: var(--ink); text-underline-offset: 3px; white-space: nowrap; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; box-sizing: border-box;
   border: 1px solid var(--ink); border-radius: 3px; background: var(--ink); color: #FBF7EE;
@@ -238,7 +236,6 @@ a:hover { color: #34496B; }
   .hero { padding: 22px 0 28px; }
   .hero-head { margin-top: 12px; font-size: 28px; line-height: 1.22; }
   .hero-sentence { margin-top: 14px; font-size: 16px; line-height: 1.55; }
-  .hero-aside { margin-top: 16px; font-size: 14px; }
   .waitlist { margin-top: 44px; padding-bottom: 0; }
   .wl-head { font-size: 23px; }
   .wl-row { grid-template-columns: 1fr; }

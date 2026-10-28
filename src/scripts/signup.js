@@ -32,7 +32,8 @@ if (dlg && typeof dlg.showModal === 'function') {
     openAs(el.dataset.signup);
   }));
   dlg.querySelector('[data-su-close]').addEventListener('click', () => dlg.close());
-  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });   // a click on the backdrop
+  // The pop-up closes only from the X: a click outside it or the Escape key does nothing.
+  dlg.addEventListener('cancel', (e) => e.preventDefault());
 
   function sending(on) {
     submit.disabled = on;
