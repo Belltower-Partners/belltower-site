@@ -1,15 +1,17 @@
 // The "Get in touch" form (SignupDialog.astro). Any element with data-signup="contact" (or, later, another
-// door) opens it in that mode. It checks
-// the required fields and shows the thank-you. In this mock (data-mock) nothing is sent. Connected, it posts
-// the same fields, plus `source`, to the firm's Google Form.
+// door) opens it in that mode. It checks the required fields, sends the entry to Formspree, and shows the
+// thank-you only once Formspree confirms it arrived; if sending fails it says so and offers the email
+// address. Without JavaScript the form still posts to Formspree directly.
 import { track } from './analytics.js';
 
 const dlg = document.getElementById('signup');
 if (dlg && typeof dlg.showModal === 'function') {
   const form = dlg.querySelector('[data-signup-form]');
   const err = dlg.querySelector('[data-su-error]');
+  const sendErr = dlg.querySelector('[data-su-send-error]');
   const done = dlg.querySelector('[data-su-done]');
-  const req = ['name', 'email', 'org', 'title', 'stage'].map((n) => form.elements[n]);
+  const submit = form.querySelector('[type=submit]');
+  const req = ['name', 'email', 'organization', 'title', 'ai_stage'].map((n) => form.elements[n]);
 
   function openAs(mode) {
     dlg.dataset.mode = mode;
@@ -18,6 +20,7 @@ if (dlg && typeof dlg.showModal === 'function') {
     done.hidden = true;
     dlg.classList.remove('is-done');
     err.hidden = true;
+    sendErr.hidden = true;
     req.forEach((el) => el.removeAttribute('aria-invalid'));
     dlg.showModal();
     form.elements.name.focus();
@@ -31,16 +34,33 @@ if (dlg && typeof dlg.showModal === 'function') {
   dlg.querySelector('[data-su-close]').addEventListener('click', () => dlg.close());
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });   // a click on the backdrop
 
-  form.addEventListener('submit', (e) => {
+  function sending(on) {
+    submit.disabled = on;
+    submit.textContent = on ? submit.dataset.sending : submit.dataset.label;
+  }
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const bad = req.filter((el) => !el.value.trim() || (el.type === 'email' && !/^\S+@\S+\.\S+$/.test(el.value.trim())));
     req.forEach((el) => el.setAttribute('aria-invalid', bad.includes(el) ? 'true' : 'false'));
     if (bad.length) { err.hidden = false; bad[0].focus(); return; }
     err.hidden = true;
+    sendErr.hidden = true;
     const mode = dlg.dataset.mode;
-    // Connected version: post the fields (as the Google Form's entry IDs) with
-    // fetch(GOOGLE_FORM_ACTION, { method: 'POST', mode: 'no-cors', body }) before showing the thank-you.
+    sending(true);
+    let ok = false;
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      ok = res.ok;
+    } catch (e2) { ok = false; }
+    sending(false);
+    if (!ok) {
+      sendErr.hidden = false;
+      track('signup_error', { source: mode });
+      return;
+    }
     track('signup_submit', { source: mode });
+    form.reset();
     form.hidden = true;
     dlg.classList.add('is-done');
     done.hidden = false;

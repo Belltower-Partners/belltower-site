@@ -52,10 +52,14 @@
     "orEmail": "Prefer email?"
   },
   "signup": {
+    "endpoint": "https://formspree.io/f/xpppdgnv",
+    "subject": "New message from the Get in touch form",
     "heading": "Get in touch",
     "text": "Leave your details and we will follow up.",
     "button": "Get in touch",
+    "sending": "Sending…",
     "thanks": "Thank you. We will follow up shortly.",
+    "sendError": "Sorry, that didn't go through. Please try again, or email us at go@gobelltower.com.",
     "fields": {
       "name": "Name",
       "email": "Work email",
