@@ -308,9 +308,10 @@ button.fn-chip { -webkit-appearance: none; appearance: none; }
 
 /* footnote 4: in the sentence, straight to the machine */
 .hero-sentence .fn-chip { font-size: 0.54em; }
-/* phone: a bit larger, since the desktop size is too small to read on a small screen */
+/* phone: a bit larger, and each number sits in a thin unfilled box */
 @media (max-width: 799.98px) {
-  .fn-chip { font-size: 0.46em; }
+  .fn-chip { font-size: 0.46em; padding: 0.22em 0.38em; margin-left: 0.3em; border: 1px solid currentColor; border-radius: 2px; text-decoration: none; }
+  .fn-chip:hover, .fn-chip[aria-expanded="true"] { background: none; border-color: var(--ink); }
   .hero-sentence .fn-chip { font-size: 0.68em; }
 }
 .machine-sec { scroll-margin-top: 8px; }
