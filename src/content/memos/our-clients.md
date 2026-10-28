@@ -5,4 +5,4 @@ tab: Our clients
 cases: true
 ---
 
-We partner with small and mid-size firms for firmwide AI deployment. We also work 1-1 with senior leaders at firms of all sizes through our concierge program, Belltower Reserve. To ensure a highly personalized experience, we accept only a small number of clients into Reserve at any given time.
+We partner with small and mid-size firms for firmwide AI deployment. We also work 1-1 with senior leaders at firms of all sizes through our concierge program, Belltower Reserve.

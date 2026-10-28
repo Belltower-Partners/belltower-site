@@ -1,0 +1,30 @@
+---
+// The "Get in touch" form, in a pop-up opened by anything with data-signup="contact" (the button at the bottom of the page). Entries go to the firm's Formspree form (site.json `signup.endpoint`),
+// which emails each one to go@gobelltower.com and keeps a copy in the Formspree dashboard. Built so a
+// second door (such as a free guide) can share it later. Words: site.json `signup`.
+import site from '../data/site.json';
+const s = site.signup;
+const f = s.fields;
+---
+<dialog class="su" id="signup" aria-labelledby="su-head" data-mode="contact">
+  <button class="su-close" type="button" data-su-close aria-label={s.close}><span aria-hidden="true">×</span></button>
+  <h2 class="su-head" id="su-head">{s.heading}</h2>
+  <form class="su-form" action={s.endpoint} method="POST" data-signup-form novalidate>
+    <input type="hidden" name="source" value="get_in_touch" />
+    <input type="hidden" name="_subject" value={s.subject} />
+    <!-- A field people never see; Formspree treats anything typed into it as spam. -->
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
+    <div class="su-row">
+      <label class="su-field"><span>{f.name}</span><input name="name" type="text" autocomplete="name" required /></label>
+      <label class="su-field"><span>{f.email}</span><input name="email" type="email" autocomplete="email" required /></label>
+    </div>
+    <label class="su-field"><span>{f.phone}</span><input name="phone" type="tel" autocomplete="tel" /></label>
+    <label class="su-field"><span>{f.note}</span><textarea name="note" rows="3"></textarea></label>
+    <p class="su-error" data-su-error hidden>{s.error}</p>
+    <p class="su-error" data-su-send-error role="alert" hidden>{s.sendError}</p>
+    <button class="btn" type="submit" data-label={s.button} data-sending={s.sending}>{s.button}</button>
+  </form>
+  <div class="su-done" data-su-done hidden tabindex="-1">
+    <p class="su-thanks">{s.thanks}</p>
+  </div>
+</dialog>

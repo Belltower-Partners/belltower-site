@@ -5,6 +5,9 @@ import Base from '../layouts/Base.astro';
 import SentenceMachine from '../components/SentenceMachine.astro';
 import SentenceMachinePhone from '../components/SentenceMachinePhone.astro';
 import ComingSoon from '../components/ComingSoon.astro';
+import Hero from '../components/Hero.astro';
+import Contact from '../components/Contact.astro';
+import SignupDialog from '../components/SignupDialog.astro';
 import site from '../data/site.json';
 
 const memos = (await getCollection('memos')).sort((a, b) => a.data.order - b.data.order);
@@ -30,10 +33,12 @@ const gated = site.comingSoon.enabled;
     </header>
 
     <main>
+      <Hero />
+
       <div class="tabs" role="tablist" aria-label="Memos">
         {memos.map((m, i) => (
           <button class="tab" type="button" role="tab" id={`tab-${m.id}`} aria-controls={`memo-${m.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
-            <span class="num">{String(i + 1).padStart(2, '0')}</span><span class="lbl">{m.data.tab}</span>
+            <span class="lbl">{m.data.tab}</span>
           </button>
         ))}
       </div>
@@ -58,7 +63,14 @@ const gated = site.comingSoon.enabled;
                           {cs.data.name ? (
                             <p class="case-who"><span class="case-name">{cs.data.name}</span>{cs.data.title && <>, <span class="case-title">{cs.data.title}</span></>}</p>
                           ) : cs.data.subtitle && <p class="case-sub">{cs.data.subtitle}</p>}
-                          <button class="case-toggle" type="button" aria-expanded="true" aria-controls={`case-${cs.id}`} aria-describedby={`case-h-${cs.id}`} data-case-toggle data-open={site.cases.open} data-close={site.cases.close} hidden>{site.cases.close}</button>
+                          <div class="case-actions">
+                            <button class="case-toggle" type="button" aria-expanded="true" aria-controls={`case-${cs.id}`} aria-describedby={`case-h-${cs.id}`} data-case-toggle data-open={site.cases.open} data-close={site.cases.close} hidden>{site.cases.close}</button>
+                            {cs.data.onePager === 'pending' ? (
+                              <span class="case-pdf case-pdf-pending">{site.cases.onePager} {site.cases.onePagerPending}</span>
+                            ) : cs.data.onePager && (
+                              <a class="case-pdf" href={cs.data.onePager} target="_blank" rel="noopener" data-case-pdf aria-describedby={`case-h-${cs.id}`}>{site.cases.onePager}</a>
+                            )}
+                          </div>
                           <div class="case-body" id={`case-${cs.id}`}>
                             <p class="case-body-lab">{cs.data.bodyLabel}</p>
                             {cs.data.quote ? (
@@ -82,20 +94,19 @@ const gated = site.comingSoon.enabled;
 
       </div>
 
-      <section class="machine-sec" aria-label={site.machineLabel}>
+      <section class="machine-sec" id="machine" aria-label={site.machineLabel}>
         <div class="machine-intro">
           <h2>{site.machine.heading}</h2>
           <p>{site.machine.subtitle}<span class="vh"> {site.machine.invite}</span></p>
+          <p class="machine-cue"><span class="cue-desk">{site.machine.cue}</span><span class="cue-phone">{site.machine.cuePhone}</span></p>
         </div>
         <div class="fit fit-desk" data-fit data-w="760" data-h="553"><SentenceMachine /></div>
         <div class="fit fit-phone" data-fit data-w="358" data-h="420"><SentenceMachinePhone /></div>
       </section>
 
-      <section class="cta" aria-labelledby="cta-head">
-        <h2 class="cta-head" id="cta-head">{site.getInTouch}</h2>
-        <p class="cta-mail"><a href={`mailto:${site.email}`}>{site.email}</a></p>
-      </section>
+      <Contact />
     </main>
+    <SignupDialog />
 
     <div class="closing">
       <footer class="foot">
@@ -108,6 +119,8 @@ const gated = site.comingSoon.enabled;
     import '../scripts/analytics.js';
     import '../scripts/tabs.js';
     import '../scripts/cases.js';
+    import '../scripts/footnotes.js';
+    import '../scripts/signup.js';
     import '../scripts/machine.js';
     import '../scripts/gate.js';
   </script>

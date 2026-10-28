@@ -26,6 +26,9 @@ const cases = defineCollection({
     subtitle: z.string().optional(),
     bodyLabel: z.string(),
     quote: z.boolean().default(false),
+    // The one-page case study: the PDF's path under public/case-studies/ (e.g. "/case-studies/law-foundation.pdf"),
+    // or "pending" to show a placeholder while the client reviews it. Leave it out for no one-pager.
+    onePager: z.string().optional(),
     // `draft: true` keeps a case study off the page while it is being finalized.
     draft: z.boolean().default(false),
   }),

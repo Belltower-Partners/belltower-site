@@ -62,13 +62,14 @@ working here must follow these rules.
 | The 24 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
-| "Get in touch" and the email address under the machine | `src/data/site.json` (`getInTouch` is the label; the address is `email`) |
+| "Get in touch" button under the machine (just the button; the email address is in the footer) | `src/data/site.json` (`contact.button`; the address is `email`) |
 | Short links on gobelltower.com that send visitors somewhere else (such as a pitch demo) | `public/_redirects` (one per line: path, destination, `302`) |
+| "Get in touch" form: its words, fields and where entries go (Formspree) | `src/data/site.json` under `signup` (`endpoint` is the Formspree address; the form is `src/components/SignupDialog.astro`) |
 | Google Analytics measurement ID | `src/data/site.json` (`analyticsId`; remove it to turn analytics off) |
 | "Coming soon" screen in front of the site: on/off, password and its words | `src/data/site.json` under `comingSoon` (`enabled: false` turns it off) |
 
-The page has no contact form; it was removed in October 2026 and can be restored from git history
-(the pull request "Update site content from the v1 content document"). The page has no Testimonials
+The "Get in touch" form opens in a pop-up from the button at the bottom of the page. The pop-up closes only from the X in its upper-right corner, by design: clicking outside it or pressing Escape does nothing. It sends each entry to Formspree, which emails it to go@gobelltower.com and keeps a copy in the
+Formspree dashboard (Shawn's account, project "Belltower Partners", form "Get in touch"). Only name and email are required; phone and "Note" are optional and labeled "(optional)", on purpose, so the form asks for as little as possible. The page has no Testimonials
 section either; it was removed in October 2026. If a partner asks for one
 again, it can be restored from git history (the pull request "Remove the Testimonials section").
 
@@ -96,6 +97,7 @@ which identify the visitor:
 - `machine_view` (the machine is mostly on screen), `machine_first_turn` (`seconds_after_view`)
 - `dial_turn` (`dial`, `setting`, `method`: `tap`, `drag`, `click`, `wheel` or `keyboard`)
 - `sentence_print` (`sentence_number`, `role`, `topic`, `stage`)
+- `signup_open`, `signup_submit` and `signup_error` (`source`): the "Get in touch" form opened, sent, or failed to send
 
 The machine events also carry `layout` (`desktop` or `phone`). If you add or rename an event, keep this
 list in step.

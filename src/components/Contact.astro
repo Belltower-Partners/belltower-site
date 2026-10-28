@@ -1,0 +1,8 @@
+---
+// "Get in touch" at the bottom of the page: just a quiet button that opens the contact form (the email address is in the footer). Words: site.json `contact`; the form itself is SignupDialog.astro.
+import site from '../data/site.json';
+const c = site.contact;
+---
+<section class="waitlist" id="get-in-touch" aria-label={c.heading}>
+  <p class="wl-act"><button class="btn btn-quiet" type="button" data-signup="contact">{c.button}</button></p>
+</section>

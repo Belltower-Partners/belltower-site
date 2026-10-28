@@ -6,18 +6,74 @@
   "analyticsId": "G-LJEE317TM7",
   "footerLine": "Belltower Partners LLC · Chicago · go@gobelltower.com",
   "machineLabel": "Sentence machine",
+  "hero": {
+    "lines": [
+      {
+        "text": "We know the law.",
+        "note": 1,
+        "bio": "Shawn Liu",
+        "summary": "litigated at Gibson Dunn, clerked on the Ninth Circuit, was Facebook’s 4th product counsel and an in-house leader working for Mark Zuckerberg and Bill Gates. JD, University of Chicago and AB, Harvard in Chemistry and Physics."
+      },
+      {
+        "text": "We know the business of law.",
+        "note": 2,
+        "bio": "Uday Khedkar",
+        "summary": "was CFO of Feldco and President of Danley’s Garages, with over 25 years of general management experience. MBA, Kellogg School of Management."
+      },
+      {
+        "text": "We know AI.",
+        "note": 3,
+        "bio": "Mickey Muldoon",
+        "summary": "has 10+ years experience applying machine learning and AI to technical problems as diverse as Amazon global freight logistics forecasting and scheduling, rocket manufacturing and supply chain optimization, and consumer mobile applications. MA from Brooklyn College in Computer Science and AB from Harvard in Psychology."
+      }
+    ],
+    "sentence": "Belltower Partners helps small and mid-size law firms, and senior leaders at firms of all sizes, use AI more effectively.",
+    "bioLink": "full bio",
+    "machineNote": {
+      "n": 4,
+      "label": "Try the sentence machine below"
+    },
+    "bioSignal": "See"
+  },
   "machine": {
     "heading": "You don’t have to figure out AI alone.",
     "subtitle": "Clients, partners at your firm, and vendors all want answers from you.",
+    "cue": "Click or drag the dials below for a readout on what we’re hearing.",
+    "cuePhone": "Tap or drag the dials below for a readout on what we’re hearing.",
     "invite": "Dial in what’s on your desk for a readout on what we’re hearing.",
     "hint": "Tap or drag the dials",
     "hintDesktop": "Click or drag the dials"
   },
   "getInTouch": "Get in touch",
+  "contact": {
+    "heading": "Get in touch",
+    "text": "Tell us a little about yourself and what’s on your desk, and one of us will write back to you personally.",
+    "button": "Get in touch",
+    "orEmail": "Prefer email?"
+  },
+  "signup": {
+    "endpoint": "https://formspree.io/f/xpppdgnv",
+    "subject": "New message from the Get in touch form",
+    "heading": "Get in touch",
+    "button": "Get in touch",
+    "sending": "Sending…",
+    "thanks": "Thank you. We will follow up shortly.",
+    "sendError": "Sorry, that didn't go through. Please try again, or email us at go@gobelltower.com.",
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "note": "Note (optional)"
+    },
+    "error": "Please enter your name and a valid email address so we can reply.",
+    "close": "Close"
+  },
   "cases": {
     "label": "Case study",
     "open": "Testimonial",
-    "close": "Close the testimonial"
+    "close": "Close the testimonial",
+    "onePager": "One-page case study (PDF)",
+    "onePagerPending": "[link added after the Law Foundation's review]"
   },
   "comingSoon": {
     "enabled": false,

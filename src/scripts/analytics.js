@@ -15,5 +15,5 @@ export function track(name, params = {}) {
 document.addEventListener('click', (e) => {
   const a = e.target instanceof Element ? e.target.closest('a[href^="mailto:"]') : null;
   if (!a) return;
-  track('email_click', { link_location: a.closest('.cta') ? 'get_in_touch' : a.closest('.foot') ? 'footer' : 'page' });
+  track('email_click', { link_location: a.closest('.cta, .waitlist, .su') ? 'get_in_touch' : a.closest('.foot') ? 'footer' : 'page' });
 });

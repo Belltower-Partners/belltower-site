@@ -1,0 +1,16 @@
+---
+// The top of the page: three lines, each footnoted to the partner behind it, like a citation in a brief.
+// A footnote number opens a small note (a one-line summary and a link to that partner's bio on
+// "The team"); on a desktop, pointing at the number opens it too. Footnote 4, after the sentence, goes straight to the sentence machine.
+// Words: site.json `hero`.
+import site from '../data/site.json';
+const h = site.hero;
+---
+<section class="hero" aria-labelledby="hero-head">
+  <h2 class="hero-head" id="hero-head">
+    {h.lines.map((l) => (
+      <span class="hero-line">{l.text}<span class="fn"><button class="fn-chip" type="button" aria-expanded="false" aria-controls={`fn-${l.note}`} data-fn><span class="vh">Footnote </span>{l.note}</button><span class="fn-pop" id={`fn-${l.note}`} hidden><span class="fn-pop-n" aria-hidden="true">{l.note}</span><span class="fn-pop-text">{l.bio} {l.summary}</span> <a class="fn-bio" href="#tab-the-team" data-bio={l.bio}><em>{h.bioSignal}</em> {h.bioLink}<span class="vh"> of {l.bio}</span>.</a></span></span></span>
+    ))}
+  </h2>
+  <p class="hero-sentence">{h.sentence}<a class="fn-chip fn-chip-link" href="#machine" data-to-machine title={h.machineNote.label}><span class="vh">Footnote {h.machineNote.n}: {h.machineNote.label}</span><span aria-hidden="true">{h.machineNote.n}</span></a></p>
+</section>
