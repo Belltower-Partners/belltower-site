@@ -62,7 +62,7 @@ working here must follow these rules.
 | The 24 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
 | Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
-| "Get in touch" and the email address under the machine | `src/data/site.json` (`getInTouch` is the label; the address is `email`) |
+| "Get in touch" button under the machine (just the button; the email address is in the footer) | `src/data/site.json` (`contact.button`; the address is `email`) |
 | Short links on gobelltower.com that send visitors somewhere else (such as a pitch demo) | `public/_redirects` (one per line: path, destination, `302`) |
 | "Get in touch" form: its words, fields and where entries go (Formspree) | `src/data/site.json` under `signup` (`endpoint` is the Formspree address; the form is `src/components/SignupDialog.astro`) |
 | Google Analytics measurement ID | `src/data/site.json` (`analyticsId`; remove it to turn analytics off) |

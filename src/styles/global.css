@@ -199,8 +199,7 @@ a:hover { color: #34496B; }
 @media (prefers-reduced-motion: reduce) { .flash { animation-duration: 0.01s; outline: 2px solid var(--gold); outline-offset: 4px; } }
 
 /* tabs and rules: navy marks, gold hairlines */
-/* room between the double rule and the tabs' own lines under it */
-.tabs { border-top: 3px double var(--gold); padding-top: 26px; }
+/* no rule above the tabs: the hero's bottom padding gives the room and the tabs' own lines mark the start */
 .tab { border-top-color: var(--rule); }
 .tab[aria-selected="true"] { border-top-color: var(--ink); }
 .case { border-top: 1px solid var(--gold); }
@@ -242,7 +241,6 @@ a:hover { color: #34496B; }
   .hero-head { margin-top: 12px; font-size: 28px; line-height: 1.22; }
   .hero-sentence { margin-top: 14px; font-size: 16px; line-height: 1.55; }
   .hero-aside { margin-top: 16px; font-size: 14px; }
-  .tabs { margin-top: 0; padding-top: 18px; }
   .waitlist { margin-top: 44px; padding-bottom: 0; }
   .wl-head { font-size: 23px; }
   .wl-row { grid-template-columns: 1fr; }
@@ -269,7 +267,7 @@ button.fn-chip { -webkit-appearance: none; appearance: none; }
 
 
 /* bottom waitlist: a short note and a quiet button */
-.wl-act { margin: 20px 0 0; }
+.wl-act { margin: 0; }
 
 /* the sign-up form, in a dialog */
 .su {
