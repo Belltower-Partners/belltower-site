@@ -56,7 +56,7 @@ working here must follow these rules.
 | "Our clients" tab and its opening text | `src/content/memos/our-clients.md` |
 | Each case study on "Our clients" (heading, name and title, quote or description) | `src/content/cases/*.md` (`order` sets the order; the body is what opens; `onePager` is the path of its one-page PDF, kept in `public/case-studies/`) |
 | The one-pager link under the "Pro bono" text | `src/data/site.json` under `proBono` (`caseLink` is the words, `caseFile` the PDF) |
-| "Case study" label and the "Testimonial" / "Close the testimonial" button text | `src/data/site.json` under `cases` |
+| "Case study" label and the "Testimonial" / "Close the testimonial" button text | `src/data/site.json` under `cases` (a case study's own `kind` line, such as `kind: "Testimonial"`, replaces "Case study" for that one) |
 | Tab labels and their order | the `tab` and `order` lines at the top of each memo file |
 | Contact email address and phone number | `src/data/site.json` (`email` and `phone`, and in `footerLine`) |
 | Heading and line above the machine, and what the machine shows on its paper before the first turn | `src/data/site.json` under `machine` (`heading`, `subtitle`; `invite` is the sentence typed on the paper, `hint` and `hintDesktop` the instruction under it on phones and on desktop) |

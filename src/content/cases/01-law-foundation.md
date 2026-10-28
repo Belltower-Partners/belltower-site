@@ -1,6 +1,6 @@
 ---
 # Melissa Hollatz confirmed permission on 10/5.
-order: 2
+order: 1
 label: "Law Foundation of Silicon Valley"
 heading: "Giving a senior corporate lawyer and pro bono leader the capacity to build her own AI agents"
 name: "Melissa Hollatz"

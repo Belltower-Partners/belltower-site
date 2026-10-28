@@ -1,5 +1,6 @@
 // Case studies on the "Our clients" tab: each button opens and closes its own case.
-// Without JavaScript every case stays open and the buttons stay hidden; with it, cases start closed.
+// Every case starts open, with its quote showing; the button closes it and opens it again.
+// Without JavaScript every case stays open and the buttons stay hidden.
 import { track } from './analytics.js';
 
 for (const btn of document.querySelectorAll('[data-case-toggle]')) {
@@ -9,7 +10,7 @@ for (const btn of document.querySelectorAll('[data-case-toggle]')) {
     btn.textContent = open ? btn.dataset.close : btn.dataset.open;
     body.hidden = !open;
   };
-  set(false);
+  set(true);
   btn.hidden = false;
   btn.addEventListener('click', () => {
     const open = btn.getAttribute('aria-expanded') !== 'true';

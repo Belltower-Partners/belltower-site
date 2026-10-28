@@ -22,6 +22,8 @@ const cases = defineCollection({
   schema: z.object({
     order: z.number(),
     label: z.string(),
+    // What it is, shown before the label: "Case study" (site.json `cases.label`) unless set here, e.g. "Testimonial".
+    kind: z.string().optional(),
     heading: z.string(),
     name: z.string().optional(),
     title: z.string().optional(),
