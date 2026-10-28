@@ -45,7 +45,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* ---- memo tabs -------------------------------------------------------------- */
 .tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 20px; }
 .tab { min-height: 64px; display: flex; align-items: baseline; gap: 10px; padding: 18px 0; background: none; border: none; border-top: 1px solid var(--rule); text-align: left; cursor: pointer; color: var(--muted); }
-.tab .num { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; }
 .tab .lbl { font-family: var(--display); font-size: 21px; }
 .tab:hover { color: var(--ink); }
 .tab[aria-selected="true"] { color: var(--ink); border-top: 2px solid var(--ink); padding-top: 17px; }

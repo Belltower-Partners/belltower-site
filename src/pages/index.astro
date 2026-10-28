@@ -38,7 +38,7 @@ const gated = site.comingSoon.enabled;
       <div class="tabs" role="tablist" aria-label="Memos">
         {memos.map((m, i) => (
           <button class="tab" type="button" role="tab" id={`tab-${m.id}`} aria-controls={`memo-${m.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
-            <span class="num">{String(i + 1).padStart(2, '0')}</span><span class="lbl">{m.data.tab}</span>
+            <span class="lbl">{m.data.tab}</span>
           </button>
         ))}
       </div>
