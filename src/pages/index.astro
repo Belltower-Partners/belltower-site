@@ -16,10 +16,10 @@ const memoBodies = await Promise.all(memos.map(async (m) => (await render(m)).Co
 const cases = (await getCollection('cases', (c) => !c.data.draft)).sort((a, b) => a.data.order - b.data.order);
 const caseBodies = await Promise.all(cases.map(async (c) => (await render(c)).Content));
 
-// The footer line is plain text; the email address in it becomes a link.
-const [footBefore, footAfter] = site.footerLine.includes(site.email)
-  ? [site.footerLine.slice(0, site.footerLine.indexOf(site.email)), site.footerLine.slice(site.footerLine.indexOf(site.email) + site.email.length)]
-  : [site.footerLine, null];
+// The footer line is plain text, in pieces separated by " · "; a piece that is the phone number or the email
+// address becomes a link, and each piece stays on one line.
+const footParts = site.footerLine.split(' · ');
+const footHref = (t: string) => t === site.email ? `mailto:${site.email}` : t === site.phone ? `tel:+1${site.phone.replace(/\D/g, '')}` : null;
 
 
 // While the site is unfinished, a "Coming soon" screen sits in front of it (see comingSoon in site.json).
@@ -52,23 +52,24 @@ const gated = site.comingSoon.enabled;
             return (
               <div class="memo" role="tabpanel" id={`memo-${m.id}`} aria-labelledby={`tab-${m.id}`} tabindex="0" hidden={i !== 0}>
                 <Body />
+                {m.data.proBonoCase && (
+                  <p class="pb-case-link"><a href={site.proBono.caseFile} target="_blank" rel="noopener" data-case-pdf data-case-name="Law Foundation of Silicon Valley (Pro bono)">{site.proBono.caseLink}<span class="vh"> (PDF, opens in a new tab)</span></a></p>
+                )}
                 {m.data.cases && (
                   <div class="cases">
                     {cases.map((cs, k) => {
                       const CaseBody = caseBodies[k];
                       return (
                         <article class="case">
-                          <p class="case-lab">{site.cases.label} · {cs.data.label}</p>
+                          <p class="case-lab">{cs.data.kind ?? site.cases.label} · {cs.data.label}</p>
                           <h2 id={`case-h-${cs.id}`}>{cs.data.heading}</h2>
                           {cs.data.name ? (
                             <p class="case-who"><span class="case-name">{cs.data.name}</span>{cs.data.title && <>, <span class="case-title">{cs.data.title}</span></>}</p>
                           ) : cs.data.subtitle && <p class="case-sub">{cs.data.subtitle}</p>}
                           <div class="case-actions">
                             <button class="case-toggle" type="button" aria-expanded="true" aria-controls={`case-${cs.id}`} aria-describedby={`case-h-${cs.id}`} data-case-toggle data-open={site.cases.open} data-close={site.cases.close} hidden>{site.cases.close}</button>
-                            {cs.data.onePager === 'pending' ? (
-                              <span class="case-pdf case-pdf-pending">{site.cases.onePager} {site.cases.onePagerPending}</span>
-                            ) : cs.data.onePager && (
-                              <a class="case-pdf" href={cs.data.onePager} target="_blank" rel="noopener" data-case-pdf aria-describedby={`case-h-${cs.id}`}>{site.cases.onePager}</a>
+                            {cs.data.onePager && (
+                              <a class="case-pdf" href={cs.data.onePager} target="_blank" rel="noopener" data-case-pdf aria-describedby={`case-h-${cs.id}`}>{site.cases.onePager}<span class="vh"> (PDF, opens in a new tab)</span></a>
                             )}
                           </div>
                           <div class="case-body" id={`case-${cs.id}`}>
@@ -110,7 +111,7 @@ const gated = site.comingSoon.enabled;
 
     <div class="closing">
       <footer class="foot">
-        <p>{footBefore}{footAfter !== null && <><a href={`mailto:${site.email}`}>{site.email}</a>{footAfter}</>}</p>
+        <p>{footParts.map((t, i) => <>{i > 0 && ' · '}<span class="foot-part">{footHref(t) ? <a href={footHref(t)!}>{t}</a> : t}</span></>)}</p>
       </footer>
     </div>
   </div>

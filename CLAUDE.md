@@ -54,14 +54,15 @@ working here must follow these rules.
 | "Our work" tab and its text | `src/content/memos/our-work.md` |
 | "The team" tab and its text | `src/content/memos/the-team.md` |
 | "Our clients" tab and its opening text | `src/content/memos/our-clients.md` |
-| Each case study on "Our clients" (heading, name and title, quote or description) | `src/content/cases/*.md` (`order` sets the order; the body is what opens) |
-| "Case study" label and the "Testimonial" / "Close the testimonial" button text | `src/data/site.json` under `cases` |
+| Each case study on "Our clients" (heading, name and title, quote or description) | `src/content/cases/*.md` (`order` sets the order; the body is what opens; `onePager` is the path of its one-page PDF, kept in `public/case-studies/`) |
+| The one-pager link under the "Pro bono" text | `src/data/site.json` under `proBono` (`caseLink` is the words, `caseFile` the PDF) |
+| "Case study" label and the "Testimonial" / "Close the testimonial" button text | `src/data/site.json` under `cases` (a case study's own `kind` line, such as `kind: "Testimonial"`, replaces "Case study" for that one) |
 | Tab labels and their order | the `tab` and `order` lines at the top of each memo file |
-| Contact email address | `src/data/site.json` (`email`, and in `footerLine`) |
+| Contact email address and phone number | `src/data/site.json` (`email` and `phone`, and in `footerLine`) |
 | Heading and line above the machine, and what the machine shows on its paper before the first turn | `src/data/site.json` under `machine` (`heading`, `subtitle`; `invite` is the sentence typed on the paper, `hint` and `hintDesktop` the instruction under it on phones and on desktop) |
 | The 24 sentences the machine prints | `src/data/sentences.json` (in order; No. 1 is the first) |
 | The machine's dial labels and which setting prints which sentence | `src/data/machine.json` |
-| Footer line | `src/data/site.json` (`footerLine`; the email in it becomes a link) |
+| Footer line | `src/data/site.json` (`footerLine`; the phone number and email in it become links) |
 | "Get in touch" button under the machine (just the button; the email address is in the footer) | `src/data/site.json` (`contact.button`; the address is `email`) |
 | Short links on gobelltower.com that send visitors somewhere else (such as a pitch demo) | `public/_redirects` (one per line: path, destination, `302`) |
 | "Get in touch" form: its words, fields and where entries go (Formspree) | `src/data/site.json` under `signup` (`endpoint` is the Formspree address; the form is `src/components/SignupDialog.astro`) |
@@ -94,6 +95,7 @@ which identify the visitor:
 
 - `email_click` (`link_location`: `get_in_touch` or `footer`)
 - `tab_view` (`tab`) and `case_study_toggle` (`case_study`, `action`)
+- `case_study_pdf` (`case_study`): a one-page case study PDF opened
 - `machine_view` (the machine is mostly on screen), `machine_first_turn` (`seconds_after_view`)
 - `dial_turn` (`dial`, `setting`, `method`: `tap`, `drag`, `click`, `wheel` or `keyboard`)
 - `sentence_print` (`sentence_number`, `role`, `topic`, `stage`)

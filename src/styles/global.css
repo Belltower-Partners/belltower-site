@@ -316,7 +316,6 @@ button.fn-chip { -webkit-appearance: none; appearance: none; }
 .case-actions { display: flex; flex-wrap: wrap; align-items: center; column-gap: 28px; row-gap: 4px; margin-top: 14px; }
 .case-actions .case-toggle { margin-top: 0; }
 .case-pdf { display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; color: var(--ink); text-underline-offset: 4px; text-decoration-thickness: 1px; }
-.memo .case-pdf-pending { color: var(--muted); }
 
 /* the line that says the machine is to be played with */
 .machine-intro .machine-cue { margin-top: 14px; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--ink); }
@@ -327,3 +326,15 @@ button.fn-chip { -webkit-appearance: none; appearance: none; }
   .cue-desk { display: none; }
   .cue-phone { display: inline; }
 }
+
+/* Pro bono: link to the Law Foundation one-pager */
+.memo .pb-case-link { margin-top: 4px; font-size: 16px; }
+.pb-case-link a { color: var(--ink); text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.pb-case-link a::after { content: " →"; }
+.foot-part { white-space: nowrap; }
+
+/* "Get in touch" under the machine: a solid navy button, so it reads as the thing to click */
+.btn-cta { min-height: 56px; padding: 0 32px; font-size: 14px; background: var(--ink); border-color: var(--ink); color: #FFFFFF; }
+.btn-cta::after { content: "→"; margin-left: 12px; }
+.btn-cta:hover { background: #2A3D5C; border-color: #2A3D5C; color: #FFFFFF; }
+@media (max-width: 799.98px) { .wl-act .btn-cta { width: 100%; } }

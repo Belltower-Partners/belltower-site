@@ -1,7 +1,9 @@
 ---
 # Douglas Baird confirmed this wording and permission to publish it on 10/12.
-order: 1
+order: 2
 label: "University of Chicago Law School"
+# Shown before the label instead of "Case study".
+kind: "Testimonial"
 heading: "Building custom AI agents for a senior scholar"
 name: "Douglas Baird"
 title: "Harry A. Bigelow Distinguished Service Professor of Law and Former Dean, University of Chicago Law School"

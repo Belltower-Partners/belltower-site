@@ -3,8 +3,9 @@
   "firmName": "Belltower Partners",
   "description": "Technology and AI consulting for small and medium sized law firms.",
   "email": "go@gobelltower.com",
+  "phone": "312-809-8584",
   "analyticsId": "G-LJEE317TM7",
-  "footerLine": "Belltower Partners LLC · Chicago · go@gobelltower.com",
+  "footerLine": "Belltower Partners LLC · 1 East Erie Street, Chicago IL 60611 · 312-809-8584 · go@gobelltower.com",
   "machineLabel": "Sentence machine",
   "hero": {
     "lines": [
@@ -72,8 +73,7 @@
     "label": "Case study",
     "open": "Testimonial",
     "close": "Close the testimonial",
-    "onePager": "One-page case study (PDF)",
-    "onePagerPending": "[link added after the Law Foundation's review]"
+    "onePager": "1-page case study"
   },
   "comingSoon": {
     "enabled": false,
@@ -83,5 +83,9 @@
     "passwordLabel": "Password",
     "enter": "Enter",
     "wrong": "That isn't it."
+  },
+  "proBono": {
+    "caseLink": "1-page case study with Law Foundation of Silicon Valley",
+    "caseFile": "/case-studies/law-foundation-of-silicon-valley.pdf"
   }
 }

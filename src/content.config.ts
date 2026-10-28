@@ -10,6 +10,8 @@ const memos = defineCollection({
     order: z.number(),
     tab: z.string(),
     cases: z.boolean().default(false),
+    // `proBonoCase: true` shows the link to the Law Foundation one-pager (site.json `proBono`) under the text.
+    proBonoCase: z.boolean().default(false),
   }),
 });
 
@@ -20,14 +22,16 @@ const cases = defineCollection({
   schema: z.object({
     order: z.number(),
     label: z.string(),
+    // What it is, shown before the label: "Case study" (site.json `cases.label`) unless set here, e.g. "Testimonial".
+    kind: z.string().optional(),
     heading: z.string(),
     name: z.string().optional(),
     title: z.string().optional(),
     subtitle: z.string().optional(),
     bodyLabel: z.string(),
     quote: z.boolean().default(false),
-    // The one-page case study: the PDF's path under public/case-studies/ (e.g. "/case-studies/law-foundation.pdf"),
-    // or "pending" to show a placeholder while the client reviews it. Leave it out for no one-pager.
+    // The one-page case study: the PDF's path under public/case-studies/ (e.g. "/case-studies/law-foundation.pdf").
+    // Leave it out for no one-pager.
     onePager: z.string().optional(),
     // `draft: true` keeps a case study off the page while it is being finalized.
     draft: z.boolean().default(false),
