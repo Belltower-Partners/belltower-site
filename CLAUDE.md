@@ -65,6 +65,7 @@ working here must follow these rules.
 | Footer line | `src/data/site.json` (`footerLine`; the phone number and email in it become links) |
 | "Get in touch" button under the machine (just the button; the email address is in the footer) | `src/data/site.json` (`contact.button`; the address is `email`) |
 | Short links on gobelltower.com that send visitors somewhere else (such as a pitch demo) | `public/_redirects` (one per line: path, destination, `302`) |
+| A link that opens one tab directly | add `#` and the memo's file name to the address, e.g. `gobelltower.com/#pro-bono` (short link: `/probono`) |
 | "Get in touch" form: its words, fields and where entries go (Formspree) | `src/data/site.json` under `signup` (`endpoint` is the Formspree address; the form is `src/components/SignupDialog.astro`) |
 | Google Analytics measurement ID | `src/data/site.json` (`analyticsId`; remove it to turn analytics off) |
 | "Coming soon" screen in front of the site: on/off, password and its words | `src/data/site.json` under `comingSoon` (`enabled: false` turns it off) |
