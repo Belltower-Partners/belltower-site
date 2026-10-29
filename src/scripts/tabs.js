@@ -31,10 +31,12 @@ tabs.forEach((t, i) => {
   });
 });
 
-// A link can open a tab directly: gobelltower.com/#pro-bono opens "Pro bono" (the part after # is the
-// memo's file name, such as our-work, the-team, our-clients or pro-bono) and scrolls to the tabs.
+// A link can open a tab directly: gobelltower.com/#pro-bono or gobelltower.com/?tab=pro-bono opens
+// "Pro bono" (use the memo's file name: our-work, the-team, our-clients or pro-bono) and scrolls to the
+// tabs. Short links use the ?tab= form, because Cloudflare drops redirects whose destination has a #.
 function openFromHash() {
-  const id = decodeURIComponent(location.hash.slice(1)).replace(/^(tab|memo)-/, '');
+  const asked = location.hash.slice(1) || new URLSearchParams(location.search).get('tab') || '';
+  const id = decodeURIComponent(asked).replace(/^(tab|memo)-/, '');
   if (!id) return;
   const i = tabs.findIndex((t) => t.id === `tab-${id}`);
   if (i < 0) return;

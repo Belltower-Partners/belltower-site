@@ -7,5 +7,5 @@
 /lawfoundation /case-studies/law-foundation-of-silicon-valley.pdf 302
 /lawfoundation/ /case-studies/law-foundation-of-silicon-valley.pdf 302
 # The Pro bono tab, for sharing (opens the page with "Pro bono" selected).
-/probono /#pro-bono 302
-/probono/ /#pro-bono 302
+/probono /?tab=pro-bono 302
+/probono/ /?tab=pro-bono 302
