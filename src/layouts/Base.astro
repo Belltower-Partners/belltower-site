@@ -26,7 +26,29 @@ const gated = site.comingSoon.enabled;
     {site.analyticsId && (
       <script is:inline define:vars={{ gaId: site.analyticsId }}>
         // Google Analytics, on the live site only: previews and local builds send nothing.
-        if (/(^|\.)gobelltower\.com$/.test(location.hostname)) {
+        // The partners' own browsers send nothing either: opening gobelltower.com/?internal=on once marks a
+        // browser as internal (remembered in that browser), and ?internal=off undoes it.
+        var internal = false;
+        try {
+          var flag = new URLSearchParams(location.search).get('internal');
+          if (flag === 'on') localStorage.setItem('belltower-internal', '1');
+          if (flag === 'off') localStorage.removeItem('belltower-internal');
+          internal = localStorage.getItem('belltower-internal') === '1';
+          if (flag === 'on' || flag === 'off') {
+            window.addEventListener('DOMContentLoaded', function () {
+              var note = document.createElement('p');
+              note.className = 'internal-note';
+              note.setAttribute('role', 'status');
+              note.textContent = internal
+                ? 'This browser is now marked as Belltower internal: your visits will not be counted in Google Analytics.'
+                : 'This browser is no longer marked as internal: your visits will be counted in Google Analytics.';
+              document.body.appendChild(note);
+              setTimeout(function () { note.remove(); }, 8000);
+            });
+            history.replaceState(null, '', location.pathname + location.hash);
+          }
+        } catch (e) {}
+        if (!internal && /(^|\.)gobelltower\.com$/.test(location.hostname)) {
           window.dataLayer = window.dataLayer || [];
           window.gtag = function () { window.dataLayer.push(arguments); };
           window.gtag('js', new Date());
