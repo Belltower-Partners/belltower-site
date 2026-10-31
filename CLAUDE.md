@@ -90,7 +90,9 @@ taken down when the site launched in October 2026; set `enabled` back to true to
 
 Analytics: Google Analytics loads from `src/layouts/Base.astro`, and only on gobelltower.com, so
 Cloudflare previews and local builds send nothing (add `?ga_debug` to a preview's address to see in
-the browser console what would be sent). Built-in reports cover visits, time on site ("engagement
+the browser console what would be sent). The partners' own browsers send nothing either: opening
+`gobelltower.com/?internal=on` once marks that browser as internal (it is remembered there; `?internal=off`
+undoes it). Each partner does this once in every browser and device they use, including phones. Built-in reports cover visits, time on site ("engagement
 time"), scrolling and clicks to other sites. `src/scripts/analytics.js` adds these events, none of
 which identify the visitor:
 
@@ -101,6 +103,7 @@ which identify the visitor:
 - `dial_turn` (`dial`, `setting`, `method`: `tap`, `drag`, `click`, `wheel` or `keyboard`)
 - `sentence_print` (`sentence_number`, `role`, `topic`, `stage`)
 - `signup_open`, `signup_submit` and `signup_error` (`source`): the "Get in touch" form opened, sent, or failed to send
+- `footnote_open` (`footnote`: `1`–`4`, `partner`, `method`: `click`, `tap`, `keyboard` or `hover`, where hover counts only after half a second; footnote 4 is the jump to the machine) and `footnote_bio_click` (`partner`): the footnotes at the top
 
 The machine events also carry `layout` (`desktop` or `phone`). If you add or rename an event, keep this
 list in step.
